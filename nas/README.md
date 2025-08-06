@@ -6,17 +6,17 @@ My goal was to have a fast drive capable of delivering large files (like 4K vide
 
 ## v1
 
-| Component                                                      | Type             | Link                                                                                                                      |
-|----------------------------------------------------------------|------------------|---------------------------------------------------------------------------------------------------------------------------|
-| Raspberry Pi 5, 8 GB RAM                                       | Computer         | [link](https://rpishop.cz/raspberry-pi-5/6498-raspberry-pi-5-8gb-ram.html)                                                |
-| Raspberry Pi 5 Active Cooler                                   | Cooling          | [link](https://rpishop.cz/chladice-pro-raspberry-pi-5/6496-raspberry-pi-5-active-cooler.html)                             |
-| Suptronics - X1016 PCIe 3.0 (4x M.2 NVMe SSD Shield)           | Storage Board    | [link](https://rpishop.cz/604155/suptronics-x1016-pcie-3-na-4slotovy-m-2-shield/)                                         |
-| Raspberry Pi 64 GB microSD, A2                                 | Storage for OS   | [link](https://rpishop.cz/535862/raspberry-pi-64-gb-microsd-karta-tridy-a2/)                                              |
-| 2x SSD Kingston NV3 2TB                                        | Storage for Data | [link](https://www.alza.cz/kingston-nv3-2tb-d12487073.htm)                                                                |
-| Suptronics - DC adapter 12V/5A for CM5 IO board PSU12V5A       | Power Supply     | [link](https://rpishop.cz/611728/suptronics-napajeci-adapter-psu12v5a/)                                                   |
-| Geekworm - X1011-C1 Metal Case for Raspberry Pi 5 X1011 Shield | Case             | [link](https://rpishop.cz/560336/geekworm-x1011-c1-metal-case-pro-raspberry-pi-5/)                                        |
-| Raspberry Pi 5 RTC battery                                     | BIOS Battery     | [link](https://rpishop.cz/knoflikove/6499-raspberry-pi-5-rtc-baterie.html)                                                |
-| PremiumCord Flexi HDMI Type A female - micro HDMI Typ D male   | Video Adapter    | [link](https://rpishop.cz/499888/premiumcord-flexi-adapter-hdmi-typ-a-samice-micro-hdmi-typ-d-samec-pro-ohebne-zapojeni/) |
+| Component                                                      | Type             | Link                                                                                                                                                                 |
+|----------------------------------------------------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Raspberry Pi 5, 8 GB RAM                                       | Computer         | [link](https://rpishop.cz/raspberry-pi-5/6498-raspberry-pi-5-8gb-ram.html)                                                                                           |
+| Raspberry Pi 5 Active Cooler                                   | Cooling          | [link](https://rpishop.cz/chladice-pro-raspberry-pi-5/6496-raspberry-pi-5-active-cooler.html)                                                                        |
+| Suptronics - X1016 PCIe 3.0 (4x M.2 NVMe SSD Shield)           | Storage Board    | [discussion](https://github.com/geerlingguy/raspberry-pi-pcie-devices/issues/618), [shop](https://rpishop.cz/604155/suptronics-x1016-pcie-3-na-4slotovy-m-2-shield/) |
+| Raspberry Pi 64 GB microSD, A2                                 | Storage for OS   | [link](https://rpishop.cz/535862/raspberry-pi-64-gb-microsd-karta-tridy-a2/)                                                                                         |
+| 2x SSD Kingston NV3 2TB                                        | Storage for Data | [link](https://www.alza.cz/kingston-nv3-2tb-d12487073.htm)                                                                                                           |
+| Suptronics - DC adapter 12V/5A for CM5 IO board PSU12V5A       | Power Supply     | [link](https://rpishop.cz/611728/suptronics-napajeci-adapter-psu12v5a/)                                                                                              |
+| Geekworm - X1011-C1 Metal Case for Raspberry Pi 5 X1011 Shield | Case             | [link](https://rpishop.cz/560336/geekworm-x1011-c1-metal-case-pro-raspberry-pi-5/)                                                                                   |
+| Raspberry Pi 5 RTC battery                                     | BIOS Battery     | [link](https://rpishop.cz/knoflikove/6499-raspberry-pi-5-rtc-baterie.html)                                                                                           |
+| PremiumCord Flexi HDMI Type A female - micro HDMI Typ D male   | Video Adapter    | [link](https://rpishop.cz/499888/premiumcord-flexi-adapter-hdmi-typ-a-samice-micro-hdmi-typ-d-samec-pro-ohebne-zapojeni/)                                            |
 
 The first build works really well! The only issue is the case: there’s almost no space above the M.2 drives, which generate a lot of heat. 
 I had to adjust the cooler settings to run constantly; otherwise, temperatures would exceed 75 °C, which made me uncomfortable.
