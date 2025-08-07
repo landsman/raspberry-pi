@@ -80,6 +80,14 @@ sudo apt install mdadm
 # list devices
 lsblk
 
+# NAME        MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINTS
+# mmcblk0     179:0    0 58.9G  0 disk
+# ├─mmcblk0p1 179:1    0  512M  0 part  /boot/firmware
+# └─mmcblk0p2 179:2    0 58.4G  0 part  /
+#
+# nvme0n1     259:0    0  1.8T  0 disk
+# nvme1n1     259:2    0  1.8T  0 disk
+
 # ⚠️ This will erase data on both drives.
 sudo mdadm --create --verbose /dev/md0 --level=0 --raid-devices=2 /dev/sda /dev/sdb
 
@@ -106,6 +114,16 @@ sudo update-initramfs -u
 # test
 df -h
 
+# Filesystem      Size  Used Avail Use% Mounted on
+# udev            3.9G     0  3.9G   0% /dev
+# tmpfs           1.6G  9.0M  1.6G   1% /run
+# /dev/mmcblk0p2   58G   11G   44G  20% /
+# tmpfs           4.0G  656K  4.0G   1% /dev/shm
+# tmpfs           5.0M   48K  5.0M   1% /run/lock
+# /dev/mmcblk0p1  510M   80M  431M  16% /boot/firmware
+# /dev/md0        3.6T  2.1T  1.4T  59% /mnt/raid0
+# tmpfs           807M  720K  806M   1% /run/user/1000
+
 # test mount without rebooting
 sudo mount -a
 
@@ -115,7 +133,7 @@ df -h | grep raid0
 # now reboot
 sudo reboot
 
-# create symlink for this drive to be easier to find
+# create symlink for this drive to be easier to find in my home folder as "nas"
 ln -s /mnt/raid0 ~/nas
 
 # fix ownership
@@ -177,6 +195,8 @@ sudo nano /etc/samba/smb.conf
 ```
 
 You can configure shared folders. 
+The first folder is on internal micro sd card, the second one on SSDs.
+
 ```
 [share]
     path = /home/pi/shared
