@@ -15,8 +15,13 @@ Playground for Pi.
 - [Raspberry subreddit](https://www.reddit.com/r/raspberry_pi/)
 - [Homelab subreddit](https://www.reddit.com/r/homelab/)
 - [Pi-Apps](https://pi-apps.io)
+- [Self.st Apps](https://selfh.st/apps/) A collection of 1,200+ self-hosted applications and alternatives
 
 ## Video
 
 - [Jeff Geerling](https://www.youtube.com/@JeffGeerling) is an amazing guy, he is really active in the Raspberry Pi Community. Definitely recommend checking [his website](https://www.jeffgeerling.com) and [GitHub](https://github.com/geerlingguy) as well.
 - [Mischa van den Burg](https://www.youtube.com/@mischavandenburg) follow him if you want to learn something about docker orchestration and deployment
+
+## Newsletter
+
+- [Self.st](https://selfh.st) Weekly self-hosted content and news delivered straight to your inbox
