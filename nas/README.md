@@ -264,5 +264,6 @@ sudo systemctl start wsdd
 
 - Use [Infuse app](https://firecore.com/infuse) on Apple TV (or any other device) for the best content viewing experience. Highly recommended — it’s excellent.
 - Set up [Tailscale VPN](https://tailscale.com) to make your Pi an exit node. Even on the free tier, you can access it from anywhere or proxy into your homelab network. It also runs on Apple TV and has a simple GUI.
+- Send files via [LocalSend](https://localsend.org/?ref=selfh.st) between Pi Desktop and macOS/iPhone/Linux/Windows.
 
 
