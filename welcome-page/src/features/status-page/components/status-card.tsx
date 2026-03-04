@@ -1,10 +1,10 @@
 import { useStatusPage, type StatusComponent, type Incident } from '../hooks/use-status-page'
 import { getStatusConfig } from '../status-config'
-import { useConfig } from '../../../app/config/config-provider'
-import { formatTime } from '../../../app/config/format-date'
+import { formatRelativeTime } from '../../../app/config/format-date'
 import { Tooltip } from '../../../app/components/tooltip'
 import type { Service } from '../services'
 import { DragHandle } from './drag-handle'
+import { useRef, useCallback, useState, useEffect } from 'react'
 
 function SkeletonCard() {
   return (
@@ -94,8 +94,30 @@ export interface StatusCardProps {
 export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
   const { name, url, hiddenComponents = [] } = service
   const iconSlug = service.icon ?? name.toLowerCase()
-  const config = useConfig()
   const { data, loading, fetching, error, lastUpdated, refresh } = useStatusPage(service)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [, setTick] = useState(0)
+
+  useEffect(() => {
+    const timer = setInterval(() => setTick(t => t + 1), 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  const handleRefresh = useCallback(() => {
+    setIsRefreshing(true)
+    refresh()
+    // Minimum 1s animation to see it happening
+    setTimeout(() => setIsRefreshing(false), 1000)
+  }, [refresh])
+
+  const lastRefreshTime = useRef<number>(0)
+  const handleMouseEnter = useCallback(() => {
+    const now = Date.now()
+    if (now - lastRefreshTime.current >= 10000) {
+      lastRefreshTime.current = now
+      handleRefresh()
+    }
+  }, [handleRefresh])
 
   if (loading && !data) return <SkeletonCard />
   if (error && !data)
@@ -114,110 +136,127 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
   )
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-[var(--border)] rounded-t-xl bg-[var(--card)]">
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2.5 group min-w-0 flex-1"
-          title={`Open ${name} status page`}
+    <div
+      onMouseEnter={handleMouseEnter}
+      className={`rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in group/card transition-all duration-300 relative ${
+        fetching || isRefreshing ? 'animate-loading-border border-transparent' : ''
+      }`}
+    >
+      <div className="flex flex-col h-full bg-[var(--card)] rounded-[11px] m-[1.5px] relative z-10">
+        {/* Header */}
+        <div
+          className={`flex items-center gap-3 px-6 py-4 border-b border-[var(--border)] bg-[var(--card)] transition-colors ${fetching || isRefreshing ? 'bg-blue-500/5' : ''}`}
         >
-          <img
-            src={`/icons/services/${iconSlug}.svg`}
-            width={20}
-            height={20}
-            alt=""
-            className="shrink-0"
-          />
-          <Tooltip content={name} className="min-w-0" showOnlyOnOverflow>
-            <span className="text-sm font-semibold tracking-widest text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
-              {name}
-            </span>
-          </Tooltip>
-          <img
-            src="/icons/ui/external-link.svg"
-            alt=""
-            className="w-[11px] h-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0 opacity-50 invert"
-          />
-        </a>
-        <div className="shrink-0 relative flex items-center justify-center overflow-visible">
-          <StatusBadge indicator={status.indicator} description={status.description} />
-          {dragHandleProps && (
-            <div className="absolute inset-0 flex items-center justify-end bg-[var(--card)] rounded-full z-20 pointer-events-none opacity-0 group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-opacity duration-200 overflow-visible">
-              <DragHandle {...dragHandleProps} isAbsolute={false} placement="bottom" />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Active Incidents */}
-      {activeIncidents.length > 0 && (
-        <div className="px-6 py-3 border-b border-[var(--border)] bg-red-950/20">
-          {activeIncidents.map((incident: Incident) => (
-            <div key={incident.id} className="flex flex-col gap-0.5">
-              <span className="text-xs text-red-400 font-medium">⚡ {incident.name}</span>
-              {incident.incident_updates?.[0]?.body && (
-                <span className="text-xs text-[var(--text-dim)] line-clamp-2">
-                  {incident.incident_updates[0].body}
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Components */}
-      <div className="flex flex-col divide-y divide-[var(--border)] flex-1 px-6">
-        {visibleComponents.map((component: StatusComponent) => {
-          const cfg = getStatusConfig(component.status)
-          const label = cfg.label === 'Operational' ? 'ok' : cfg.label
-          return (
-            <div
-              key={component.id}
-              className="flex items-center justify-between py-2.5 gap-3 min-w-0"
-            >
-              <Tooltip
-                content={component.name}
-                className="flex-1 min-w-0"
-                placement="bottom"
-                showOnlyOnOverflow
-              >
-                <span className="text-xs text-[var(--text-dim)] truncate w-full text-left">
-                  {component.name}
-                </span>
-              </Tooltip>
-              <span
-                className="text-xs font-medium shrink-0 flex items-center gap-1.5"
-                style={{ color: cfg.color }}
-              >
-                <StatusDot status={component.status} />
-                {label}
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2.5 group min-w-0 flex-1"
+            title={`Open ${name} status page`}
+          >
+            <img
+              src={`/icons/services/${iconSlug}.svg`}
+              width={20}
+              height={20}
+              alt=""
+              className="shrink-0"
+            />
+            <Tooltip content={name} className="min-w-0" showOnlyOnOverflow>
+              <span className="text-sm font-semibold tracking-widest text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
+                {name}
               </span>
+            </Tooltip>
+            <img
+              src="/icons/ui/external-link.svg"
+              alt=""
+              className="w-[11px] h-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0 opacity-50 invert"
+            />
+          </a>
+          <div className="shrink-0 relative flex items-center justify-center overflow-visible">
+            <div className="group-hover/card:invisible transition-opacity duration-200">
+              <StatusBadge indicator={status.indicator} description={status.description} />
             </div>
-          )
-        })}
-      </div>
+            {dragHandleProps && (
+              <div className="absolute inset-0 flex items-center justify-end z-20 pointer-events-none opacity-0 group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-opacity duration-200 overflow-visible">
+                <DragHandle {...dragHandleProps} isAbsolute={false} placement="bottom" />
+              </div>
+            )}
+          </div>
+        </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
-        <span className="text-[10px] text-slate-500 py-3 italic">
-          {lastUpdated ? `updated ${formatTime(lastUpdated, config)}` : 'fetching...'}
-        </span>
-        <button
-          onClick={refresh}
-          className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
-          title="Refresh now"
-          aria-label="Refresh"
-        >
-          <img
-            src="/icons/ui/refresh.svg"
-            alt=""
-            className={`w-[11px] h-[11px] opacity-40 invert ${fetching ? 'animate-spin' : ''}`}
-          />
-          refresh
-        </button>
+        {/* Active Incidents */}
+        {activeIncidents.length > 0 && (
+          <div className="px-6 py-3 border-b border-[var(--border)] bg-red-950/20">
+            {activeIncidents.map((incident: Incident) => (
+              <div key={incident.id} className="flex flex-col gap-0.5">
+                <span className="text-xs text-red-400 font-medium">⚡ {incident.name}</span>
+                {incident.incident_updates?.[0]?.body && (
+                  <span className="text-xs text-[var(--text-dim)] line-clamp-2">
+                    {incident.incident_updates[0].body}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Components */}
+        <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
+          {visibleComponents.map((component: StatusComponent) => {
+            const cfg = getStatusConfig(component.status)
+            const label = cfg.label === 'Operational' ? 'ok' : cfg.label
+            return (
+              <div
+                key={component.id}
+                className="flex items-center justify-between py-2 px-6 hover:bg-white/5 group/row transition-colors gap-3 min-w-0"
+              >
+                <Tooltip
+                  content={component.name}
+                  className="flex-1 min-w-0"
+                  placement="bottom"
+                  showOnlyOnOverflow
+                >
+                  <span className="text-xs text-[var(--text-dim)] group-hover/row:text-slate-200 truncate w-full text-left transition-colors">
+                    {component.name}
+                  </span>
+                </Tooltip>
+                <span
+                  className="text-xs font-medium shrink-0 flex items-center gap-1.5 group-hover/row:brightness-125 transition-all"
+                  style={{ color: cfg.color }}
+                >
+                  <StatusDot status={component.status} />
+                  {label}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
+          <div className="flex items-center h-9">
+            {lastUpdated ? (
+              <span className="text-[10px] text-slate-500 italic">
+                checked {formatRelativeTime(lastUpdated)}
+              </span>
+            ) : (
+              <span className="text-[10px] text-slate-500 italic">fetching...</span>
+            )}
+          </div>
+          <button
+            onClick={handleRefresh}
+            className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
+            title="Refresh now"
+            aria-label="Refresh"
+          >
+            <img
+              src="/icons/ui/refresh.svg"
+              alt=""
+              className={`w-[11px] h-[11px] opacity-40 invert ${fetching || isRefreshing ? 'animate-spin' : ''}`}
+            />
+            refresh
+          </button>
+        </div>
       </div>
     </div>
   )

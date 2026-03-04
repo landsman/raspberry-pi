@@ -1,8 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { Service } from '../services'
 
-const REFRESH_INTERVAL = 60_000 // ms
-
 export interface StatusComponent {
   id: string
   name: string
@@ -269,9 +267,9 @@ export function useStatusPage(service: Service): UseStatusPageResult {
   const { data, isLoading, isFetching, error, dataUpdatedAt, refetch } = useQuery({
     queryKey: ['status', service.url],
     queryFn: () => fetchStatusPage(service),
-    refetchInterval: REFRESH_INTERVAL,
-    refetchOnWindowFocus: true,
-    staleTime: REFRESH_INTERVAL / 2,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
   })
 
   return {

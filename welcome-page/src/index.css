@@ -114,3 +114,54 @@ body::before {
 .fade-in {
   animation: fadeIn 0.35s ease-out forwards;
 }
+
+
+/* Loading border animation */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-loading-border {
+  position: relative;
+  /* Clip the loading animation but allow children tooltips to overflow via outer container logic */
+  border-radius: 12px;
+}
+
+.animate-loading-border::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    transparent 0deg,
+    transparent 300deg,
+    var(--blue) 360deg
+  );
+  animation: rotate 2s linear infinite;
+  z-index: 0;
+  /* Use clip-path to avoid overflow:hidden clipping child tooltips */
+  clip-path: inset(0 round 12px);
+}
+
+.animate-loading-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--blue);
+  border-radius: inherit;
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.animate-loading-border > * {
+  position: relative;
+  z-index: 1;
+}
