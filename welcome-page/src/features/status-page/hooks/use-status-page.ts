@@ -44,7 +44,7 @@ async function fetchAtlassian(baseUrl: string): Promise<StatusPageData> {
   const res = await fetch(`${baseUrl}/api/v2/summary.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const data = (await res.json()) as StatusPageData
-  const description = data.status.indicator === 'none' ? 'All good' : data.status.description
+  const description = data.status.indicator === 'none' ? 'ok' : data.status.description
   return { ...data, status: { ...data.status, description } }
 }
 
@@ -112,7 +112,7 @@ async function fetchStatusio(statusioId: string): Promise<StatusPageData> {
   return {
     status: {
       indicator,
-      description: indicator === 'none' ? 'All good' : status_overall.status,
+      description: indicator === 'none' ? 'ok' : status_overall.status,
     },
     components: components.map(c => ({
       id: c.id,

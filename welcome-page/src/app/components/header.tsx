@@ -23,8 +23,8 @@ export function Header({ onSettingsClick }: HeaderProps) {
       </div>
       <div className="flex items-start gap-3">
         <div className="text-right">
-          <div className="text-[10px] text-[var(--text-muted)] tracking-wide">{dateStr}</div>
-          <div className="text-[10px] text-[var(--text-muted)] mt-0.5">{config.timezone}</div>
+          <div className="text-xs text-[var(--text-dim)] tracking-wide">{dateStr}</div>
+          <div className="text-[11px] text-[var(--text-muted)] mt-0.5">{config.timezone}</div>
         </div>
         <button
           onClick={onSettingsClick}

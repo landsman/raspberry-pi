@@ -4,45 +4,6 @@ import { useConfig } from '../../../app/config/config-provider'
 import { formatTime } from '../../../app/config/format-date'
 import type { Service } from '../services'
 
-function ServiceIcon({ name }: { name: string }) {
-  if (name === 'Claude') {
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="shrink-0">
-        <path
-          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
-          fill="#D97706"
-          opacity="0.2"
-        />
-        <path d="M8 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z" fill="#D97706" />
-      </svg>
-    )
-  }
-  if (name === 'GitHub') {
-    return (
-      <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        className="shrink-0 text-slate-300"
-      >
-        <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z" />
-      </svg>
-    )
-  }
-  if (name === 'GitLab') {
-    return (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="shrink-0">
-        <path
-          d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"
-          fill="#FC6D26"
-        />
-      </svg>
-    )
-  }
-  return null
-}
-
 function SkeletonCard() {
   return (
     <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 flex flex-col gap-4">
@@ -62,14 +23,22 @@ function SkeletonCard() {
   )
 }
 
-function ErrorCard({ name, error, onRetry }: { name: string; error: string; onRetry: () => void }) {
+function ErrorCard({
+  name,
+  iconSlug,
+  error,
+  onRetry,
+}: {
+  name: string
+  iconSlug: string
+  error: string
+  onRetry: () => void
+}) {
   return (
     <div className="rounded-xl border border-red-900/40 bg-[var(--card)] p-6 flex flex-col gap-4 fade-in">
       <div className="flex items-center gap-3">
-        <ServiceIcon name={name} />
-        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">
-          {name}
-        </span>
+        <img src={`/icons/${iconSlug}.svg`} width={20} height={20} alt="" className="shrink-0" />
+        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">{name}</span>
       </div>
       <div className="flex flex-col items-center gap-3 py-4">
         <span className="text-red-400 text-xs">⚠ fetch failed: {error}</span>
@@ -113,11 +82,12 @@ export interface StatusCardProps {
 
 export function StatusCard({ service }: StatusCardProps) {
   const { name, url } = service
+  const iconSlug = service.icon ?? name.toLowerCase()
   const config = useConfig()
   const { data, loading, error, lastUpdated, refresh } = useStatusPage(service)
 
   if (loading && !data) return <SkeletonCard />
-  if (error && !data) return <ErrorCard name={name} error={error} onRetry={refresh} />
+  if (error && !data) return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
   if (!data) return null
 
   const { status, components = [], incidents = [] } = data
@@ -132,18 +102,30 @@ export function StatusCard({ service }: StatusCardProps) {
     <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-[var(--border)]">
-        <ServiceIcon name={name} />
-        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">
-          {name}
-        </span>
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[var(--text-muted)] hover:text-[var(--text-dim)] transition-colors ml-1"
-          title="Open status page"
+          className="flex items-center gap-2.5 group min-w-0"
+          title={`Open ${name} status page`}
         >
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">
+          <img
+            src={`/icons/${iconSlug}.svg`}
+            width={20}
+            height={20}
+            alt=""
+            className="shrink-0"
+          />
+          <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors">
+            {name}
+          </span>
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 12 12"
+            fill="currentColor"
+            className="text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0"
+          >
             <path d="M3.5 3a.5.5 0 0 0 0 1H7.29L2.15 9.15a.5.5 0 1 0 .7.7L8 4.71V8.5a.5.5 0 0 0 1 0v-5a.5.5 0 0 0-.5-.5h-5z" />
           </svg>
         </a>
@@ -172,6 +154,7 @@ export function StatusCard({ service }: StatusCardProps) {
       <div className="flex flex-col divide-y divide-[var(--border)] flex-1 px-6">
         {visibleComponents.map((component: StatusComponent) => {
           const cfg = getStatusConfig(component.status)
+          const label = cfg.label === 'Operational' ? 'ok' : cfg.label
           return (
             <div key={component.id} className="flex items-center justify-between py-2.5 gap-4">
               <span className="text-xs text-[var(--text-dim)] truncate">{component.name}</span>
@@ -180,7 +163,7 @@ export function StatusCard({ service }: StatusCardProps) {
                 style={{ color: cfg.color }}
               >
                 <StatusDot status={component.status} />
-                {cfg.label}
+                {label}
               </span>
             </div>
           )
@@ -188,19 +171,20 @@ export function StatusCard({ service }: StatusCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-6 py-3 border-t border-[var(--border)] mt-auto">
-        <span className="text-[10px] text-[var(--text-muted)]">
+      <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto">
+        <span className="text-[11px] text-[var(--text-dim)] py-3">
           {lastUpdated ? `updated ${formatTime(lastUpdated, config)}` : 'fetching...'}
         </span>
         <button
           onClick={refresh}
-          className="text-[10px] text-[var(--text-muted)] hover:text-[var(--text-dim)] transition-colors"
+          className="flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
           title="Refresh now"
           aria-label="Refresh"
         >
-          <svg width="10" height="10" viewBox="0 0 16 16" fill="currentColor">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
             <path d="M13.65 2.35A8 8 0 1 0 15 8h-2a6 6 0 1 1-1.06-3.36L10 7h5V2l-1.35.35z" />
           </svg>
+          refresh
         </button>
       </div>
     </div>
