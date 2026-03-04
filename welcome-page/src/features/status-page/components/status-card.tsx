@@ -133,7 +133,7 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
             alt=""
             className="shrink-0"
           />
-          <Tooltip content={name} className="flex-1 min-w-0" showOnlyOnOverflow>
+          <Tooltip content={name} className="min-w-0" showOnlyOnOverflow>
             <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
               {name}
             </span>
@@ -216,7 +216,7 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
           <img
             src="/icons/ui/refresh.svg"
             alt=""
-            className={`w-[10px] h-[10px] opacity-30 invert ${fetching ? 'animate-spin' : ''}`}
+            className={`w-[11px] h-[11px] opacity-40 invert ${fetching ? 'animate-spin' : ''}`}
           />
           refresh
         </button>
