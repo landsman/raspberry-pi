@@ -156,4 +156,11 @@ export const SERVICES: Service[] = [
     section: SERVICE_SECTION.HOMELAB,
     keywords: ['git'],
   },
+  {
+    name: 'Music',
+    url: 'https://music.insuit.cz',
+    type: SERVICE_TYPE.SIMPLE_CHECK,
+    section: SERVICE_SECTION.HOMELAB,
+    keywords: ['spotify', 'lastfm', 'mp3'],
+  },
 ]
