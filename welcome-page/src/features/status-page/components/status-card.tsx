@@ -88,12 +88,13 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
 
   const lastRefreshTime = useRef<number>(0)
   const handleMouseEnter = useCallback(() => {
+    if (service.type === 'redirect') return
     const now = Date.now()
     if (now - lastRefreshTime.current >= 10000) {
       lastRefreshTime.current = now
       handleRefresh()
     }
-  }, [handleRefresh])
+  }, [handleRefresh, service.type])
 
   const status = data?.status
   const components = data?.components ?? []
@@ -190,9 +191,14 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
                 <span className="text-xs text-[var(--text-dim)]">
                   API is not accessible for this service.
                 </span>
-                <span className="text-xs text-[var(--text-muted)]">
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-[var(--text-muted)] hover:text-slate-200 underline underline-offset-4 decoration-slate-500/30 hover:decoration-slate-200 transition-all"
+                >
                   Please visit the status page directly.
-                </span>
+                </a>
               </div>
             )}
             {visibleComponents.map((component: StatusComponent) => {
@@ -227,30 +233,32 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
-          <div className="flex items-center h-9">
-            {lastUpdated ? (
-              <span className="text-[10px] text-slate-500 italic">
-                checked {formatRelativeTime(lastUpdated)}
-              </span>
-            ) : (
-              <span className="text-[10px] text-slate-500 italic">fetching...</span>
-            )}
+        {service.type !== 'redirect' && (
+          <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
+            <div className="flex items-center h-9">
+              {lastUpdated ? (
+                <span className="text-[10px] text-slate-500 italic">
+                  checked {formatRelativeTime(lastUpdated)}
+                </span>
+              ) : (
+                <span className="text-[10px] text-slate-500 italic">fetching...</span>
+              )}
+            </div>
+            <button
+              onClick={handleRefresh}
+              className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
+              title="Refresh now"
+              aria-label="Refresh"
+            >
+              <img
+                src="/icons/ui/refresh.svg"
+                alt=""
+                className={`w-[11px] h-[11px] opacity-40 invert ${fetching || isRefreshing ? 'animate-spin' : ''}`}
+              />
+              refresh
+            </button>
           </div>
-          <button
-            onClick={handleRefresh}
-            className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
-            title="Refresh now"
-            aria-label="Refresh"
-          >
-            <img
-              src="/icons/ui/refresh.svg"
-              alt=""
-              className={`w-[11px] h-[11px] opacity-40 invert ${fetching || isRefreshing ? 'animate-spin' : ''}`}
-            />
-            refresh
-          </button>
-        </div>
+        )}
       </div>
     </div>
   )

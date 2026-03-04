@@ -124,4 +124,11 @@ export const SERVICES: Service[] = [
     icon: 'tailscale',
     keywords: ['vpn', 'network', 'mesh'],
   },
+  {
+    name: 'AWS',
+    url: 'https://health.aws.amazon.com/health/status',
+    type: 'redirect',
+    icon: 'aws',
+    keywords: ['cloud', 'aws', 'amazon', 'infrastructure'],
+  },
 ]
