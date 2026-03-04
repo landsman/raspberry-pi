@@ -149,4 +149,11 @@ export const SERVICES: Service[] = [
     section: SERVICE_SECTION.HOMELAB,
     keywords: ['read', 'later', 'bookmarks', 'readeck'],
   },
+  {
+    name: 'Forgejo',
+    url: 'https://git.insuit.cz',
+    type: SERVICE_TYPE.SIMPLE_CHECK,
+    section: SERVICE_SECTION.HOMELAB,
+    keywords: ['git'],
+  },
 ]
