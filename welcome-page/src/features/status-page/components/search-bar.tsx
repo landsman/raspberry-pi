@@ -7,15 +7,11 @@ export function SearchBar({ query, onChange }: SearchBarProps) {
   return (
     <div className="flex justify-end">
       <div className="relative w-64">
-        <svg
-          width="13"
-          height="13"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"
-        >
-          <path d="M11.74 10.33a6 6 0 1 0-1.41 1.41l3.47 3.47 1.41-1.41-3.47-3.47zm-5.74.67a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
-        </svg>
+        <img
+          src="/icons/ui/search.svg"
+          alt=""
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[var(--text-muted)] pointer-events-none opacity-50 invert"
+        />
         <input
           type="search"
           value={query}

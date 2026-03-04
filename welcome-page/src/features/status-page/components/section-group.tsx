@@ -97,16 +97,11 @@ export function SectionGroup({
         }
         className="flex items-center gap-2 w-full group -mx-2 px-2 py-1.5 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
       >
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="currentColor"
-          aria-hidden="true"
-          className={`text-[var(--text-muted)] transition-transform duration-200 shrink-0 ${isCollapsed ? '-rotate-90' : ''}`}
-        >
-          <path d="M6 8.5L1 3.5h10L6 8.5z" />
-        </svg>
+        <img
+          src="/icons/ui/chevron-down.svg"
+          alt=""
+          className={`w-3 h-3 transition-transform duration-200 shrink-0 opacity-50 invert ${isCollapsed ? '-rotate-90' : ''}`}
+        />
         <span className="text-xs font-semibold tracking-widest uppercase text-[var(--text-dim)] group-hover:text-slate-300 transition-colors">
           {SECTION_LABELS[section]}
         </span>

@@ -38,7 +38,13 @@ function ErrorCard({
   return (
     <div className="rounded-xl border border-red-900/40 bg-[var(--card)] p-6 flex flex-col gap-4 fade-in">
       <div className="flex items-center gap-3">
-        <img src={`/icons/${iconSlug}.svg`} width={20} height={20} alt="" className="shrink-0" />
+        <img
+          src={`/icons/services/${iconSlug}.svg`}
+          width={20}
+          height={20}
+          alt=""
+          className="shrink-0"
+        />
         <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">
           {name}
         </span>
@@ -113,19 +119,21 @@ export function StatusCard({ service }: StatusCardProps) {
           className="flex items-center gap-2.5 group min-w-0"
           title={`Open ${name} status page`}
         >
-          <img src={`/icons/${iconSlug}.svg`} width={20} height={20} alt="" className="shrink-0" />
+          <img
+            src={`/icons/services/${iconSlug}.svg`}
+            width={20}
+            height={20}
+            alt=""
+            className="shrink-0"
+          />
           <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors">
             {name}
           </span>
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 12 12"
-            fill="currentColor"
-            className="text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0"
-          >
-            <path d="M3.5 3a.5.5 0 0 0 0 1H7.29L2.15 9.15a.5.5 0 1 0 .7.7L8 4.71V8.5a.5.5 0 0 0 1 0v-5a.5.5 0 0 0-.5-.5h-5z" />
-          </svg>
+          <img
+            src="/icons/ui/external-link.svg"
+            alt=""
+            className="w-[11px] h-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0 opacity-50 invert"
+          />
         </a>
         <div className="ml-auto">
           <StatusBadge indicator={status.indicator} description={status.description} />
@@ -181,15 +189,11 @@ export function StatusCard({ service }: StatusCardProps) {
           title="Refresh now"
           aria-label="Refresh"
         >
-          <svg
-            width="11"
-            height="11"
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className={fetching ? 'animate-spin' : ''}
-          >
-            <path d="M13.65 2.35A8 8 0 1 0 15 8h-2a6 6 0 1 1-1.06-3.36L10 7h5V2l-1.35.35z" />
-          </svg>
+          <img
+            src="/icons/ui/refresh.svg"
+            alt=""
+            className={`w-[11px] h-[11px] opacity-50 invert ${fetching ? 'animate-spin' : ''}`}
+          />
           refresh
         </button>
       </div>
