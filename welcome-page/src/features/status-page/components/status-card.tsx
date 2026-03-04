@@ -22,38 +22,17 @@ function RowSkeleton() {
   )
 }
 
-function ErrorCard({
-  name,
-  iconSlug,
-  error,
-  onRetry,
-}: {
-  name: string
-  iconSlug: string
-  error: string
-  onRetry: () => void
-}) {
+function ErrorCard({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
-    <div className="rounded-xl border border-red-900/40 bg-[var(--card)] p-6 flex flex-col gap-4 fade-in">
-      <div className="flex items-center gap-3">
-        <img
-          src={`/icons/services/${iconSlug}.svg`}
-          width={20}
-          height={20}
-          alt=""
-          className="shrink-0"
-        />
-        <span className="text-sm font-semibold tracking-widest text-slate-300">{name}</span>
-      </div>
-      <div className="flex flex-col items-center gap-3 py-4">
-        <span className="text-red-400 text-xs">⚠ fetch failed: {error}</span>
-        <button
-          onClick={onRetry}
-          className="text-xs text-[var(--text-dim)] hover:text-slate-200 border border-[var(--border)] hover:border-[var(--dim)] px-3 py-1.5 rounded transition-colors"
-        >
-          retry
-        </button>
-      </div>
+    <div className="flex flex-col items-center justify-center py-8 px-6 text-center gap-3 fade-in">
+      <span className="text-red-400 text-xs font-medium">⚠ fetch failed</span>
+      <span className="text-[10px] text-[var(--text-muted)] line-clamp-2 max-w-[200px]">{error}</span>
+      <button
+        onClick={onRetry}
+        className="mt-1 text-[10px] text-[var(--text-dim)] hover:text-slate-200 border border-[var(--border)] hover:border-[var(--dim)] px-3 py-1.5 rounded transition-colors"
+      >
+        retry
+      </button>
     </div>
   )
 }
@@ -116,8 +95,6 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
     }
   }, [handleRefresh])
 
-  if (error && !data && !loading)
-    return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
 
   const status = data?.status
   const components = data?.components ?? []
@@ -205,6 +182,8 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
         {/* Components */}
         {loading && !data ? (
           <RowSkeleton />
+        ) : error && !data ? (
+          <ErrorCard error={error} onRetry={refresh} />
         ) : (
           <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
             {service.type === 'redirect' && (
