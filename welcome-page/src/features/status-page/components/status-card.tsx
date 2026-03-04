@@ -130,9 +130,11 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
             alt=""
             className="shrink-0"
           />
-          <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors truncate">
-            {name}
-          </span>
+          <Tooltip content={name} className="flex-1 min-w-0" showOnlyOnOverflow>
+            <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
+              {name}
+            </span>
+          </Tooltip>
           <img
             src="/icons/ui/external-link.svg"
             alt=""
@@ -175,7 +177,12 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
               key={component.id}
               className="flex items-center justify-between py-2.5 gap-3 min-w-0"
             >
-              <Tooltip content={component.name} className="flex-1 min-w-0" placement="bottom">
+              <Tooltip
+                content={component.name}
+                className="flex-1 min-w-0"
+                placement="bottom"
+                showOnlyOnOverflow
+              >
                 <span className="text-xs text-[var(--text-dim)] truncate w-full text-left">
                   {component.name}
                 </span>
