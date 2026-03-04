@@ -61,7 +61,12 @@ export function SectionGroup({
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }))
 
   const visible = useMemo(() => {
-    return query ? localServices.filter(s => s.name.toLowerCase().includes(query)) : localServices
+    if (!query) return localServices
+    return localServices.filter(
+      s =>
+        s.name.toLowerCase().includes(query) ||
+        s.keywords?.some(k => k.toLowerCase().includes(query))
+    )
   }, [localServices, query])
 
   function handleDragStart({ active }: DragStartEvent) {
