@@ -8,5 +8,5 @@ export default defineConfig({
     //port: 5173,
     //strictPort: true,
     //allowedHosts: ['t1.insuit.cz', 'welcome.insuit.cz'],
-  }
+  },
 })

@@ -214,7 +214,8 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
               {service.type === SERVICE_TYPE.SIMPLE_CHECK && (
                 <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-2">
                   <span className="text-xs text-[var(--text-dim)]">
-                    Service is {status?.indicator === 'none' ? status.description : 'not responding'}.
+                    Service is{' '}
+                    {status?.indicator === 'none' ? status.description : 'not responding'}.
                   </span>
                   {data?.version ? (
                     <span className="text-[10px] text-[var(--text-muted)] font-mono">

@@ -24,7 +24,7 @@ export async function fetchSimpleCheck(url: string, versionPath?: string): Promi
         version,
       }
     }
-    
+
     // If response is not OK (e.g. 404, 500, etc.)
     throw new Error(`HTTP ${response.status}`)
   } catch (err) {
