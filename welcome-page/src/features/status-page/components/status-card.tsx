@@ -118,7 +118,6 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
 
   if (error && !data && !loading)
     return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
-  if (!data && !loading) return null
 
   const status = data?.status
   const components = data?.components ?? []
