@@ -27,7 +27,7 @@ async function fetchStatusPage(service: Service): Promise<StatusPageData> {
       .with({ type: SERVICE_TYPE.INSTATUS }, s => fetchInstatus(s.url))
       .with({ type: SERVICE_TYPE.GOOGLE_WORKSPACE }, () => fetchGoogleWorkspace())
       .with({ type: SERVICE_TYPE.INCIDENTIO }, s => fetchIncidentio(s.url))
-      .with({ type: SERVICE_TYPE.SIMPLE_CHECK }, s => fetchSimpleCheck(s.healthCheckUrl ?? s.url))
+      .with({ type: SERVICE_TYPE.SIMPLE_CHECK }, s => fetchSimpleCheck(s.healthCheckUrl ?? s.url, s.versionPath))
       .with({ type: SERVICE_TYPE.REDIRECT }, () => ({
         status: { indicator: 'none', description: '?' },
         components: [],

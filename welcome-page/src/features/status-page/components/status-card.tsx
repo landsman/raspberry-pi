@@ -145,6 +145,11 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
                 {name}
               </span>
             </Tooltip>
+            {data?.version && (
+              <span className="text-[10px] text-[var(--text-muted)] font-mono shrink-0">
+                v{data.version}
+              </span>
+            )}
             <img
               src="/icons/ui/external-link.svg"
               alt=""
@@ -211,6 +216,17 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
                   <span className="text-xs text-[var(--text-dim)]">
                     Service is {status?.indicator === 'none' ? status.description : 'not responding'}.
                   </span>
+                  {data?.version ? (
+                    <span className="text-[10px] text-[var(--text-muted)] font-mono">
+                      version v{data.version}
+                    </span>
+                  ) : (
+                    service.versionPath && (
+                      <span className="text-[10px] text-red-400/50 font-mono italic">
+                        version unavailable (CORS)
+                      </span>
+                    )
+                  )}
                   <a
                     href={url}
                     target="_blank"

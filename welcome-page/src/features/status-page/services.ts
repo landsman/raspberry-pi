@@ -143,12 +143,10 @@ export const SERVICES: Service[] = [
     keywords: ['cloud', 'aws', 'amazon', 'infrastructure'],
   },
   {
-    name: 'Insuit Read',
+    name: 'Readeck',
     url: 'https://read.insuit.cz',
-    healthCheckUrl: 'https://read.insuit.cz/api/info',
     type: SERVICE_TYPE.SIMPLE_CHECK,
     section: SERVICE_SECTION.HOMELAB,
-    versionPath: 'version',
     keywords: ['read', 'later', 'bookmarks', 'readeck'],
   },
 ]
