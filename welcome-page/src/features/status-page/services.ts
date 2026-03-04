@@ -1,9 +1,11 @@
-export type ServiceType = 'atlassian' | 'statusio'
+export type ServiceType = 'atlassian' | 'statusio' | 'instatus' | 'google-workspace'
+export type ServiceSection = 'external' | 'homelab'
 
 export interface Service {
   name: string
   url: string
   type: ServiceType
+  section?: ServiceSection
   statusioId?: string
   icon?: string // filename stem in /icons/, defaults to name.toLowerCase()
 }
@@ -30,4 +32,24 @@ export const SERVICES: Service[] = [
     statusioId: '533c6539221ae15e3f000031',
   },
   { name: 'npm', url: 'https://status.npmjs.org', type: 'atlassian' },
+  { name: 'Maven', url: 'https://status.maven.org', type: 'atlassian' },
+  {
+    name: 'Perplexity',
+    url: 'https://status.perplexity.com',
+    type: 'instatus',
+  },
+  { name: 'Figma', url: 'https://status.figma.com', type: 'atlassian' },
+  { name: 'Toggl', url: 'https://status.toggl.com', type: 'atlassian' },
+  {
+    name: '37signals',
+    url: 'https://www.37status.com',
+    type: 'atlassian',
+    icon: '37signals',
+  },
+  {
+    name: 'Google Workspace',
+    url: 'https://www.google.com/appsstatus/dashboard/',
+    type: 'google-workspace',
+    icon: 'google-workspace',
+  },
 ]

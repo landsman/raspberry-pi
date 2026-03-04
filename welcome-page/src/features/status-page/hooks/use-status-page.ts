@@ -35,6 +35,7 @@ export interface StatusPageData {
 export interface UseStatusPageResult {
   data: StatusPageData | null
   loading: boolean
+  fetching: boolean
   error: string | null
   lastUpdated: Date | null
   refresh: () => void
@@ -125,15 +126,147 @@ async function fetchStatusio(statusioId: string): Promise<StatusPageData> {
   }
 }
 
+interface InstatusPageResponse {
+  page: { name: string; url: string; status: string }
+}
+
+interface InstatusComponentsResponse {
+  components: Array<{
+    id: string
+    name: string
+    status: string
+    group: string | null
+  }>
+}
+
+function instatusPageStatusToIndicator(status: string): string {
+  if (status === 'UP') return 'none'
+  if (status === 'UNDERMAINTENANCE') return 'maintenance'
+  return 'minor'
+}
+
+function instatusComponentStatus(status: string): string {
+  switch (status) {
+    case 'OPERATIONAL':
+      return 'operational'
+    case 'DEGRADED':
+      return 'degraded_performance'
+    case 'PARTIALOUTAGE':
+      return 'partial_outage'
+    case 'MAJOROUTAGE':
+      return 'major_outage'
+    case 'UNDERMAINTENANCE':
+      return 'under_maintenance'
+    default:
+      return 'operational'
+  }
+}
+
+async function fetchInstatus(baseUrl: string): Promise<StatusPageData> {
+  const [summaryRes, componentsRes] = await Promise.all([
+    fetch(`${baseUrl}/summary.json`, { cache: 'no-store' }),
+    fetch(`${baseUrl}/components.json`, { cache: 'no-store' }),
+  ])
+  if (!summaryRes.ok) throw new Error(`HTTP ${summaryRes.status}`)
+  const summary = (await summaryRes.json()) as InstatusPageResponse
+  const indicator = instatusPageStatusToIndicator(summary.page.status)
+
+  let components: StatusComponent[] = []
+  if (componentsRes.ok) {
+    const data = (await componentsRes.json()) as InstatusComponentsResponse
+    components = data.components.map(c => ({
+      id: c.id,
+      name: c.name,
+      status: instatusComponentStatus(c.status),
+      group: false,
+      group_id: null,
+    }))
+  }
+
+  return {
+    status: { indicator, description: indicator === 'none' ? 'ok' : summary.page.status },
+    components,
+    incidents: [],
+  }
+}
+
+interface GoogleIncident {
+  id: string
+  begin: string
+  end?: string
+  external_desc: string
+  status_impact: string
+  affected_products: Array<{ title: string; id: string }>
+  updates: Array<{ when: string; text: string; status: string }>
+}
+
+const GOOGLE_WORKSPACE_KEY_PRODUCTS: Array<{ id: string; name: string }> = [
+  { id: 'prPt2Yra2CbGsbEm9cpC', name: 'Gmail' },
+  { id: 'VHNA7p3Z5p3iakj5sA8V', name: 'Google Drive' },
+  { id: 'wNHuVFtZEWU5Mmj2eRCK', name: 'Google Docs' },
+  { id: 'n5hVexuq1PM9onY9qrmo', name: 'Google Calendar' },
+  { id: 'Ht9Vx5PFzDPHYvrnrvSk', name: 'Google Chat' },
+  { id: 'sUH4BQXzYXma7NiS94Hi', name: 'Google Meet' },
+]
+
+async function fetchGoogleWorkspace(): Promise<StatusPageData> {
+  const res = await fetch('https://www.google.com/appsstatus/dashboard/incidents.json', {
+    cache: 'no-store',
+  })
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const incidents = (await res.json()) as GoogleIncident[]
+
+  const active = incidents.filter(i => !i.end)
+  const indicator =
+    active.length === 0
+      ? 'none'
+      : active.some(i => i.status_impact === 'SERVICE_OUTAGE')
+        ? 'major'
+        : 'minor'
+
+  const affectedIds = new Set<string>()
+  for (const inc of active) {
+    for (const p of inc.affected_products) {
+      affectedIds.add(p.id)
+    }
+  }
+
+  return {
+    status: {
+      indicator,
+      description: indicator === 'none' ? 'ok' : `${active.length} active incident(s)`,
+    },
+    components: GOOGLE_WORKSPACE_KEY_PRODUCTS.map(p => ({
+      id: p.id,
+      name: p.name,
+      status: affectedIds.has(p.id) ? 'degraded_performance' : 'operational',
+      group: false,
+      group_id: null,
+    })),
+    incidents: active.map(i => ({
+      id: i.id,
+      name: i.external_desc.split('\n')[0].replace(/\*\*/g, ''),
+      status: 'investigating',
+      incident_updates: i.updates.map(u => ({ body: u.text, created_at: u.when })),
+    })),
+  }
+}
+
 async function fetchStatusPage(service: Service): Promise<StatusPageData> {
   if (service.type === 'statusio' && service.statusioId) {
     return fetchStatusio(service.statusioId)
+  }
+  if (service.type === 'instatus') {
+    return fetchInstatus(service.url)
+  }
+  if (service.type === 'google-workspace') {
+    return fetchGoogleWorkspace()
   }
   return fetchAtlassian(service.url)
 }
 
 export function useStatusPage(service: Service): UseStatusPageResult {
-  const { data, isLoading, error, dataUpdatedAt, refetch } = useQuery({
+  const { data, isLoading, isFetching, error, dataUpdatedAt, refetch } = useQuery({
     queryKey: ['status', service.url],
     queryFn: () => fetchStatusPage(service),
     refetchInterval: REFRESH_INTERVAL,
@@ -144,6 +277,7 @@ export function useStatusPage(service: Service): UseStatusPageResult {
   return {
     data: data ?? null,
     loading: isLoading,
+    fetching: isFetching,
     error: error ? (error as Error).message : null,
     lastUpdated: dataUpdatedAt ? new Date(dataUpdatedAt) : null,
     refresh: () => void refetch(),

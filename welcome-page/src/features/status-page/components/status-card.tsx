@@ -38,7 +38,9 @@ function ErrorCard({
     <div className="rounded-xl border border-red-900/40 bg-[var(--card)] p-6 flex flex-col gap-4 fade-in">
       <div className="flex items-center gap-3">
         <img src={`/icons/${iconSlug}.svg`} width={20} height={20} alt="" className="shrink-0" />
-        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">{name}</span>
+        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">
+          {name}
+        </span>
       </div>
       <div className="flex flex-col items-center gap-3 py-4">
         <span className="text-red-400 text-xs">⚠ fetch failed: {error}</span>
@@ -84,10 +86,11 @@ export function StatusCard({ service }: StatusCardProps) {
   const { name, url } = service
   const iconSlug = service.icon ?? name.toLowerCase()
   const config = useConfig()
-  const { data, loading, error, lastUpdated, refresh } = useStatusPage(service)
+  const { data, loading, fetching, error, lastUpdated, refresh } = useStatusPage(service)
 
   if (loading && !data) return <SkeletonCard />
-  if (error && !data) return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
+  if (error && !data)
+    return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
   if (!data) return null
 
   const { status, components = [], incidents = [] } = data
@@ -109,13 +112,7 @@ export function StatusCard({ service }: StatusCardProps) {
           className="flex items-center gap-2.5 group min-w-0"
           title={`Open ${name} status page`}
         >
-          <img
-            src={`/icons/${iconSlug}.svg`}
-            width={20}
-            height={20}
-            alt=""
-            className="shrink-0"
-          />
+          <img src={`/icons/${iconSlug}.svg`} width={20} height={20} alt="" className="shrink-0" />
           <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors">
             {name}
           </span>
@@ -157,7 +154,9 @@ export function StatusCard({ service }: StatusCardProps) {
           const label = cfg.label === 'Operational' ? 'ok' : cfg.label
           return (
             <div key={component.id} className="flex items-center justify-between py-2.5 gap-4">
-              <span className="text-xs text-[var(--text-dim)] truncate">{component.name}</span>
+              <span className="text-xs text-[var(--text-dim)] truncate" title={component.name}>
+                {component.name}
+              </span>
               <span
                 className="text-xs font-medium shrink-0 flex items-center gap-1.5"
                 style={{ color: cfg.color }}
@@ -181,7 +180,13 @@ export function StatusCard({ service }: StatusCardProps) {
           title="Refresh now"
           aria-label="Refresh"
         >
-          <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            className={fetching ? 'animate-spin' : ''}
+          >
             <path d="M13.65 2.35A8 8 0 1 0 15 8h-2a6 6 0 1 1-1.06-3.36L10 7h5V2l-1.35.35z" />
           </svg>
           refresh

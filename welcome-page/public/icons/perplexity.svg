@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <rect width="20" height="20" fill="#1C1C1E"/>
+  <!-- outer diamond -->
+  <path fill="none" stroke="#20B2AA" stroke-width="1.4" d="M10 2 L18 10 L10 18 L2 10 Z"/>
+  <!-- inner cross -->
+  <path fill="none" stroke="#20B2AA" stroke-width="1.2" d="M10 5.5 L10 14.5 M5.5 10 L14.5 10"/>
+</svg>
