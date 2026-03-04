@@ -175,8 +175,10 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
               key={component.id}
               className="flex items-center justify-between py-2.5 gap-3 min-w-0"
             >
-              <Tooltip content={component.name} className="flex-1 min-w-0">
-                <span className="text-xs text-[var(--text-dim)] truncate">{component.name}</span>
+              <Tooltip content={component.name} className="flex-1 min-w-0" placement="bottom">
+                <span className="text-xs text-[var(--text-dim)] truncate w-full text-left">
+                  {component.name}
+                </span>
               </Tooltip>
               <span
                 className="text-xs font-medium shrink-0 flex items-center gap-1.5"
