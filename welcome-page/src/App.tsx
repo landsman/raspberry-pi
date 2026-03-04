@@ -9,10 +9,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="max-w-5xl mx-auto w-full flex-1 flex flex-col">
+      <div className="w-full flex-1 flex flex-col">
         <Header onSettingsClick={() => setSettingsOpen(true)} />
 
-        <main className="px-6 md:px-8 pb-12 flex-1">
+        <main className="px-6 md:px-10 xl:px-16 pb-12 flex-1">
           <StatusPage />
         </main>
 
