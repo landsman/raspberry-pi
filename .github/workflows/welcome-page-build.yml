@@ -1,6 +1,7 @@
 name: "welcome-page build"
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'welcome-page/**'
