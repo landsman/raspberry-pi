@@ -46,9 +46,7 @@ function ErrorCard({
           alt=""
           className="shrink-0"
         />
-        <span className="text-sm font-semibold tracking-widest uppercase text-slate-300">
-          {name}
-        </span>
+        <span className="text-sm font-semibold tracking-widest text-slate-300">{name}</span>
       </div>
       <div className="flex flex-col items-center gap-3 py-4">
         <span className="text-red-400 text-xs">⚠ fetch failed: {error}</span>
@@ -134,7 +132,7 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
             className="shrink-0"
           />
           <Tooltip content={name} className="min-w-0" showOnlyOnOverflow>
-            <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
+            <span className="text-sm font-semibold tracking-widest text-slate-300 group-hover/tooltip:text-slate-100 transition-colors truncate">
               {name}
             </span>
           </Tooltip>
