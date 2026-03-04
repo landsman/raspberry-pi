@@ -43,9 +43,8 @@ export interface UseStatusPageResult {
 async function fetchAtlassian(baseUrl: string): Promise<StatusPageData> {
   const res = await fetch(`${baseUrl}/api/v2/summary.json`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const data = await res.json() as StatusPageData
-  const description =
-    data.status.indicator === 'none' ? 'All good' : data.status.description
+  const data = (await res.json()) as StatusPageData
+  const description = data.status.indicator === 'none' ? 'All good' : data.status.description
   return { ...data, status: { ...data.status, description } }
 }
 
@@ -76,7 +75,11 @@ interface StatusioResponse {
       messages?: Array<{ details: string; created?: string }>
     }>
     maintenance: {
-      active: Array<{ _id: string; name: string; messages?: Array<{ details: string; created?: string }> }>
+      active: Array<{
+        _id: string
+        name: string
+        messages?: Array<{ details: string; created?: string }>
+      }>
     }
   }
 }
@@ -84,7 +87,7 @@ interface StatusioResponse {
 async function fetchStatusio(statusioId: string): Promise<StatusPageData> {
   const res = await fetch(`https://api.status.io/1.0/status/${statusioId}`, { cache: 'no-store' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  const data = await res.json() as StatusioResponse
+  const data = (await res.json()) as StatusioResponse
   const { status_overall, status: components, incidents, maintenance } = data.result
   const indicator = statusioCodeToIndicator(status_overall.status_code)
 
@@ -99,7 +102,10 @@ async function fetchStatusio(statusioId: string): Promise<StatusPageData> {
       id: m._id,
       name: m.name,
       status: 'maintenance',
-      incident_updates: m.messages?.map(msg => ({ body: msg.details, created_at: msg.created ?? '' })),
+      incident_updates: m.messages?.map(msg => ({
+        body: msg.details,
+        created_at: msg.created ?? '',
+      })),
     })),
   ]
 
