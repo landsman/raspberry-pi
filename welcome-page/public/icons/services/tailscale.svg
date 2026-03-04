@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+  <!-- Top row: grey circles -->
+  <circle cx="6" cy="6" r="2.5" fill="#64748b" />
+  <circle cx="12" cy="6" r="2.5" fill="#64748b" />
+  <circle cx="18" cy="6" r="2.5" fill="#64748b" />
+  
+  <!-- Middle row: white circles -->
+  <circle cx="6" cy="12" r="2.5" fill="#ffffff" />
+  <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
+  <circle cx="18" cy="12" r="2.5" fill="#ffffff" />
+  
+  <!-- Bottom row: grey, white, grey circles -->
+  <circle cx="6" cy="18" r="2.5" fill="#64748b" />
+  <circle cx="12" cy="18" r="2.5" fill="#ffffff" />
+  <circle cx="18" cy="18" r="2.5" fill="#64748b" />
+</svg>

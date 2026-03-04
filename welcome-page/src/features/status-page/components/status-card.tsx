@@ -6,19 +6,16 @@ import type { Service } from '../services'
 import { DragHandle } from './drag-handle'
 import { useRef, useCallback, useState, useEffect } from 'react'
 
-function SkeletonCard() {
+function RowSkeleton() {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-6 flex flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <div className="skeleton w-5 h-5 rounded-full" />
-        <div className="skeleton h-5 w-24 rounded" />
-        <div className="skeleton h-6 w-28 rounded-full ml-auto" />
-      </div>
-      <div className="skeleton h-px w-full rounded" />
+    <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
       {[1, 2, 3, 4].map(i => (
-        <div key={i} className="flex items-center justify-between">
-          <div className="skeleton h-3.5 rounded" style={{ width: `${45 + i * 12}%` }} />
-          <div className="skeleton h-3.5 w-16 rounded" />
+        <div key={i} className="flex items-center justify-between py-2.5 px-6 gap-3">
+          <div
+            className="skeleton h-3 rounded"
+            style={{ width: `${45 + (i % 3) * 15}%` }}
+          />
+          <div className="skeleton h-3 w-12 rounded" />
         </div>
       ))}
     </div>
@@ -119,12 +116,13 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
     }
   }, [handleRefresh])
 
-  if (loading && !data) return <SkeletonCard />
-  if (error && !data)
+  if (error && !data && !loading)
     return <ErrorCard name={name} iconSlug={iconSlug} error={error} onRetry={refresh} />
-  if (!data) return null
+  if (!data && !loading) return null
 
-  const { status, components = [], incidents = [] } = data
+  const status = data?.status
+  const components = data?.components ?? []
+  const incidents = data?.incidents ?? []
   const filteredComponents = components.filter(
     (c: StatusComponent) => !hiddenComponents.includes(c.name)
   )
@@ -175,7 +173,11 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
           </a>
           <div className="shrink-0 relative flex items-center justify-center overflow-visible">
             <div className="group-hover/card:invisible transition-opacity duration-200">
-              <StatusBadge indicator={status.indicator} description={status.description} />
+              {status ? (
+                <StatusBadge indicator={status.indicator} description={status.description} />
+              ) : (
+                <div className="skeleton h-6 w-24 rounded-full" />
+              )}
             </div>
             {dragHandleProps && (
               <div className="absolute inset-0 flex items-center justify-end z-20 pointer-events-none opacity-0 group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-opacity duration-200 overflow-visible">
@@ -202,36 +204,50 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
         )}
 
         {/* Components */}
-        <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
-          {visibleComponents.map((component: StatusComponent) => {
-            const cfg = getStatusConfig(component.status)
-            const label = cfg.label === 'Operational' ? 'ok' : cfg.label
-            return (
-              <div
-                key={component.id}
-                className="flex items-center justify-between py-2 px-6 hover:bg-white/5 group/row transition-colors gap-3 min-w-0"
-              >
-                <Tooltip
-                  content={component.name}
-                  className="flex-1 min-w-0"
-                  placement="bottom"
-                  showOnlyOnOverflow
-                >
-                  <span className="text-xs text-[var(--text-dim)] group-hover/row:text-slate-200 truncate w-full text-left transition-colors">
-                    {component.name}
-                  </span>
-                </Tooltip>
-                <span
-                  className="text-xs font-medium shrink-0 flex items-center gap-1.5 group-hover/row:brightness-125 transition-all"
-                  style={{ color: cfg.color }}
-                >
-                  <StatusDot status={component.status} />
-                  {label}
+        {loading && !data ? (
+          <RowSkeleton />
+        ) : (
+          <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
+            {service.type === 'redirect' && (
+              <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-2">
+                <span className="text-xs text-[var(--text-dim)]">
+                  API is not accessible for this service.
+                </span>
+                <span className="text-xs text-[var(--text-muted)]">
+                  Please visit the status page directly.
                 </span>
               </div>
-            )
-          })}
-        </div>
+            )}
+            {visibleComponents.map((component: StatusComponent) => {
+              const cfg = getStatusConfig(component.status)
+              const label = cfg.label === 'Operational' ? 'ok' : cfg.label
+              return (
+                <div
+                  key={component.id}
+                  className="flex items-center justify-between py-2 px-6 hover:bg-white/5 group/row transition-colors gap-3 min-w-0"
+                >
+                  <Tooltip
+                    content={component.name}
+                    className="flex-1 min-w-0"
+                    placement="bottom"
+                    showOnlyOnOverflow
+                  >
+                    <span className="text-xs text-[var(--text-dim)] group-hover/row:text-slate-200 truncate w-full text-left transition-colors">
+                      {component.name}
+                    </span>
+                  </Tooltip>
+                  <span
+                    className="text-xs font-medium shrink-0 flex items-center gap-1.5 group-hover/row:brightness-125 transition-all"
+                    style={{ color: cfg.color }}
+                  >
+                    <StatusDot status={component.status} />
+                    {label}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+        )}
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">

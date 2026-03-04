@@ -14,7 +14,6 @@ install: ## Install deps
 	npm ci
 
 dev: ## Start local dev server (hot reload)
-	npm ci
 	npm run dev
 
 build: ## Build static assets into dist/

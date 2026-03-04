@@ -1,4 +1,4 @@
-export type ServiceType = 'atlassian' | 'statusio' | 'instatus' | 'google-workspace'
+export type ServiceType = 'atlassian' | 'statusio' | 'instatus' | 'google-workspace' | 'incidentio' | 'redirect'
 export type ServiceSection = 'external' | 'homelab'
 
 export interface Service {
@@ -110,5 +110,12 @@ export const SERVICES: Service[] = [
     type: 'google-workspace',
     icon: 'google-workspace',
     keywords: ['google', 'workspace', 'calendar', 'docs', 'drive', 'gmail', 'meet', 'chat'],
+  },
+  {
+    name: 'Tailscale',
+    url: 'https://status.tailscale.com',
+    type: 'redirect',
+    icon: 'tailscale',
+    keywords: ['vpn', 'network', 'mesh'],
   },
 ]
