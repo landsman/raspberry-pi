@@ -116,7 +116,6 @@ body::before {
   animation: fadeIn 0.35s ease-out forwards;
 }
 
-
 /* Loading border animation */
 @keyframes rotate {
   from {
@@ -138,11 +137,7 @@ body::before {
   left: -100%;
   width: 300%;
   height: 300%;
-  background: conic-gradient(
-    transparent 0deg,
-    transparent 300deg,
-    var(--blue) 360deg
-  );
+  background: conic-gradient(transparent 0deg, transparent 300deg, var(--blue) 360deg);
   animation: rotate 2s linear infinite;
   z-index: 0;
 }

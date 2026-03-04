@@ -1,4 +1,10 @@
-export type ServiceType = 'atlassian' | 'statusio' | 'instatus' | 'google-workspace' | 'incidentio' | 'redirect'
+export type ServiceType =
+  | 'atlassian'
+  | 'statusio'
+  | 'instatus'
+  | 'google-workspace'
+  | 'incidentio'
+  | 'redirect'
 export type ServiceSection = 'external' | 'homelab'
 
 export interface Service {
@@ -39,7 +45,7 @@ export const SERVICES: Service[] = [
     url: 'https://status.jetbrains.ai',
     type: 'atlassian',
     icon: 'jetbrains-ai',
-    keywords: ['ai']
+    keywords: ['ai'],
   },
   {
     name: 'Docker',

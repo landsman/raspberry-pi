@@ -11,10 +11,7 @@ function RowSkeleton() {
     <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
       {[1, 2, 3, 4].map(i => (
         <div key={i} className="flex items-center justify-between py-2.5 px-6 gap-3">
-          <div
-            className="skeleton h-3 rounded"
-            style={{ width: `${45 + (i % 3) * 15}%` }}
-          />
+          <div className="skeleton h-3 rounded" style={{ width: `${45 + (i % 3) * 15}%` }} />
           <div className="skeleton h-3 w-12 rounded" />
         </div>
       ))}
@@ -26,7 +23,9 @@ function ErrorCard({ error, onRetry }: { error: string; onRetry: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-8 px-6 text-center gap-3 fade-in">
       <span className="text-red-400 text-xs font-medium">⚠ fetch failed</span>
-      <span className="text-[10px] text-[var(--text-muted)] line-clamp-2 max-w-[200px]">{error}</span>
+      <span className="text-[10px] text-[var(--text-muted)] line-clamp-2 max-w-[200px]">
+        {error}
+      </span>
       <button
         onClick={onRetry}
         className="mt-1 text-[10px] text-[var(--text-dim)] hover:text-slate-200 border border-[var(--border)] hover:border-[var(--dim)] px-3 py-1.5 rounded transition-colors"
@@ -49,14 +48,15 @@ function StatusDot({ status, pulse = false }: { status: string; pulse?: boolean 
 
 function StatusBadge({ indicator, description }: { indicator: string; description?: string }) {
   const cfg = getStatusConfig(indicator)
+  const label = description ?? (cfg.label === 'Operational' ? 'ok' : cfg.label)
   return (
-    <Tooltip content={description ?? cfg.label} className="shrink-0 max-w-[140px]">
+    <Tooltip content={label} className="shrink-0 max-w-[140px]">
       <span
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-wide w-full"
-        style={{ backgroundColor: cfg.bg ?? 'rgba(107,114,128,0.1)', color: cfg.color }}
+        className="inline-flex items-center gap-1.5 px-0 py-1 text-xs font-medium tracking-wide w-full justify-end"
+        style={{ color: cfg.color }}
       >
         <StatusDot status={indicator} pulse />
-        <span className="truncate">{description ?? cfg.label}</span>
+        <span className="truncate">{label}</span>
       </span>
     </Tooltip>
   )
@@ -94,7 +94,6 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
       handleRefresh()
     }
   }, [handleRefresh])
-
 
   const status = data?.status
   const components = data?.components ?? []
@@ -147,12 +146,12 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
               className="w-[11px] h-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0 opacity-50 invert"
             />
           </a>
-          <div className="shrink-0 relative flex items-center justify-center overflow-visible">
+          <div className="shrink-0 relative flex items-center justify-end overflow-visible min-w-[80px]">
             <div className="group-hover/card:invisible transition-opacity duration-200">
               {status ? (
                 <StatusBadge indicator={status.indicator} description={status.description} />
               ) : (
-                <div className="skeleton h-6 w-24 rounded-full" />
+                <div className="skeleton h-3 w-12 rounded" />
               )}
             </div>
             {dragHandleProps && (

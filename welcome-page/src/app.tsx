@@ -16,7 +16,7 @@ export default function App() {
           <StatusPage />
         </main>
 
-        <Footer />
+        <Footer onSettingsClick={() => setSettingsOpen(true)} />
       </div>
 
       {settingsOpen && <ConfigModal onClose={() => setSettingsOpen(false)} />}
