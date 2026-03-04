@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  --color-terminal-bg: #080c12;
+  --color-terminal-card: #0d1520;
+  --color-terminal-border: #1a2540;
+  --color-terminal-dim: #1e2d45;
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-fade-in: fadeIn 0.4s ease-out forwards;
+  --animate-shimmer: shimmer 1.8s infinite;
+}
 
 :root {
   --bg: #080c12;
