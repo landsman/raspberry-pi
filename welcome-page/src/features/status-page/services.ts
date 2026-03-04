@@ -8,15 +8,22 @@ export interface Service {
   section?: ServiceSection
   statusioId?: string
   icon?: string // filename stem in /icons/, defaults to name.toLowerCase()
+  hiddenComponents?: string[]
 }
 
 export const SERVICES: Service[] = [
-  { name: 'GitHub', url: 'https://www.githubstatus.com', type: 'atlassian' },
+  {
+    name: 'GitHub',
+    url: 'https://www.githubstatus.com',
+    type: 'atlassian',
+    hiddenComponents: ['Visit www.githubstatus.com for more information'],
+  },
   {
     name: 'GitLab',
     url: 'https://status.gitlab.com',
     type: 'statusio',
     statusioId: '5b36dc6502d06804c08349f7',
+    hiddenComponents: ['Website'],
   },
   { name: 'Claude', url: 'https://status.claude.com', type: 'atlassian' },
   {

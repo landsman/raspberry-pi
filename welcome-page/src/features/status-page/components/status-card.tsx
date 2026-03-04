@@ -94,7 +94,7 @@ export interface StatusCardProps {
 }
 
 export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
-  const { name, url } = service
+  const { name, url, hiddenComponents = [] } = service
   const iconSlug = service.icon ?? name.toLowerCase()
   const config = useConfig()
   const { data, loading, fetching, error, lastUpdated, refresh } = useStatusPage(service)
@@ -105,8 +105,11 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
   if (!data) return null
 
   const { status, components = [], incidents = [] } = data
+  const filteredComponents = components.filter(
+    (c: StatusComponent) => !hiddenComponents.includes(c.name)
+  )
 
-  const visibleComponents = components.filter((c: StatusComponent) => !c.group).slice(0, 10)
+  const visibleComponents = filteredComponents.filter((c: StatusComponent) => !c.group).slice(0, 10)
 
   const activeIncidents = incidents.filter(
     (i: Incident) => i.status !== 'resolved' && i.status !== 'postmortem'
@@ -201,19 +204,19 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
 
       {/* Footer */}
       <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
-        <span className="text-[11px] text-[var(--text-dim)] py-3">
+        <span className="text-[10px] text-slate-500 py-3 italic">
           {lastUpdated ? `updated ${formatTime(lastUpdated, config)}` : 'fetching...'}
         </span>
         <button
           onClick={refresh}
-          className="flex items-center gap-1.5 text-[11px] text-[var(--text-muted)] hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
+          className="flex items-center gap-1.5 text-[10px] text-slate-500 hover:text-[var(--text-dim)] transition-colors py-3 px-1 -mr-1"
           title="Refresh now"
           aria-label="Refresh"
         >
           <img
             src="/icons/ui/refresh.svg"
             alt=""
-            className={`w-[11px] h-[11px] opacity-50 invert ${fetching ? 'animate-spin' : ''}`}
+            className={`w-[10px] h-[10px] opacity-30 invert ${fetching ? 'animate-spin' : ''}`}
           />
           refresh
         </button>
