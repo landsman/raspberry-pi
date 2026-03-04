@@ -1,20 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useConfig } from '../config-provider'
-
-const LOCALES = [
-  { value: 'en-US', label: 'English (US)' },
-  { value: 'en-GB', label: 'English (UK)' },
-  { value: 'de-DE', label: 'Deutsch' },
-  { value: 'fr-FR', label: 'Français' },
-  { value: 'es-ES', label: 'Español' },
-  { value: 'it-IT', label: 'Italiano' },
-  { value: 'cs-CZ', label: 'Čeština' },
-  { value: 'pl-PL', label: 'Polski' },
-  { value: 'pt-BR', label: 'Português (BR)' },
-  { value: 'ja-JP', label: '日本語' },
-  { value: 'zh-CN', label: '中文 (简体)' },
-  { value: 'ko-KR', label: '한국어' },
-]
+import { LOCALES } from '../i18n.ts'
 
 const ALL_TIMEZONES: string[] = Intl.supportedValuesOf('timeZone')
 
@@ -63,7 +49,13 @@ export function ConfigModal({ onClose }: ConfigModalProps) {
             aria-label="Close"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <path d="M13 1L1 13M1 1l12 12" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+              <path
+                d="M13 1L1 13M1 1l12 12"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                fill="none"
+                strokeLinecap="round"
+              />
             </svg>
           </button>
         </div>
