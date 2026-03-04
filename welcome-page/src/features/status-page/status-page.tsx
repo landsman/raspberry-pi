@@ -126,13 +126,16 @@ function SectionGroup({
   section,
   initialServices,
   animationOffset,
+  query,
 }: {
   section: ServiceSection
   initialServices: Service[]
   animationOffset: number
+  query: string
 }) {
   const savedOrder = loadOrder()[section] ?? []
   const [services, setServices] = useState(() => applyOrder(initialServices, savedOrder))
+  const visible = query ? services.filter(s => s.name.toLowerCase().includes(query)) : services
   const [collapsed, setCollapsed] = useState(() => loadCollapsed().has(section))
   const [activeId, setActiveId] = useState<string | null>(null)
 
@@ -197,14 +200,14 @@ function SectionGroup({
         <span className="text-xs font-semibold tracking-widest uppercase text-[var(--text-dim)] group-hover:text-slate-300 transition-colors">
           {SECTION_LABELS[section]}
         </span>
-        <span className="text-xs text-[var(--text-muted)]">({services.length})</span>
+        <span className="text-xs text-[var(--text-muted)]">({visible.length})</span>
       </button>
 
       {!collapsed && (
         <div id={regionId} role="region" aria-labelledby={headingId}>
-          {services.length === 0 ? (
+          {visible.length === 0 ? (
             <div className="rounded-xl border border-dashed border-[var(--border)] px-6 py-8 text-center text-xs text-[var(--text-muted)]">
-              No services configured yet
+              {query ? 'No matching services' : 'No services configured yet'}
             </div>
           ) : (
             <DndContext
@@ -215,7 +218,7 @@ function SectionGroup({
             >
               <SortableContext items={services.map(s => s.name)} strategy={rectSortingStrategy}>
                 <div className="columns-[320px] gap-4">
-                  {services.map((service, i) => (
+                  {visible.map((service, i) => (
                     <SortableCard
                       key={service.name}
                       service={service}
@@ -245,6 +248,9 @@ function SectionGroup({
 const SECTION_ORDER: ServiceSection[] = ['external', 'homelab']
 
 export function StatusPage() {
+  const [query, setQuery] = useState('')
+  const q = query.trim().toLowerCase()
+
   const bySection = SECTION_ORDER.map(section => ({
     section,
     services: SERVICES.filter(s => (s.section ?? 'external') === section),
@@ -253,6 +259,27 @@ export function StatusPage() {
   let offset = 0
   return (
     <div className="flex flex-col gap-8">
+      <div className="flex justify-end">
+        <div className="relative w-64">
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"
+          >
+            <path d="M11.74 10.33a6 6 0 1 0-1.41 1.41l3.47 3.47 1.41-1.41-3.47-3.47zm-5.74.67a4 4 0 1 1 0-8 4 4 0 0 1 0 8z" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search services…"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg text-slate-300 placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--dim)] transition-colors"
+          />
+        </div>
+      </div>
+
       {bySection.map(({ section, services }) => {
         const group = (
           <SectionGroup
@@ -260,6 +287,7 @@ export function StatusPage() {
             section={section}
             initialServices={services}
             animationOffset={offset}
+            query={q}
           />
         )
         offset += services.length
