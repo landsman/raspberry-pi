@@ -138,10 +138,11 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
   return (
     <div
       onMouseEnter={handleMouseEnter}
-      className={`rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in group/card transition-all duration-300 relative ${
+      className={`rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in group/card transition-all duration-300 relative overflow-hidden ${
         fetching || isRefreshing ? 'animate-loading-border border-transparent' : ''
       }`}
     >
+      {(fetching || isRefreshing) && <div className="loading-line" />}
       <div className="flex flex-col h-full bg-[var(--card)] rounded-[11px] m-[1.5px] relative z-10">
         {/* Header */}
         <div

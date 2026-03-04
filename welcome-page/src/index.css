@@ -128,12 +128,10 @@ body::before {
 
 .animate-loading-border {
   position: relative;
-  /* Clip the loading animation but allow children tooltips to overflow via outer container logic */
   border-radius: 12px;
 }
 
-.animate-loading-border::before {
-  content: '';
+.animate-loading-border .loading-line {
   position: absolute;
   top: -100%;
   left: -100%;
@@ -146,8 +144,6 @@ body::before {
   );
   animation: rotate 2s linear infinite;
   z-index: 0;
-  /* Use clip-path to avoid overflow:hidden clipping child tooltips */
-  clip-path: inset(0 round 12px);
 }
 
 .animate-loading-border::after {
