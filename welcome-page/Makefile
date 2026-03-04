@@ -39,7 +39,7 @@ preview: build ## Build then preview the production build locally
 	npm run preview -- --port 4173
 
 docker-build: ## Build Docker image for Raspberry Pi (linux/arm64)
-	docker build --platform $(PLATFORM) -f docker/Dockerfile -t $(IMAGE):$(TAG) .
+	docker buildx build --platform $(PLATFORM) -f docker/Dockerfile -t $(IMAGE):$(TAG) .
 
 docker-build-local: ## Build Docker image for current platform (local testing)
 	docker build -f docker/Dockerfile -t $(IMAGE):$(TAG) .
