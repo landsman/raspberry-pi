@@ -5,8 +5,8 @@ interface SearchBarProps {
 
 export function SearchBar({ query, onChange }: SearchBarProps) {
   return (
-    <div className="flex justify-end w-full sm:w-auto">
-      <div className="relative w-full sm:w-64">
+    <div className="flex justify-end w-full">
+      <div className="relative w-full">
         <img
           src="/icons/ui/search.svg"
           alt=""
@@ -17,7 +17,7 @@ export function SearchBar({ query, onChange }: SearchBarProps) {
           value={query}
           onChange={e => onChange(e.target.value)}
           placeholder="Search services…"
-          className="w-full pl-8 pr-3 py-1.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded-lg text-slate-300 placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--dim)] transition-colors"
+          className="w-full pl-10 pr-3 py-3 text-sm bg-[#060a0f] border border-[var(--dim)] rounded-lg text-slate-100 placeholder-[var(--text-muted)] focus:outline-none focus:border-slate-400 focus:bg-[#080d15] transition-colors shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
         />
       </div>
     </div>

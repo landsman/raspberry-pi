@@ -1,29 +1,51 @@
 import { useConfig } from '../config/config-provider'
-import { formatDate } from '../config/format-date'
+import { formatDate, formatDateShort } from '../config/format-date'
 import { Tooltip } from './tooltip'
+import { SearchBar } from '../../features/status-page/components/search-bar'
 
 interface HeaderProps {
   onSettingsClick: () => void
+  query: string
+  onQueryChange: (value: string) => void
 }
 
-export function Header({ onSettingsClick }: HeaderProps) {
+const DEFAULT_NAME = 'Michal'
+
+function getDisplayName(): string {
+  const n = new URLSearchParams(window.location.search).get('n')
+  return n ? n.trim() : DEFAULT_NAME
+}
+
+export function Header({ onSettingsClick, query, onQueryChange }: HeaderProps) {
   const config = useConfig()
+  const displayName = getDisplayName()
   const dateStr = formatDate(new Date(), config)
+  const dateStrShort = formatDateShort(new Date(), config)
 
   return (
-    <header className="flex items-end justify-between pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-[var(--border)]">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-[var(--text-muted)] text-[10px] tracking-[0.2em] uppercase mb-1">
+    <header className="flex items-center justify-between pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-[var(--border)] gap-6">
+      <div className="flex flex-col gap-1 shrink-0">
+        <div className="hidden sm:flex items-center gap-2 text-[var(--text-muted)] text-[10px] tracking-[0.2em] uppercase mb-1">
           <span
             className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 status-pulse"
             style={{ color: '#22c55e' }}
           />
           homelab · status monitor
         </div>
-        <h1 className="text-xl font-semibold tracking-tight text-slate-200">Service Status</h1>
+        <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
+          <span
+            className="sm:hidden inline-block w-2 h-2 rounded-full bg-green-500 status-pulse shrink-0"
+            aria-hidden="true"
+          />
+          Welcome, {displayName}
+        </h1>
       </div>
 
-      <div className="flex items-start">
+      <div className="hidden md:flex flex-1 max-w-xl">
+        <SearchBar query={query} onChange={onQueryChange} />
+      </div>
+
+      <div className="flex items-center shrink-0">
         <Tooltip
           content="Settings — change timezone, locale and other preferences"
           placement="bottom"
@@ -33,10 +55,11 @@ export function Header({ onSettingsClick }: HeaderProps) {
             className="flex flex-col items-end group"
             aria-label="Open settings"
           >
-            <div className="text-xs text-[var(--text-dim)] tracking-wide group-hover:text-slate-300 transition-colors">
-              {dateStr}
+            <div className="text-[10px] sm:text-xs text-[var(--text-dim)] tracking-wide group-hover:text-slate-300 transition-colors">
+              <span className="hidden sm:inline">{dateStr}</span>
+              <span className="sm:hidden">{dateStrShort}</span>
             </div>
-            <div className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors mt-0.5">
+            <div className="text-[9px] sm:text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors mt-0.5">
               {config.timezone}
             </div>
           </button>

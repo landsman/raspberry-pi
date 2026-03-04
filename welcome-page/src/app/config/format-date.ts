@@ -13,6 +13,16 @@ export function formatDate(date: Date, config: Config): string {
   })
 }
 
+export function formatDateShort(date: Date, config: Config): string {
+  return date.toLocaleDateString(config.locale, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: config.timezone,
+  })
+}
+
 export function formatTime(date: Date, config: Config): string {
   return date.toLocaleTimeString(config.locale, {
     hour: '2-digit',

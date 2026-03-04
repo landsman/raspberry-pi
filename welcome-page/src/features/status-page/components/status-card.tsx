@@ -275,7 +275,7 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
             <div className="flex items-center h-9">
               {lastUpdated ? (
                 <span className="text-[10px] text-slate-500 italic">
-                  checked {formatRelativeTime(lastUpdated)}
+                  {formatRelativeTime(lastUpdated)}
                 </span>
               ) : (
                 <span className="text-[10px] text-slate-500 italic">fetching...</span>

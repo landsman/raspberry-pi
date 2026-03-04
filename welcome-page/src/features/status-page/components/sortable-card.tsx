@@ -16,7 +16,7 @@ export function SortableCard({ service, animationDelay }: SortableCardProps) {
   return (
     <div
       ref={setNodeRef}
-      className="break-inside-avoid mb-4 relative group/card hover:z-50"
+      className="break-inside-avoid mb-4 relative group/card hover:z-50 select-none"
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
