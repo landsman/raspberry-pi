@@ -4,11 +4,12 @@ interface TooltipProps {
   content: string
   placement?: Placement
   children: React.ReactNode
+  className?: string
 }
 
-export function Tooltip({ content, placement = 'top', children }: TooltipProps) {
+export function Tooltip({ content, placement = 'top', children, className = '' }: TooltipProps) {
   return (
-    <span className="relative group/tooltip inline-flex">
+    <span className={`relative group/tooltip inline-flex ${className}`}>
       {children}
       <span
         className={`pointer-events-none absolute z-50 hidden group-hover/tooltip:flex flex-col items-start ${

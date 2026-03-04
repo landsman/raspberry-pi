@@ -162,8 +162,11 @@ export function StatusCard({ service }: StatusCardProps) {
           const cfg = getStatusConfig(component.status)
           const label = cfg.label === 'Operational' ? 'ok' : cfg.label
           return (
-            <div key={component.id} className="flex items-center justify-between py-2.5 gap-4">
-              <Tooltip content={component.name}>
+            <div
+              key={component.id}
+              className="flex items-center justify-between py-2.5 gap-3 min-w-0"
+            >
+              <Tooltip content={component.name} className="flex-1 min-w-0">
                 <span className="text-xs text-[var(--text-dim)] truncate">{component.name}</span>
               </Tooltip>
               <span
