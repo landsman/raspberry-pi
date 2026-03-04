@@ -1,11 +1,29 @@
-export function DragHandle(props: React.HTMLAttributes<HTMLDivElement>) {
+import { Tooltip } from '../../../app/components/tooltip'
+
+interface DragHandleProps extends React.HTMLAttributes<HTMLDivElement> {
+  isAbsolute?: boolean
+  className?: string
+  placement?: 'top' | 'bottom'
+}
+
+export function DragHandle({
+  isAbsolute = false,
+  className = '',
+  placement = 'top',
+  ...props
+}: DragHandleProps) {
   return (
-    <div
-      {...props}
-      className="absolute top-2 left-1/2 -translate-x-1/2 z-10 cursor-grab active:cursor-grabbing p-1.5 rounded opacity-0 group-hover/card:opacity-100 transition-opacity touch-none text-[var(--text-muted)] hover:text-[var(--text-dim)]"
-      title="Drag to reorder"
+    <Tooltip
+      content="Drag to reorder"
+      placement={placement}
+      className={`${isAbsolute ? 'absolute top-2 right-2' : ''} ${className}`}
     >
-      <img src="/icons/ui/drag-handle.svg" alt="" className="w-3.5 h-2.5 opacity-50 invert" />
-    </div>
+      <div
+        {...props}
+        className="cursor-grab active:cursor-grabbing p-1.5 rounded-md touch-none text-[var(--text-muted)] hover:text-[var(--text-dim)] hover:bg-white/10 transition-colors bg-[var(--card)] pointer-events-auto"
+      >
+        <img src="/icons/ui/drag-handle.svg" alt="" className="w-4 h-4 opacity-70 invert" />
+      </div>
+    </Tooltip>
   )
 }

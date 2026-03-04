@@ -4,6 +4,7 @@ import { useConfig } from '../../../app/config/config-provider'
 import { formatTime } from '../../../app/config/format-date'
 import { Tooltip } from '../../../app/components/tooltip'
 import type { Service } from '../services'
+import { DragHandle } from './drag-handle'
 
 function SkeletonCard() {
   return (
@@ -75,21 +76,24 @@ function StatusDot({ status, pulse = false }: { status: string; pulse?: boolean 
 function StatusBadge({ indicator, description }: { indicator: string; description?: string }) {
   const cfg = getStatusConfig(indicator)
   return (
-    <span
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-wide"
-      style={{ backgroundColor: cfg.bg ?? 'rgba(107,114,128,0.1)', color: cfg.color }}
-    >
-      <StatusDot status={indicator} pulse />
-      {description ?? cfg.label}
-    </span>
+    <Tooltip content={description ?? cfg.label} className="shrink-0 max-w-[140px]">
+      <span
+        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium tracking-wide w-full"
+        style={{ backgroundColor: cfg.bg ?? 'rgba(107,114,128,0.1)', color: cfg.color }}
+      >
+        <StatusDot status={indicator} pulse />
+        <span className="truncate">{description ?? cfg.label}</span>
+      </span>
+    </Tooltip>
   )
 }
 
 export interface StatusCardProps {
   service: Service
+  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>
 }
 
-export function StatusCard({ service }: StatusCardProps) {
+export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
   const { name, url } = service
   const iconSlug = service.icon ?? name.toLowerCase()
   const config = useConfig()
@@ -109,14 +113,14 @@ export function StatusCard({ service }: StatusCardProps) {
   )
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in overflow-hidden">
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] flex flex-col fade-in">
       {/* Header */}
-      <div className="flex items-center gap-3 px-6 pt-5 pb-4 border-b border-[var(--border)]">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-[var(--border)] rounded-t-xl bg-[var(--card)]">
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 group min-w-0"
+          className="flex items-center gap-2.5 group min-w-0 flex-1"
           title={`Open ${name} status page`}
         >
           <img
@@ -126,7 +130,7 @@ export function StatusCard({ service }: StatusCardProps) {
             alt=""
             className="shrink-0"
           />
-          <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors">
+          <span className="text-sm font-semibold tracking-widest uppercase text-slate-300 group-hover:text-slate-100 transition-colors truncate">
             {name}
           </span>
           <img
@@ -135,8 +139,13 @@ export function StatusCard({ service }: StatusCardProps) {
             className="w-[11px] h-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors shrink-0 opacity-50 invert"
           />
         </a>
-        <div className="ml-auto">
+        <div className="shrink-0 relative flex items-center justify-center overflow-visible">
           <StatusBadge indicator={status.indicator} description={status.description} />
+          {dragHandleProps && (
+            <div className="absolute inset-0 flex items-center justify-end bg-[var(--card)] rounded-full z-20 pointer-events-none opacity-0 group-hover/card:opacity-100 group-hover/card:pointer-events-auto transition-opacity duration-200 overflow-visible">
+              <DragHandle {...dragHandleProps} isAbsolute={false} placement="bottom" />
+            </div>
+          )}
         </div>
       </div>
 
@@ -182,7 +191,7 @@ export function StatusCard({ service }: StatusCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto">
+      <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
         <span className="text-[11px] text-[var(--text-dim)] py-3">
           {lastUpdated ? `updated ${formatTime(lastUpdated, config)}` : 'fetching...'}
         </span>

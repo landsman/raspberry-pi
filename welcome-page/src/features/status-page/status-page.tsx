@@ -21,7 +21,7 @@ export function StatusPage() {
 
   let offset = 0
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <SearchBar query={query} onChange={setQuery} />
 
       {bySection.map(({ section, services }) => {

@@ -12,7 +12,7 @@ export function Tooltip({ content, placement = 'top', children, className = '' }
     <span className={`relative group/tooltip inline-flex ${className}`}>
       {children}
       <span
-        className={`pointer-events-none absolute z-50 hidden group-hover/tooltip:flex flex-col items-start ${
+        className={`pointer-events-none absolute z-[100] hidden group-hover/tooltip:flex flex-col items-start ${
           placement === 'top' ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
         }`}
       >
