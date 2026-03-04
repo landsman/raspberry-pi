@@ -22,6 +22,9 @@ build: ## Build static assets into dist/
 lint: ## Run ESLint (includes filename-case check)
 	npm run lint
 
+test:
+	npm run test
+
 format: ## Format all files with Prettier
 	npm run format:fix
 	npm run lint:fix
@@ -30,6 +33,7 @@ qa: ## Check requirement format
 	npx tsc -b --noEmit
 	npm run format
 	npm run lint
+	npm run test
 
 preview: build ## Build then preview the production build locally
 	npm run preview -- --port 4173

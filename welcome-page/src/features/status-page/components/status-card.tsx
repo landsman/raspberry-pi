@@ -1,8 +1,9 @@
 import { useStatusPage, type StatusComponent, type Incident } from '../hooks/use-status-page'
+import { match, P } from 'ts-pattern'
 import { getStatusConfig } from './status-config'
 import { formatRelativeTime } from '../../../app/config/format-date'
 import { Tooltip } from '../../../app/components/tooltip'
-import type { Service } from '../services'
+import { SERVICE_TYPE, type Service } from '../services'
 import { DragHandle } from './drag-handle'
 import { useRef, useCallback, useState, useEffect } from 'react'
 
@@ -88,7 +89,7 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
 
   const lastRefreshTime = useRef<number>(0)
   const handleMouseEnter = useCallback(() => {
-    if (service.type === 'redirect') return
+    if (service.type === SERVICE_TYPE.REDIRECT) return
     const now = Date.now()
     if (now - lastRefreshTime.current >= 10000) {
       lastRefreshTime.current = now
@@ -180,60 +181,61 @@ export function StatusCard({ service, dragHandleProps }: StatusCardProps) {
         )}
 
         {/* Components */}
-        {loading && !data ? (
-          <RowSkeleton />
-        ) : error && !data ? (
-          <ErrorCard error={error} onRetry={refresh} />
-        ) : (
-          <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
-            {service.type === 'redirect' && (
-              <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-2">
-                <span className="text-xs text-[var(--text-dim)]">
-                  API is not accessible for this service.
-                </span>
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-[var(--text-muted)] hover:text-slate-200 underline underline-offset-4 decoration-slate-500/30 hover:decoration-slate-200 transition-all"
-                >
-                  Please visit the status page directly.
-                </a>
-              </div>
-            )}
-            {visibleComponents.map((component: StatusComponent) => {
-              const cfg = getStatusConfig(component.status)
-              const label = cfg.label === 'Operational' ? 'ok' : cfg.label
-              return (
-                <div
-                  key={component.id}
-                  className="flex items-center justify-between py-2 px-6 hover:bg-white/5 group/row transition-colors gap-3 min-w-0"
-                >
-                  <Tooltip
-                    content={component.name}
-                    className="flex-1 min-w-0"
-                    placement="bottom"
-                    showOnlyOnOverflow
-                  >
-                    <span className="text-xs text-[var(--text-dim)] group-hover/row:text-slate-200 truncate w-full text-left transition-colors">
-                      {component.name}
-                    </span>
-                  </Tooltip>
-                  <span
-                    className="text-xs font-medium shrink-0 flex items-center gap-1.5 group-hover/row:brightness-125 transition-all"
-                    style={{ color: cfg.color }}
-                  >
-                    <StatusDot status={component.status} />
-                    {label}
+        {match({ loading, data, error })
+          .with({ loading: true, data: P.nullish }, () => <RowSkeleton />)
+          .with({ error: P.string, data: P.nullish }, ({ error }) => (
+            <ErrorCard error={error} onRetry={refresh} />
+          ))
+          .otherwise(() => (
+            <div className="flex flex-col divide-y divide-[var(--border)] flex-1">
+              {service.type === SERVICE_TYPE.REDIRECT && (
+                <div className="flex flex-col items-center justify-center py-12 px-6 text-center gap-2">
+                  <span className="text-xs text-[var(--text-dim)]">
+                    API is not accessible for this service.
                   </span>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-[var(--text-muted)] hover:text-slate-200 underline underline-offset-4 decoration-slate-500/30 hover:decoration-slate-200 transition-all"
+                  >
+                    Please visit the status page directly.
+                  </a>
                 </div>
-              )
-            })}
-          </div>
-        )}
+              )}
+              {visibleComponents.map((component: StatusComponent) => {
+                const cfg = getStatusConfig(component.status)
+                const label = cfg.label === 'Operational' ? 'ok' : cfg.label
+                return (
+                  <div
+                    key={component.id}
+                    className="flex items-center justify-between py-2 px-6 hover:bg-white/5 group/row transition-colors gap-3 min-w-0"
+                  >
+                    <Tooltip
+                      content={component.name}
+                      className="flex-1 min-w-0"
+                      placement="bottom"
+                      showOnlyOnOverflow
+                    >
+                      <span className="text-xs text-[var(--text-dim)] group-hover/row:text-slate-200 truncate w-full text-left transition-colors">
+                        {component.name}
+                      </span>
+                    </Tooltip>
+                    <span
+                      className="text-xs font-medium shrink-0 flex items-center gap-1.5 group-hover/row:brightness-125 transition-all"
+                      style={{ color: cfg.color }}
+                    >
+                      <StatusDot status={component.status} />
+                      {label}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          ))}
 
         {/* Footer */}
-        {service.type !== 'redirect' && (
+        {service.type !== SERVICE_TYPE.REDIRECT && (
           <div className="flex items-center justify-between px-6 border-t border-[var(--border)] mt-auto rounded-b-xl bg-[var(--card)]">
             <div className="flex items-center h-9">
               {lastUpdated ? (

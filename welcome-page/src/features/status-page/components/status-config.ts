@@ -1,3 +1,5 @@
+import { match } from 'ts-pattern'
+
 export interface StatusStyle {
   label: string
   color: string
@@ -43,7 +45,9 @@ const FALLBACK: StatusStyle = {
 }
 
 export function getStatusConfig(indicator: string | undefined): StatusStyle {
-  return indicator && STATUS_CONFIG[indicator]
-    ? STATUS_CONFIG[indicator]!
-    : { ...FALLBACK, label: indicator || 'Unknown' }
+  if (!indicator) return FALLBACK
+
+  return match(indicator as string)
+    .when(i => i in STATUS_CONFIG, i => STATUS_CONFIG[i])
+    .otherwise(i => ({ ...FALLBACK, label: i }))
 }
