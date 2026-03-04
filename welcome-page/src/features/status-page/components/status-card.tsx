@@ -2,6 +2,7 @@ import { useStatusPage, type StatusComponent, type Incident } from '../hooks/use
 import { getStatusConfig } from '../status-config'
 import { useConfig } from '../../../app/config/config-provider'
 import { formatTime } from '../../../app/config/format-date'
+import type { Service } from '../services'
 
 function ServiceIcon({ name }: { name: string }) {
   if (name === 'Claude') {
@@ -107,13 +108,13 @@ function StatusBadge({ indicator, description }: { indicator: string; descriptio
 }
 
 export interface StatusCardProps {
-  name: string
-  url: string
+  service: Service
 }
 
-export function StatusCard({ name, url }: StatusCardProps) {
+export function StatusCard({ service }: StatusCardProps) {
+  const { name, url } = service
   const config = useConfig()
-  const { data, loading, error, lastUpdated, refresh } = useStatusPage(url)
+  const { data, loading, error, lastUpdated, refresh } = useStatusPage(service)
 
   if (loading && !data) return <SkeletonCard />
   if (error && !data) return <ErrorCard name={name} error={error} onRetry={refresh} />
