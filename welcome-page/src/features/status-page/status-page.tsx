@@ -76,7 +76,7 @@ function DragHandle(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       {...props}
-      className="absolute top-3 right-3 z-10 cursor-grab active:cursor-grabbing p-1.5 rounded opacity-0 group-hover/card:opacity-100 transition-opacity touch-none text-[var(--text-muted)] hover:text-[var(--text-dim)]"
+      className="absolute top-2 left-1/2 -translate-x-1/2 z-10 cursor-grab active:cursor-grabbing p-1.5 rounded opacity-0 group-hover/card:opacity-100 transition-opacity touch-none text-[var(--text-muted)] hover:text-[var(--text-dim)]"
       title="Drag to reorder"
     >
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
