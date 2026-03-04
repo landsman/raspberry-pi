@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <!-- red: top-left -->
+  <rect x="1" y="1" width="8" height="8" rx="4" fill="#F24E1E"/>
+  <!-- violet: top-right -->
+  <rect x="11" y="1" width="8" height="8" rx="4" fill="#A259FF"/>
+  <!-- orange: middle-left -->
+  <rect x="1" y="11" width="8" height="8" rx="4" fill="#FF7262"/>
+  <!-- blue: middle-right circle -->
+  <circle cx="15" cy="15" r="4" fill="#1ABCFE"/>
+  <!-- green: bottom circle (overlaps orange bottom-left) -->
+  <circle cx="5" cy="15" r="4" fill="#0ACF83"/>
+</svg>

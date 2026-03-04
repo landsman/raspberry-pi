@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(make *)",
+      "mcp__plugin_playwright_playwright__browser_network_requests",
+      "mcp__plugin_playwright_playwright__browser_evaluate",
+      "mcp__ide__getDiagnostics",
+      "Bash(npx prettier:*)",
+      "Bash(make qa:*)",
+      "WebFetch(domain:statusgator.com)",
+      "WebFetch(domain:instatus.com)",
+      "WebFetch(domain:help.instatus.com)",
+      "Bash(npx tsc:*)"
+    ]
+  }
+}

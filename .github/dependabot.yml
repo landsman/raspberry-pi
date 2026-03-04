@@ -1,0 +1,22 @@
+version: 2
+
+updates:
+  ## ci
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  ## welcome page
+  - package-ecosystem: npm
+    directory: /welcome-page
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+
+  - package-ecosystem: docker
+    directory: /welcome-page/docker
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

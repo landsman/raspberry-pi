@@ -5,6 +5,7 @@ Playground for Pi.
 ## Content
 
 - [NAS](nas)
+- [Welcome Page](welcome-page)
 
 ## Useful links
 

@@ -1,0 +1,31 @@
+name: "welcome-page build"
+
+on:
+  pull_request:
+    paths:
+      - 'welcome-page/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: welcome-page
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: welcome-page/package-lock.json
+
+      - name: "Install dependencies"
+        run: make install
+
+      - name: "Format check"
+        run: make qa
+
+      - name: "Build"
+        run: make build

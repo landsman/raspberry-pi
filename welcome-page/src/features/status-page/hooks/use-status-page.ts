@@ -1,0 +1,53 @@
+import { useQuery } from '@tanstack/react-query'
+import { match } from 'ts-pattern'
+import { SERVICE_TYPE, type Service } from '../services'
+import type { StatusPageData, StatusComponent, Incident } from '../api/types'
+import { fetchAtlassian } from '../api/atlassian'
+import { fetchStatusio } from '../api/statusio'
+import { fetchInstatus } from '../api/instatus'
+import { fetchGoogleWorkspace } from '../api/google-workspace'
+import { fetchIncidentio } from '../api/incidentio'
+
+export type { StatusComponent, Incident, StatusPageData }
+
+export interface UseStatusPageResult {
+  data: StatusPageData | null
+  loading: boolean
+  fetching: boolean
+  error: string | null
+  lastUpdated: Date | null
+  refresh: () => void
+}
+
+async function fetchStatusPage(service: Service): Promise<StatusPageData> {
+  return match(service)
+    .with({ type: SERVICE_TYPE.STATUSIO }, s => fetchStatusio(s.statusioId!))
+    .with({ type: SERVICE_TYPE.INSTATUS }, s => fetchInstatus(s.url))
+    .with({ type: SERVICE_TYPE.GOOGLE_WORKSPACE }, () => fetchGoogleWorkspace())
+    .with({ type: SERVICE_TYPE.INCIDENTIO }, s => fetchIncidentio(s.url))
+    .with({ type: SERVICE_TYPE.REDIRECT }, () => ({
+      status: { indicator: 'none', description: '?' },
+      components: [],
+      incidents: [],
+    }))
+    .otherwise(s => fetchAtlassian(s.url))
+}
+
+export function useStatusPage(service: Service): UseStatusPageResult {
+  const { data, isLoading, isFetching, error, dataUpdatedAt, refetch } = useQuery({
+    queryKey: ['status', service.url],
+    queryFn: () => fetchStatusPage(service),
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  })
+
+  return {
+    data: data ?? null,
+    loading: isLoading,
+    fetching: isFetching,
+    error: error ? (error as Error).message : null,
+    lastUpdated: dataUpdatedAt ? new Date(dataUpdatedAt) : null,
+    refresh: () => void refetch(),
+  }
+}
