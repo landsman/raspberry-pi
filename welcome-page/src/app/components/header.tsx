@@ -1,5 +1,5 @@
 import { useConfig } from '../config/config-provider'
-import { formatDate } from '../config/format-date'
+import { formatDate, formatDateShort } from '../config/format-date'
 import { Tooltip } from './tooltip'
 
 interface HeaderProps {
@@ -9,11 +9,12 @@ interface HeaderProps {
 export function Header({ onSettingsClick }: HeaderProps) {
   const config = useConfig()
   const dateStr = formatDate(new Date(), config)
+  const dateStrShort = formatDateShort(new Date(), config)
 
   return (
     <header className="flex items-end justify-between pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-[var(--border)]">
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-[var(--text-muted)] text-[10px] tracking-[0.2em] uppercase mb-1">
+        <div className="hidden sm:flex items-center gap-2 text-[var(--text-muted)] text-[10px] tracking-[0.2em] uppercase mb-1">
           <span
             className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 status-pulse"
             style={{ color: '#22c55e' }}
@@ -34,7 +35,8 @@ export function Header({ onSettingsClick }: HeaderProps) {
             aria-label="Open settings"
           >
             <div className="text-xs text-[var(--text-dim)] tracking-wide group-hover:text-slate-300 transition-colors">
-              {dateStr}
+              <span className="hidden sm:inline">{dateStr}</span>
+              <span className="sm:hidden">{dateStrShort}</span>
             </div>
             <div className="text-[11px] text-[var(--text-muted)] group-hover:text-[var(--text-dim)] transition-colors mt-0.5">
               {config.timezone}
