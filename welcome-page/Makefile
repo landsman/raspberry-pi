@@ -1,11 +1,13 @@
-IMAGE          := homelab-status
+IMAGE          := welcome-page
 TAG            := latest
 PORT           := 8080
 PLATFORM       := linux/arm64
 GIT_SHA        ?= $(shell git rev-parse --short HEAD)
 REGISTRY_IMAGE ?= $(IMAGE)
 
-.PHONY: help dev install build preview lint format qa docker-build docker-build-local docker-release docker-run docker-stop clean
+.PHONY: help dev install build preview lint format qa docker-build docker-build-local docker-release docker-run docker-up docker-stop clean
+
+docker-up: docker-build-local docker-run ## Build locally and run the container
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
