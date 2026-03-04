@@ -24,11 +24,12 @@ lint: ## Run ESLint (includes filename-case check)
 	npm run lint
 
 format: ## Format all files with Prettier
-	npm run format
+	npm run format:fix
+	npm run lint:fix
 
 qa: ## Check requirement format
 	npx tsc -b --noEmit
-	npm run format:check
+	npm run format
 	npm run lint
 
 preview: build ## Build then preview the production build locally
