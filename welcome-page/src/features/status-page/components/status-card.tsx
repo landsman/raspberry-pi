@@ -2,6 +2,7 @@ import { useStatusPage, type StatusComponent, type Incident } from '../hooks/use
 import { getStatusConfig } from '../status-config'
 import { useConfig } from '../../../app/config/config-provider'
 import { formatTime } from '../../../app/config/format-date'
+import { Tooltip } from '../../../app/components/tooltip'
 import type { Service } from '../services'
 
 function SkeletonCard() {
@@ -154,9 +155,9 @@ export function StatusCard({ service }: StatusCardProps) {
           const label = cfg.label === 'Operational' ? 'ok' : cfg.label
           return (
             <div key={component.id} className="flex items-center justify-between py-2.5 gap-4">
-              <span className="text-xs text-[var(--text-dim)] truncate" title={component.name}>
-                {component.name}
-              </span>
+              <Tooltip content={component.name}>
+                <span className="text-xs text-[var(--text-dim)] truncate">{component.name}</span>
+              </Tooltip>
               <span
                 className="text-xs font-medium shrink-0 flex items-center gap-1.5"
                 style={{ color: cfg.color }}

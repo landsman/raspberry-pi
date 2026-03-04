@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useConfig } from '../config-provider'
 
 const LOCALES = [
@@ -25,6 +25,14 @@ interface ConfigModalProps {
 export function ConfigModal({ onClose }: ConfigModalProps) {
   const { locale, timezone, setLocale, setTimezone } = useConfig()
   const [tzInput, setTzInput] = useState(timezone)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
 
   const handleTimezoneBlur = () => {
     if (ALL_TIMEZONES.includes(tzInput)) {
