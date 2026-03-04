@@ -5,8 +5,8 @@ interface SearchBarProps {
 
 export function SearchBar({ query, onChange }: SearchBarProps) {
   return (
-    <div className="flex justify-end">
-      <div className="relative w-64">
+    <div className="flex justify-end w-full sm:w-auto">
+      <div className="relative w-full sm:w-64">
         <img
           src="/icons/ui/search.svg"
           alt=""
