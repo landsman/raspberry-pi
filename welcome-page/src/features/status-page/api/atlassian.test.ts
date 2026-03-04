@@ -18,7 +18,7 @@ describe('fetchAtlassian', () => {
         { id: '2', name: 'Web', status: 'operational', group: false, group_id: null },
         { id: '3', name: 'Database', status: 'operational', group: false, group_id: '100' }, // Child of something
       ],
-      incidents: []
+      incidents: [],
     }
 
     fetchMock.mockResolvedValueOnce({
@@ -43,7 +43,7 @@ describe('fetchAtlassian', () => {
         { id: 'c1', name: 'Webapp', status: 'operational', group: false, group_id: 'g1' },
         { id: 'c2', name: 'API', status: 'operational', group: false, group_id: 'g1' },
       ],
-      incidents: []
+      incidents: [],
     }
 
     fetchMock.mockResolvedValueOnce({
@@ -57,7 +57,7 @@ describe('fetchAtlassian', () => {
     expect(result.components).toHaveLength(2)
     expect(result.components.map(c => c.name)).toContain('Track')
     expect(result.components.map(c => c.name)).toContain('Work')
-    
+
     // Crucially, group should be false for these to be shown in StatusCard
     expect(result.components.every(c => !c.group)).toBe(true)
   })
@@ -66,7 +66,7 @@ describe('fetchAtlassian', () => {
     const mockData = {
       status: { indicator: 'minor', description: 'Partial System Outage' },
       components: [],
-      incidents: []
+      incidents: [],
     }
 
     fetchMock.mockResolvedValueOnce({

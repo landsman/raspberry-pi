@@ -48,6 +48,9 @@ export function getStatusConfig(indicator: string | undefined): StatusStyle {
   if (!indicator) return FALLBACK
 
   return match(indicator as string)
-    .when(i => i in STATUS_CONFIG, i => STATUS_CONFIG[i])
+    .when(
+      i => i in STATUS_CONFIG,
+      i => STATUS_CONFIG[i]
+    )
     .otherwise(i => ({ ...FALLBACK, label: i }))
 }
