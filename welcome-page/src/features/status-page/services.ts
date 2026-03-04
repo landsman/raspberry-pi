@@ -48,10 +48,21 @@ export const SERVICES: Service[] = [
   { name: 'Figma', url: 'https://status.figma.com', type: 'atlassian' },
   { name: 'Toggl', url: 'https://status.toggl.com', type: 'atlassian' },
   {
+    name: 'Cloudflare',
+    url:"https://www.cloudflarestatus.com",
+    type: 'atlassian',
+    icon: 'cloudflare',
+  },
+  {
     name: '37signals',
     url: 'https://www.37status.com',
     type: 'atlassian',
     icon: '37signals',
+  },
+  {
+    name: 'Jira',
+    url: 'https://jira-software.status.atlassian.com',
+    type: 'atlassian',
   },
   {
     name: 'Google Workspace',

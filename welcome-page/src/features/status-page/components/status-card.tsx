@@ -1,5 +1,5 @@
 import { useStatusPage, type StatusComponent, type Incident } from '../hooks/use-status-page'
-import { getStatusConfig } from '../status-config'
+import { getStatusConfig } from './status-config'
 import { formatRelativeTime } from '../../../app/config/format-date'
 import { Tooltip } from '../../../app/components/tooltip'
 import type { Service } from '../services'
