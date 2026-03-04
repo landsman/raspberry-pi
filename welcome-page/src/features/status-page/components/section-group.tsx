@@ -101,7 +101,11 @@ export function SectionGroup({
         title={
           isCollapsed ? `Expand ${SECTION_LABELS[section]}` : `Collapse ${SECTION_LABELS[section]}`
         }
-        className="relative flex items-center w-full group py-3 pl-10 pr-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+        className={`relative flex items-center w-full group py-3 pl-10 pr-3 rounded-lg transition-all cursor-pointer ${
+          isCollapsed
+            ? 'border border-[var(--dim)] bg-gradient-to-b from-[#131f30] to-[#0d1520] shadow-[0_2px_0_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.04)] hover:from-[#172438] hover:to-[#111c2d] active:shadow-none active:translate-y-px'
+            : 'hover:bg-white/5'
+        }`}
       >
         <img
           src="/icons/ui/chevron-down.svg"
