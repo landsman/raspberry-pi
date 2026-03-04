@@ -5,18 +5,26 @@ export const SERVICE_TYPE = {
   GOOGLE_WORKSPACE: 'google-workspace',
   INCIDENTIO: 'incidentio',
   REDIRECT: 'redirect',
+  SIMPLE_CHECK: 'simple-check',
 } as const
 
 export type ServiceType = (typeof SERVICE_TYPE)[keyof typeof SERVICE_TYPE]
-export type ServiceSection = 'external' | 'homelab'
+export const SERVICE_SECTION = {
+  EXTERNAL: 'external',
+  HOMELAB: 'homelab',
+} as const
+
+export type ServiceSection = (typeof SERVICE_SECTION)[keyof typeof SERVICE_SECTION]
 
 export interface Service {
   name: string
   url: string
+  healthCheckUrl?: string
   type: ServiceType
   section?: ServiceSection
   statusioId?: string
   icon?: string // filename stem in /icons/, defaults to name.toLowerCase()
+  versionPath?: string
   hiddenComponents?: string[]
   keywords?: string[]
 }
@@ -133,5 +141,14 @@ export const SERVICES: Service[] = [
     type: SERVICE_TYPE.REDIRECT,
     icon: 'aws',
     keywords: ['cloud', 'aws', 'amazon', 'infrastructure'],
+  },
+  {
+    name: 'Insuit Read',
+    url: 'https://read.insuit.cz',
+    healthCheckUrl: 'https://read.insuit.cz/api/info',
+    type: SERVICE_TYPE.SIMPLE_CHECK,
+    section: SERVICE_SECTION.HOMELAB,
+    versionPath: 'version',
+    keywords: ['read', 'later', 'bookmarks', 'readeck'],
   },
 ]

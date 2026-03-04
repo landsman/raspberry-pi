@@ -7,6 +7,7 @@ import { fetchStatusio } from '../api/statusio'
 import { fetchInstatus } from '../api/instatus'
 import { fetchGoogleWorkspace } from '../api/google-workspace'
 import { fetchIncidentio } from '../api/incidentio'
+import { fetchSimpleCheck } from '../api/simple-check'
 
 export type { StatusComponent, Incident, StatusPageData }
 
@@ -20,17 +21,23 @@ export interface UseStatusPageResult {
 }
 
 async function fetchStatusPage(service: Service): Promise<StatusPageData> {
-  return match(service)
-    .with({ type: SERVICE_TYPE.STATUSIO }, s => fetchStatusio(s.statusioId!))
-    .with({ type: SERVICE_TYPE.INSTATUS }, s => fetchInstatus(s.url))
-    .with({ type: SERVICE_TYPE.GOOGLE_WORKSPACE }, () => fetchGoogleWorkspace())
-    .with({ type: SERVICE_TYPE.INCIDENTIO }, s => fetchIncidentio(s.url))
-    .with({ type: SERVICE_TYPE.REDIRECT }, () => ({
-      status: { indicator: 'none', description: '?' },
-      components: [],
-      incidents: [],
-    }))
-    .otherwise(s => fetchAtlassian(s.url))
+  try {
+    return await match(service)
+      .with({ type: SERVICE_TYPE.STATUSIO }, s => fetchStatusio(s.statusioId!))
+      .with({ type: SERVICE_TYPE.INSTATUS }, s => fetchInstatus(s.url))
+      .with({ type: SERVICE_TYPE.GOOGLE_WORKSPACE }, () => fetchGoogleWorkspace())
+      .with({ type: SERVICE_TYPE.INCIDENTIO }, s => fetchIncidentio(s.url))
+      .with({ type: SERVICE_TYPE.SIMPLE_CHECK }, s => fetchSimpleCheck(s.healthCheckUrl ?? s.url))
+      .with({ type: SERVICE_TYPE.REDIRECT }, () => ({
+        status: { indicator: 'none', description: '?' },
+        components: [],
+        incidents: [],
+      }))
+      .otherwise(s => fetchAtlassian(s.url))
+  } catch (error) {
+    console.error(`Failed to fetch status for ${service.name}:`, error)
+    throw error
+  }
 }
 
 export function useStatusPage(service: Service): UseStatusPageResult {

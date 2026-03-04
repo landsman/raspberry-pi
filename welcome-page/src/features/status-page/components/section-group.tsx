@@ -11,12 +11,13 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import type { Service, ServiceSection } from '../services'
+import { SERVICE_SECTION } from '../services'
 import { StatusCard } from './status-card'
 import { SortableCard } from './sortable-card'
 
 const SECTION_LABELS: Record<ServiceSection, string> = {
-  external: 'External Services',
-  homelab: 'Homelab',
+  [SERVICE_SECTION.EXTERNAL]: 'External Services',
+  [SERVICE_SECTION.HOMELAB]: 'Homelab',
 }
 
 function applyOrder(services: Service[], savedOrder: string[]): Service[] {
