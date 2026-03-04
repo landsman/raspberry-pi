@@ -25,4 +25,5 @@ export interface StatusPageData {
   }
   components: StatusComponent[]
   incidents: Incident[]
+  version?: string
 }

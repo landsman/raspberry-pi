@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react'
-import { SERVICES, type ServiceSection } from './services'
+import { SERVICES, type ServiceSection, SERVICE_SECTION } from './services'
 import { usePersistence } from './hooks/use-persistence'
 import { SectionGroup } from './components/section-group'
 import { SearchBar } from './components/search-bar'
 
-const SECTION_ORDER: ServiceSection[] = ['external', 'homelab']
+const SECTION_ORDER: ServiceSection[] = [SERVICE_SECTION.EXTERNAL, SERVICE_SECTION.HOMELAB]
 
 export function StatusPage() {
   const [query, setQuery] = useState('')
@@ -15,7 +15,7 @@ export function StatusPage() {
   const bySection = useMemo(() => {
     return SECTION_ORDER.map(section => ({
       section,
-      services: SERVICES.filter(s => (s.section ?? 'external') === section),
+      services: SERVICES.filter(s => (s.section ?? SERVICE_SECTION.EXTERNAL) === section),
     }))
   }, [])
 
