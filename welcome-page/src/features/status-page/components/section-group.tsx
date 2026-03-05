@@ -135,7 +135,7 @@ export function SectionGroup({
                 items={localServices.map(s => s.name)}
                 strategy={rectSortingStrategy}
               >
-                <div className="columns-[320px] gap-4 [column-fill:auto]">
+                <div className="columns-[320px] gap-4">
                   {visible.map((service, i) => (
                     <SortableCard
                       key={service.name}
