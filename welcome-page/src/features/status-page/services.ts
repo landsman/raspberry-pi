@@ -148,7 +148,7 @@ export const SERVICES: Service[] = [
     name: 'Azure',
     url: 'https://azure.status.microsoft/en-us/status/',
     type: SERVICE_TYPE.REDIRECT,
-    icon: 'azure',
+    icon: 'ms-azure',
     keywords: ['cloud', 'azure', 'microsoft', 'infrastructure', 'devops'],
   },
   {
