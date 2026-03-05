@@ -143,6 +143,14 @@ export const SERVICES: Service[] = [
     icon: 'aws',
     keywords: ['cloud', 'aws', 'amazon', 'infrastructure'],
   },
+  // RSS feed available: https://rssfeed.azure.status.microsoft/en-us/status/feed/, https://status.cloud.microsoft/
+  {
+    name: 'Azure',
+    url: 'https://azure.status.microsoft/en-us/status/',
+    type: SERVICE_TYPE.REDIRECT,
+    icon: 'ms-azure',
+    keywords: ['cloud', 'azure', 'microsoft', 'infrastructure', 'devops'],
+  },
   {
     name: 'Slack',
     url: 'https://slack-status.com',
