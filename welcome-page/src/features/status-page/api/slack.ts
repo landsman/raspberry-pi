@@ -33,7 +33,10 @@ export async function fetchSlack(): Promise<StatusPageData> {
     id: i.id,
     name: i.title,
     status: i.type,
-    incident_updates: i.notes.map(n => ({ body: n.body, created_at: n.date_created })),
+    incident_updates: i.notes.map(n => ({
+      body: n.body.replace(/<[^>]+>/g, '').trim(),
+      created_at: n.date_created,
+    })),
   }))
 
   const indicator =
