@@ -7,6 +7,7 @@ import { fetchStatusio } from '../api/statusio'
 import { fetchInstatus } from '../api/instatus'
 import { fetchGoogleWorkspace } from '../api/google-workspace'
 import { fetchIncidentio } from '../api/incidentio'
+import { fetchSlack } from '../api/slack'
 import { fetchSimpleCheck } from '../api/simple-check'
 
 export type { StatusComponent, Incident, StatusPageData }
@@ -27,6 +28,7 @@ async function fetchStatusPage(service: Service): Promise<StatusPageData> {
       .with({ type: SERVICE_TYPE.INSTATUS }, s => fetchInstatus(s.url))
       .with({ type: SERVICE_TYPE.GOOGLE_WORKSPACE }, () => fetchGoogleWorkspace())
       .with({ type: SERVICE_TYPE.INCIDENTIO }, s => fetchIncidentio(s.url))
+      .with({ type: SERVICE_TYPE.SLACK }, () => fetchSlack())
       .with({ type: SERVICE_TYPE.SIMPLE_CHECK }, s =>
         fetchSimpleCheck(s.healthCheckUrl ?? s.url, s.versionPath)
       )
