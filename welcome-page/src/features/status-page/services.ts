@@ -4,6 +4,7 @@ export const SERVICE_TYPE = {
   INSTATUS: 'instatus',
   GOOGLE_WORKSPACE: 'google-workspace',
   INCIDENTIO: 'incidentio',
+  SLACK: 'slack',
   REDIRECT: 'redirect',
   SIMPLE_CHECK: 'simple-check',
 } as const
@@ -141,6 +142,12 @@ export const SERVICES: Service[] = [
     type: SERVICE_TYPE.REDIRECT,
     icon: 'aws',
     keywords: ['cloud', 'aws', 'amazon', 'infrastructure'],
+  },
+  {
+    name: 'Slack',
+    url: 'https://slack-status.com',
+    type: SERVICE_TYPE.SLACK,
+    keywords: ['chat', 'messaging', 'communication', 'im'],
   },
   {
     name: 'Readeck',
