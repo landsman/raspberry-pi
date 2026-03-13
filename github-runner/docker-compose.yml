@@ -1,0 +1,12 @@
+services:
+  github-runner:
+    build: .
+    image: supabase-runner:latest
+    restart: always
+    environment:
+      RUNNER_SCOPE: repo
+      REPO_URL: ${REPO_URL}
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      LABELS: self-hosted,pi5
+      EPHEMERAL: "true"
+    # No docker.sock mount — avoids container escape to the Pi host
