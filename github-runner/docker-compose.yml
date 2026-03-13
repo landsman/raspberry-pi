@@ -1,5 +1,5 @@
 services:
-  github-runner:
+  github-runner-supabase:
     build: .
     image: supabase-runner:latest
     restart: always
