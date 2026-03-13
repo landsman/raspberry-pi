@@ -15,6 +15,43 @@ This guide migrates all Docker and Compose workloads to a non-root user.
 
 ---
 
+## Dedicated Docker user
+
+Instead of running rootless Docker as your primary user, create a dedicated user.
+If a container escapes, it lands in an isolated account with no access to your personal files.
+You manage containers by SSH-ing in as this user — no `sudo` ever needed.
+
+```bash
+# Create the user (no login shell needed for day-to-day, but bash makes SSH sessions usable)
+sudo useradd -m -s /bin/bash containers
+
+# Set a password so SSH login works
+sudo passwd containers
+
+# Enable lingering so the daemon starts at boot without an active session
+sudo loginctl enable-linger containers
+```
+
+Add your SSH public key so you can log in without a password:
+
+```bash
+sudo mkdir -p /home/containers/.ssh
+sudo cp ~/.ssh/authorized_keys /home/containers/.ssh/
+sudo chown -R containers:containers /home/containers/.ssh
+sudo chmod 700 /home/containers/.ssh
+sudo chmod 600 /home/containers/.ssh/authorized_keys
+```
+
+From now on, manage Docker by SSH-ing in as this user:
+
+```bash
+ssh containers@<pi-ip>
+```
+
+All steps below should be run as the `containers` user, not your primary user.
+
+---
+
 ## Prerequisites
 
 ```bash
@@ -23,11 +60,11 @@ sudo apt update
 sudo apt install -y uidmap slirp4netns fuse-overlayfs dbus-user-session
 
 # Verify your user has a subuid/subgid range allocated
-grep ^pi /etc/subuid   # should show something like: pi:100000:65536
-grep ^pi /etc/subgid
+grep ^containers /etc/subuid   # should show something like: containers:100000:65536
+grep ^containers /etc/subgid
 
 # If missing, add them manually
-sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 pi
+sudo usermod --add-subuids 100000-165535 --add-subgids 100000-165535 containers
 ```
 
 ---
@@ -44,7 +81,7 @@ sudo systemctl disable --now docker.socket docker.service containerd.service
 
 ## 2. Install rootless Docker for your user
 
-Run this as the **pi** user (not root):
+Run this as the **containers** user (not root):
 
 ```bash
 dockerd-rootless-setuptool.sh install
@@ -66,7 +103,7 @@ systemctl --user enable docker
 
 # Enable "lingering" so the daemon survives after you log out
 # (required for services that should start at boot)
-sudo loginctl enable-linger pi
+sudo loginctl enable-linger containers
 ```
 
 Verify the daemon is running:
@@ -170,7 +207,7 @@ Rootless Docker remaps UIDs. Files written by a container appear owned by a high
 ls -ln /path/to/volume
 
 # Allow your user to own the directory
-sudo chown -R pi:pi /path/to/volume
+sudo chown -R containers:containers /path/to/volume
 ```
 
 For persistent data directories it is simplest to pre-create them as your user before first `docker compose up`:
@@ -184,13 +221,21 @@ mkdir -p ~/nas/dev/docker_scripts/my-stack/data
 ## 8. Move Docker storage to NVMe
 
 By default rootless Docker stores images, containers, and volumes under `~/.local/share/docker`.
-On a Pi 5 with an NVMe drive mounted at `/home/pi5/nas`, point Docker there to avoid filling the SD card.
+On a Pi 5 with an NVMe RAID mounted at `/mnt/raid0`, point Docker to a dedicated directory there to avoid filling the SD card.
 
-Edit (or create) `~/.config/docker/daemon.json`:
+First, create the directory and symlink (run as your primary user):
+
+```bash
+sudo mkdir -p /mnt/raid0/containers
+sudo chown containers:containers /mnt/raid0/containers
+sudo -u containers ln -s /mnt/raid0/containers /home/containers/nas
+```
+
+Then edit (or create) `~/.config/docker/daemon.json` as the `containers` user:
 
 ```json
 {
-  "data-root": "/home/pi5/nas/dev/docker"
+  "data-root": "/mnt/raid0/containers/docker"
 }
 ```
 
@@ -223,12 +268,12 @@ journalctl --user -u docker -n 50
 If the daemon never starts at boot, verify lingering is enabled:
 
 ```bash
-loginctl show-user pi | grep Linger   # should be Linger=yes
+loginctl show-user containers | grep Linger   # should be Linger=yes
 ```
 
 If not:
 ```bash
-sudo loginctl enable-linger pi
+sudo loginctl enable-linger containers
 ```
 
 ### `DOCKER_HOST` not set after SSH login
