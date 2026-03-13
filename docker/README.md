@@ -221,7 +221,7 @@ mkdir -p ~/nas/dev/docker_scripts/my-stack/data
 ## 8. Move Docker storage to NVMe
 
 By default rootless Docker stores images, containers, and volumes under `~/.local/share/docker`.
-On a Pi 5 with an NVMe RAID mounted at `/mnt/raid0`, point Docker to a dedicated directory there to avoid filling the SD card.
+On a Pi 5 with an NVMe RAID mounted at `/mnt/raid0` (see [nas/README.md](../nas/README.md)), point Docker to a dedicated directory there to avoid filling the SD card.
 
 First, create the directory and symlink (run as your primary user):
 
