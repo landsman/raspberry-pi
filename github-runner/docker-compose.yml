@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       RUNNER_SCOPE: repo
-      REPO_URL: ${REPO_URL}
+      REPO_URL: ${SUPABASE_REPO_URL}
       GITHUB_TOKEN: ${GITHUB_TOKEN}
       LABELS: self-hosted,pi5
       EPHEMERAL: "true"

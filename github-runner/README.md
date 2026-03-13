@@ -32,22 +32,9 @@ docker compose build
 
 **3. Run**
 
-Option A — Docker Compose (recommended, restarts automatically after each job):
-
 ```bash
 docker compose up -d
 docker compose logs -f
-```
-
-Option B — systemd service (starts at boot, survives reboots):
-
-```bash
-# Copy files to the Pi
-sudo cp github-runner.service /etc/systemd/system/
-# Edit the service file if your user or path differs from /home/pi/github-runner
-sudo systemctl daemon-reload
-sudo systemctl enable --now github-runner
-sudo journalctl -u github-runner -f
 ```
 
 ## GitHub workflow configuration
@@ -67,7 +54,7 @@ Pi (Docker only)
   └─ container starts
        └─ registers with GitHub as ephemeral runner
             └─ picks up one job → runs → deregisters → exits
-  └─ Compose / systemd spawns a new container → repeat
+  └─ Compose restarts the container → repeat
 ```
 
 The `EPHEMERAL=true` env var tells the runner to deregister itself after a single job, ensuring a clean environment for every run.
