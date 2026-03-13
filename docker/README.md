@@ -181,6 +181,30 @@ mkdir -p ~/nas/dev/docker_scripts/my-stack/data
 
 ---
 
+## 8. Move Docker storage to NVMe
+
+By default rootless Docker stores images, containers, and volumes under `~/.local/share/docker`.
+On a Pi 5 with an NVMe drive mounted at `/home/pi5/nas`, point Docker there to avoid filling the SD card.
+
+Edit (or create) `~/.config/docker/daemon.json`:
+
+```json
+{
+  "data-root": "/home/pi5/nas/dev/docker"
+}
+```
+
+Then restart the daemon:
+
+```bash
+systemctl --user restart docker
+docker info | grep "Docker Root Dir"   # should show the new path
+```
+
+> Make sure the target directory exists and is on the NVMe mount before restarting.
+
+---
+
 ## Troubleshooting
 
 ### `dial unix /run/user/1000/docker.sock: no such file or directory`
