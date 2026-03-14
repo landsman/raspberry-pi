@@ -13,7 +13,6 @@ Each job spawns a fresh `supabase-runner` container that registers with GitHub, 
 ## Prerequisites
 
 - Raspberry Pi 5 with Docker installed
-- GitHub Personal Access Token with `repo` scope (classic PAT) or a fine-grained token with Actions read/write
 
 ## Setup
 
@@ -24,17 +23,21 @@ cp .env.example .env
 # Edit .env and fill in REPO_URL and GITHUB_TOKEN
 ```
 
-**2. Build the image**
+Generate a **classic PAT** for `GITHUB_TOKEN` ([docs](https://github.com/myoung34/docker-github-actions-runner/wiki/Usage)):
+
+1. Go to **GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)**
+2. Click **Generate new token**
+3. Check `repo` and `workflow` scopes
+4. Click **Generate token** and paste it into `.env`
+
+> The container uses this PAT to call the GitHub API and generate a fresh runner registration token on every restart — so a long-lived PAT is required, not the short-lived token from the Actions runner UI.
+
+**2. Build and run**
 
 ```bash
-docker compose build
-```
-
-**3. Run**
-
-```bash
-docker compose up -d
-docker compose logs -f
+make build
+make up
+make logs
 ```
 
 ## GitHub workflow configuration

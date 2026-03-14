@@ -58,7 +58,18 @@ All steps below should be run as the `containers` user, not your primary user.
 # Install required packages
 sudo apt update
 sudo apt install -y uidmap slirp4netns fuse-overlayfs dbus-user-session
+```
 
+| Package             | Why it's needed                                                                                                            |
+|---------------------|----------------------------------------------------------------------------------------------------------------------------|
+| `uidmap`            | Provides `newuidmap`/`newgidmap` — the binaries that remap container UIDs to an unprivileged range (`100000+`) on the host |
+| `slirp4netns`       | User-space network stack so containers get internet access without kernel bridge privileges                                |
+| `fuse-overlayfs`    | User-space overlay filesystem — replaces the kernel `overlay2` driver for copy-on-write image layers                       |
+| `dbus-user-session` | Enables the per-user D-Bus session that `systemctl --user` and lingering depend on                                         |
+
+> These are not installed by default on Raspberry Pi OS Lite. Running the command is safe regardless — apt skips anything already present.
+
+```bash
 # Verify your user has a subuid/subgid range allocated
 grep ^containers /etc/subuid   # should show something like: containers:100000:65536
 grep ^containers /etc/subgid
@@ -95,15 +106,8 @@ This sets up `~/.config/docker/` and a systemd user unit at
 ## 3. Enable and start the user Docker daemon
 
 ```bash
-# Start immediately
 systemctl --user start docker
-
-# Enable on login
 systemctl --user enable docker
-
-# Enable "lingering" so the daemon survives after you log out
-# (required for services that should start at boot)
-sudo loginctl enable-linger containers
 ```
 
 Verify the daemon is running:
@@ -116,16 +120,9 @@ systemctl --user status docker
 
 ## 4. Configure environment variables
 
-Add these to `~/.bashrc` (and `~/.profile` for non-interactive sessions):
-
 ```bash
-export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
-export PATH=$HOME/bin:$PATH
-```
-
-Apply immediately:
-
-```bash
+echo 'export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock' | tee -a ~/.bashrc ~/.profile
+echo 'export PATH=$HOME/bin:$PATH' | tee -a ~/.bashrc ~/.profile
 source ~/.bashrc
 ```
 
@@ -137,51 +134,7 @@ docker info   # should show rootless: true under Server
 
 ---
 
-## 5. Docker Compose
-
-Compose V2 (the `docker compose` plugin) works natively with rootless Docker — no extra setup needed once `DOCKER_HOST` is set.
-
-```bash
-# From any project directory
-docker compose up -d
-docker compose build
-docker compose logs -f
-```
-
-### Starting Compose services at boot
-
-Because you're rootless, use a **systemd user service** instead of `--restart always`.
-
-Create `~/.config/systemd/user/my-stack.service` (replace paths as needed):
-
-```ini
-[Unit]
-Description=My Docker Compose stack
-Requires=docker.service
-After=docker.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=%h/nas/dev/docker_scripts/my-stack
-ExecStart=/usr/bin/docker compose up -d --remove-orphans
-ExecStop=/usr/bin/docker compose down
-TimeoutStartSec=300
-
-[Install]
-WantedBy=default.target
-```
-
-Enable it:
-
-```bash
-systemctl --user daemon-reload
-systemctl --user enable --now my-stack.service
-```
-
----
-
-## 6. Port binding below 1024
+## 5. Port binding below 1024
 
 Rootless containers cannot bind to privileged ports (< 1024) by default.
 
@@ -210,11 +163,6 @@ ls -ln /path/to/volume
 sudo chown -R containers:containers /path/to/volume
 ```
 
-For persistent data directories it is simplest to pre-create them as your user before first `docker compose up`:
-
-```bash
-mkdir -p ~/nas/dev/docker_scripts/my-stack/data
-```
 
 ---
 
@@ -223,30 +171,28 @@ mkdir -p ~/nas/dev/docker_scripts/my-stack/data
 By default rootless Docker stores images, containers, and volumes under `~/.local/share/docker`.
 On a Pi 5 with an NVMe RAID mounted at `/mnt/raid0` (see [nas/README.md](../nas/README.md)), point Docker to a dedicated directory there to avoid filling the SD card.
 
-First, create the directory and symlink (run as your primary user):
+The RAID is mounted globally via `/etc/fstab` — all users can reach `/mnt/raid0`. Just create the directory and set ownership (run as your primary user):
 
 ```bash
-sudo mkdir -p /mnt/raid0/containers
-sudo chown containers:containers /mnt/raid0/containers
-sudo -u containers ln -s /mnt/raid0/containers /home/containers/nas
+sudo mkdir -p /mnt/raid0/containers/docker
+sudo chown -R containers:containers /mnt/raid0/containers
 ```
 
-Then edit (or create) `~/.config/docker/daemon.json` as the `containers` user:
-
-```json
-{
-  "data-root": "/mnt/raid0/containers/docker"
-}
-```
-
-Then restart the daemon:
+Then as the `containers` user, point the daemon at it:
 
 ```bash
+mkdir -p ~/.config/docker
+echo '{"data-root": "/mnt/raid0/containers/docker"}' > ~/.config/docker/daemon.json
 systemctl --user restart docker
-docker info | grep "Docker Root Dir"   # should show the new path
+docker info | grep "Docker Root Dir"   # should show /mnt/raid0/containers/docker
 ```
 
-> Make sure the target directory exists and is on the NVMe mount before restarting.
+Add symlinks for quick access:
+
+```bash
+ln -s /mnt/raid0/containers/docker ~/docker
+ln -s /mnt/raid0/containers ~/dev
+```
 
 ---
 
@@ -278,10 +224,11 @@ sudo loginctl enable-linger containers
 
 ### `DOCKER_HOST` not set after SSH login
 
-Add the export to both `~/.bashrc` **and** `~/.profile`:
+Re-run the commands from step 4:
 
 ```bash
-export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock
+echo 'export DOCKER_HOST=unix:///run/user/$(id -u)/docker.sock' | tee -a ~/.bashrc ~/.profile
+source ~/.bashrc
 ```
 
 ### Permission denied on `/var/run/docker.sock`

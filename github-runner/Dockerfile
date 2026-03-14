@@ -1,4 +1,4 @@
-FROM myoung34/github-runner:latest
+FROM myoung34/github-runner:2.332.0
 
 # Add Supabase CLI (ARM64 binary)
 RUN SUPABASE_VERSION=$(curl -fsSL https://api.github.com/repos/supabase/cli/releases/latest \

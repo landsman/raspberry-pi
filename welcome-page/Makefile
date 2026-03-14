@@ -5,7 +5,7 @@ PLATFORM       := linux/arm64
 GIT_SHA        ?= $(shell git rev-parse --short HEAD)
 REGISTRY_IMAGE ?= $(IMAGE)
 
-.PHONY: help dev install build preview lint format qa docker-build docker-build-local docker-release docker-run docker-up docker-stop clean
+.PHONY: help dev install build preview lint format qa docker-build docker-build-local docker-release docker-run docker-up docker-stop compose-up compose-down compose-logs clean
 
 docker-up: docker-build-local docker-run ## Build locally and run the container
 
@@ -60,6 +60,15 @@ docker-run: ## Run the container locally on PORT (default: 8080)
 
 docker-stop: ## Stop the running container
 	docker stop $(IMAGE) 2>/dev/null || true
+
+compose-up: ## Build and start via Docker Compose
+	docker compose up -d --build
+
+compose-down: ## Stop and remove Compose containers
+	docker compose down
+
+compose-logs: ## Follow Compose logs
+	docker compose logs -f
 
 clean: ## Remove dist/ and node_modules/
 	rm -rf dist node_modules
