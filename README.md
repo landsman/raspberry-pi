@@ -6,6 +6,7 @@ Playground for Pi.
 
 - [NAS](nas)
 - [Readeck](readeck)
+- [Forgejo](forgejo)
 - [Welcome Page](welcome-page)
 
 ## Useful links
