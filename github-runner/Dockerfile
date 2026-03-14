@@ -11,3 +11,7 @@ RUN SUPABASE_VERSION=$(curl -fsSL https://api.github.com/repos/supabase/cli/rele
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Add Deno
+RUN curl -fsSL https://deno.land/install.sh | sh -s -- --no-modify-path && \
+    mv /root/.deno/bin/deno /usr/local/bin/deno
