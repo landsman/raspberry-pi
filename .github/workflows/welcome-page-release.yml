@@ -36,7 +36,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Build and push"
-        run: make docker-release
+        run: make ci-release
         env:
           REGISTRY_IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           GIT_SHA: ${{ github.sha }}
