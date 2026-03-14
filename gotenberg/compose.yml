@@ -1,5 +1,5 @@
 services:
-  gotenberg:
+  app:
     image: gotenberg/gotenberg:8
     container_name: gotenberg
     restart: unless-stopped

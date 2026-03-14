@@ -58,6 +58,8 @@ PSU_MAX_CURRENT=5000
 
 ### RAID
 
+> For Docker storage configuration on this RAID, see [docker/README.md](../docker/README.md).
+
 You need to mount your SSD and configure it to mount automatically on every reboot.
 
 First, you have to decide how important your data is. 

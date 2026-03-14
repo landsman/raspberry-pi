@@ -7,7 +7,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres17-data:/var/lib/postgresql/data
+      - postgres17:/var/lib/postgresql/data
 
   adminer:
     image: dockette/adminer:dg
@@ -21,4 +21,4 @@ services:
       - postgres17
 
 volumes:
-  postgres17-data:
+  postgres17:

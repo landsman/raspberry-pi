@@ -1,13 +1,11 @@
 IMAGE          := welcome-page
 TAG            := latest
-PORT           := 8080
 PLATFORM       := linux/arm64
 GIT_SHA        ?= $(shell git rev-parse --short HEAD)
 REGISTRY_IMAGE ?= $(IMAGE)
 
-.PHONY: help dev install build preview lint format qa docker-build docker-build-local docker-release docker-run docker-up docker-stop clean
-
-docker-up: docker-build-local docker-run ## Build locally and run the container
+### DEV
+.PHONY: help dev install build preview lint format qa
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -40,13 +38,16 @@ qa: ## Check requirement format
 preview: build ## Build then preview the production build locally
 	npm run preview -- --port 4173
 
+clean: ## Remove dist/ and node_modules/
+	rm -rf dist node_modules
+
+### RELEASE
+.PHONY: docker-build ci-release
+
 docker-build: ## Build Docker image for Raspberry Pi (linux/arm64)
-	docker buildx build --platform $(PLATFORM) -f docker/Dockerfile -t $(IMAGE):$(TAG) .
+	docker compose build
 
-docker-build-local: ## Build Docker image for current platform (local testing)
-	docker build -f docker/Dockerfile -t $(IMAGE):$(TAG) .
-
-docker-release: ## Build linux/arm64 image and push to registry (set REGISTRY_IMAGE and GIT_SHA)
+ci-release: ## Build linux/arm64 image and push to registry (set REGISTRY_IMAGE and GIT_SHA)
 	docker buildx build \
 		--platform $(PLATFORM) \
 		--file docker/Dockerfile \
@@ -55,11 +56,20 @@ docker-release: ## Build linux/arm64 image and push to registry (set REGISTRY_IM
 		--push \
 		.
 
-docker-run: ## Run the container locally on PORT (default: 8080)
-	docker run --rm -p $(PORT):80 --name $(IMAGE) $(IMAGE):$(TAG)
+### DOCKER
+.PHONY: run stop up down logs
 
-docker-stop: ## Stop the running container
-	docker stop $(IMAGE) 2>/dev/null || true
+run: ## Build and start via Docker Compose
+	docker compose up -d --build
 
-clean: ## Remove dist/ and node_modules/
-	rm -rf dist node_modules
+stop: ## Stop the running container
+	docker compose stop
+
+up: ## Run the container locally on PORT (default: 8080)
+	docker compose up -d
+
+down: ## Stop and remove Compose containers
+	docker compose down
+
+logs: ## Follow Compose logs
+	docker compose logs -f
