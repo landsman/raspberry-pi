@@ -4,6 +4,14 @@ Self-hosted Git service running in Docker on Raspberry Pi.
 
 Source: https://codeberg.org/forgejo/forgejo
 
+## Configuration
+
+Set the required env variable values before starting:
+
+```bash
+cp .env.example .env
+```
+
 ## Usage
 
 ```bash
