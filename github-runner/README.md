@@ -1,14 +1,16 @@
-# github-runner
+# Self-hosted GitHub runner
 
 Ephemeral GitHub Actions self-hosted runner for Raspberry Pi 5 (ARM64).
 
-Each job spawns a fresh `supabase-runner` container that registers with GitHub, runs the job, and exits. No runner software is installed on the Pi itself — only Docker is required.
+Each job spawns a fresh `supabase-runner` container that registers with GitHub, runs the job, and exits. 
+**No runner software is installed on the Pi itself — only Docker is required**.
 
 ## What's inside the image
 
 - [`myoung34/github-runner`](https://github.com/myoung34/docker-github-actions-runner) — base runner image with ARM64 support
+- [Node.js](https://nodejs.org) 22 — for `npx` / Sentry CLI
+- [Deno](https://deno.land) for Deno tasks
 - [Supabase CLI](https://github.com/supabase/cli) — latest ARM64 binary
-- Node.js 22 — for `npx` / Sentry CLI
 
 ## Prerequisites
 

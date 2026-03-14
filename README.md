@@ -6,6 +6,7 @@ Playground for Pi.
 
 - [NAS](nas)
 - [Docker](docker)
+- [Self-hosted GitHub runner](github-runner)
 - [Database](database)
 - [Readeck](readeck)
 - [Forgejo](forgejo)
