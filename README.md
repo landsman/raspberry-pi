@@ -5,6 +5,7 @@ Playground for Pi.
 ## Content
 
 - [NAS](nas)
+- [Database](database)
 - [Readeck](readeck)
 - [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
