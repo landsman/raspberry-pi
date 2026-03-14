@@ -1,0 +1,35 @@
+# Readeck application
+
+Self-hosted bookmarking and read-later service running in Docker on Raspberry Pi.
+
+Source: https://codeberg.org/readeck
+
+## Clients
+
+- **iOS** — [Readeck app](https://apps.apple.com/us/app/readeck/id6748764703) — connect to your instance URL
+- **Browser extension** — [Firefox](https://addons.mozilla.org/firefox/addon/readeck/) / [Chrome](https://chromewebstore.google.com/detail/readeck/iedgbdjibfmacpgkclbkohaolhealcip) — save pages directly to your instance
+
+## Usage
+
+```bash
+make up       # start
+make down     # stop
+make logs     # follow logs
+make backup   # run backup manually
+make restore FILE=readeck-backup-YYYYMMDD_HHMMSS.tar.gz
+```
+
+## Backup
+
+Backups are stored in `/home/pi5/backup/readeck` as `readeck-backup-YYYYMMDD_HHMMSS.tar.gz`.
+The last 14 days are retained; older files are deleted automatically.
+
+### Cron (daily at 2am)
+
+```bash
+crontab -e
+```
+
+```
+0 2 * * * cd /path/to/readeck && make backup >> /home/pi5/backup/readeck/backup.log 2>&1
+```

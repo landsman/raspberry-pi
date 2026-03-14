@@ -5,6 +5,7 @@ Playground for Pi.
 ## Content
 
 - [NAS](nas)
+- [Readeck](readeck)
 - [Welcome Page](welcome-page)
 
 ## Useful links
