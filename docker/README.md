@@ -248,6 +248,23 @@ docker info | grep -i rootless
 
 ---
 
+## lazydocker
+
+Terminal UI for managing Docker containers. Installed as a native arm64 binary (no Docker required).
+
+```bash
+cd docker
+make lazydocker   # installs v0.24.4 to ~/bin/ on first run
+```
+
+Run it anytime:
+
+```bash
+lazydocker
+```
+
+---
+
 ## Quick reference
 
 ```bash
