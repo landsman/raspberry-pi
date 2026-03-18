@@ -17,19 +17,16 @@ make down     # stop
 make logs     # follow logs
 make backup   # run backup manually
 make restore FILE=readeck-backup-YYYYMMDD_HHMMSS.tar.gz
+make cron-install                                 # register daily backup cron job (fails if already exists, run: crontab -l | grep readeck)
 ```
 
 ## Backup
 
-Backups are stored in `/home/pi5/backup/readeck` as `readeck-backup-YYYYMMDD_HHMMSS.tar.gz`.
+Backups are stored in `/home/containers/backup/readeck` as `readeck-backup-YYYYMMDD_HHMMSS.tar.gz`.
 The last 14 days are retained; older files are deleted automatically.
 
 ### Cron (daily at 2am)
 
 ```bash
-crontab -e
-```
-
-```
-0 2 * * * cd /path/to/readeck && make backup >> /home/pi5/backup/readeck/backup.log 2>&1
+make cron-install
 ```
