@@ -21,6 +21,7 @@ make down                                         # stop
 make logs                                         # follow logs
 make backup                                       # run backup manually
 make restore FILE=forgejo-backup-YYYYMMDD_HHMMSS.tar.gz
+make cron-install                                 # register daily backup cron job (fails if already exists, run: crontab -l | grep forgejo)
 make runner-register TOKEN=<registration-token>   # register the Actions runner (first time only)
 ```
 
@@ -37,11 +38,7 @@ The last 14 days are retained; older files are deleted automatically.
 ### Cron (daily at 3am)
 
 ```bash
-crontab -e
-```
-
-```
-0 3 * * * cd /path/to/forgejo && make backup >> /home/containers/backup/forgejo/backup.log 2>&1
+make cron-install
 ```
 
 ## Runner

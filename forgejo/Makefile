@@ -1,7 +1,7 @@
 VOLUME := forgejo_forgejo
 BACKUP_DIR := /home/containers/backup/forgejo
 
-.PHONY: up down logs backup restore runner-register build
+.PHONY: up down logs backup restore runner-register build cron-install
 
 build:
 	docker compose --profile build build runner-tools
@@ -29,6 +29,12 @@ restore:
 		-v $(VOLUME):/data \
 		-v $(BACKUP_DIR):/backup \
 		alpine tar xzf /backup/$(FILE) -C /data
+
+cron-install:
+	@crontab -l 2>/dev/null | grep -q "forgejo.*make backup" \
+		&& (echo "Cron job already exists. To view: crontab -l | grep forgejo" && exit 1) \
+		|| (crontab -l 2>/dev/null; echo "0 3 * * * cd $(PWD) && make backup >> $(BACKUP_DIR)/backup.log 2>&1") | crontab -
+	@echo "Cron job installed."
 
 runner-register:
 	@test -n "$(TOKEN)" || (echo "Usage: make runner-register TOKEN=<registration-token>" && exit 1)
