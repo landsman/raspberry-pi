@@ -1,4 +1,5 @@
-FROM myoung34/github-runner:2.332.0
+ARG BASE_IMAGE=myoung34/github-runner:2.332.0
+FROM ${BASE_IMAGE}
 
 # Add Node.js 22 (for npx / sentry-cli)
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
