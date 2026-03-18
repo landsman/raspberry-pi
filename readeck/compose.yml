@@ -1,6 +1,6 @@
 services:
   readeck:
-    image: codeberg.org/readeck/readeck:latest
+    image: codeberg.org/readeck/readeck:0.22.2
     container_name: readeck
     restart: unless-stopped
     ports:
