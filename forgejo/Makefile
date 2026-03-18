@@ -1,7 +1,10 @@
 VOLUME := forgejo_forgejo
 BACKUP_DIR := /home/containers/backup/forgejo
 
-.PHONY: up down logs backup restore
+.PHONY: up down logs backup restore runner-register build
+
+build:
+	docker compose --profile build build runner-tools
 
 up:
 	docker compose up -d
@@ -26,3 +29,14 @@ restore:
 		-v $(VOLUME):/data \
 		-v $(BACKUP_DIR):/backup \
 		alpine tar xzf /backup/$(FILE) -C /data
+
+runner-register:
+	@test -n "$(TOKEN)" || (echo "Usage: make runner-register TOKEN=<registration-token>" && exit 1)
+	@test -n "$(FORGEJO_URL)" || (echo "Error: FORGEJO_URL is not set. Run: export FORGEJO_URL=https://your-forgejo-url" && exit 1)
+	docker exec -it forgejo-runner forgejo-runner register \
+		--instance $(FORGEJO_URL) \
+		--token $(TOKEN) \
+		--name raspberry-pi \
+		--labels "ubuntu-latest:docker://node:20-bookworm,self-hosted:host" \
+		--no-interactive
+	docker restart forgejo-runner
