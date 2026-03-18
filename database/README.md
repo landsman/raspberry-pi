@@ -12,6 +12,7 @@ make logs     # follow logs
 make psql     # open postgres shell
 make backup   # run backup manually
 make restore FILE=database-backup-YYYYMMDD_HHMMSS.sql.gz
+make cron-install                                 # register daily backup cron job (fails if already exists, run: crontab -l | grep database)
 ```
 
 ## Ports
@@ -32,16 +33,12 @@ host=<pi-ip>  port=5432  user=postgres  password=postgres  dbname=myapp
 
 ## Backup
 
-Backups are stored in `/home/pi5/backup/database` as `database-backup-YYYYMMDD_HHMMSS.sql.gz`.
+Backups are stored in `/home/containers/backup/database` as `database-backup-YYYYMMDD_HHMMSS.sql.gz`.
 Uses `pg_dumpall` — backs up **all databases** while running, no downtime required.
 The last 14 days are retained; older files are deleted automatically.
 
 ### Cron (daily at 4am)
 
 ```bash
-crontab -e
-```
-
-```
-0 4 * * * cd /path/to/database && make backup >> /home/pi5/backup/database/backup.log 2>&1
+make cron-install
 ```
