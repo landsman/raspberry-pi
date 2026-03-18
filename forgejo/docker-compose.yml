@@ -13,13 +13,15 @@ services:
       - '3000:3000'
       - '222:22'
     volumes:
-      - data:/data
+      - forgejo:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  forgejo:
 
 networks:
   forgejo:
     external: false
 
-volumes:
-  data:
+
