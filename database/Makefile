@@ -1,6 +1,6 @@
 SERVICE = postgres17
 PG_USER = postgres
-BACKUP_DIR = /home/pi5/backup/database
+BACKUP_DIR = /home/containers/backup/database
 
 .PHONY: up down logs backup restore psql
 
