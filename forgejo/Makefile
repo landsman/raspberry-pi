@@ -21,6 +21,7 @@ backup:
 
 restore:
 	@test -n "$(FILE)" || (echo "Usage: make restore FILE=forgejo-backup-YYYYMMDD_HHMMSS.tar.gz" && exit 1)
+	@docker volume inspect $(VOLUME) > /dev/null 2>&1 || (echo "Error: volume $(VOLUME) does not exist. Run 'make up' first." && exit 1)
 	docker run --rm \
 		-v $(VOLUME):/data \
 		-v $(BACKUP_DIR):/backup \
