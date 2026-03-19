@@ -38,6 +38,10 @@ backend default {
 }
 
 sub vcl_recv {
+    # CVE-2025-29927: attackers send this header to bypass Next.js middleware auth.
+    # Strip it from all incoming requests before they reach the backend.
+    unset req.http.X-Middleware-Subrequest;
+
     if (req.method == "PURGE") {
         # Internal services (CMS etc.) use their own token and can only PURGE exact URLs
         if (client.ip ~ purge_allowed_internal) {
@@ -143,7 +147,7 @@ sub vcl_deliver {
         unset resp.http.Age;
         # Set by nginx — reveals the backend software and version.
         unset resp.http.Server;
-        # Set by some backend frameworks (PHP, Node.js) — reveals runtime and version.
+        # Set by some backend frameworks (PHP, Node.js, Next.js) — reveals runtime and version.
         unset resp.http.X-Powered-By;
         # Next.js — reveals internal caching state (HIT, MISS, STALE, BYPASS).
         unset resp.http.X-Nextjs-Cache;
@@ -157,6 +161,14 @@ sub vcl_deliver {
         unset resp.http.X-Middleware-Redirect;
         # Next.js — leaks redirect targets from middleware or the router.
         unset resp.http.X-Nextjs-Redirect;
+        # Older Next.js versions used this instead of X-Nextjs-Cache.
+        unset resp.http.X-Next-Cache;
+        # Added by response-time middleware (Express/Koa) — leaks backend processing time,
+        # useful for timing attacks.
+        unset resp.http.X-Response-Time;
+        # Added by various Node.js frameworks — leaks internal UUIDs or sequential IDs
+        # that can reveal request volume or system architecture.
+        unset resp.http.X-Request-Id;
     }
 
     # X-Cache reveals caching behaviour to the client — useful for debugging but
