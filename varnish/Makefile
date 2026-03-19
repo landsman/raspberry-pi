@@ -1,4 +1,4 @@
-.PHONY: up down logs reload stat top varnishlog purge-log purge-all
+.PHONY: up down logs reload stat top varnishlog purge-log purge-all vcl-validate
 
 up:
 	docker compose up -d
@@ -26,3 +26,14 @@ purge-log: ## show only PURGE and BAN requests
 
 purge-all: ## invalidate the entire cache
 	docker exec varnish varnishadm ban req.url "~" ".*"
+
+vcl-validate: ## validate VCL syntax using the varnish docker image
+	VARNISH_PURGE_IPS_ACL='"10.0.0.1";' \
+	VARNISH_PURGE_TOKEN=dummy \
+	VARNISH_PURGE_TOKEN_CMS=dummy \
+	envsubst < default.vcl > /tmp/default.vcl
+	docker run --rm \
+		--add-host nginx:127.0.0.1 \
+		-v /tmp/default.vcl:/etc/varnish/default.vcl \
+		varnish:7 \
+		varnishd -C -f /etc/varnish/default.vcl

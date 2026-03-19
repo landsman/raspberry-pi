@@ -88,14 +88,21 @@ sub vcl_recv {
 sub vcl_synth {
     set resp.http.Content-Type = "application/json";
 
+    # VCL long strings {"..."} terminate at "} — the same two chars that close a JSON
+    # object whose last value is a string. There is no \" escape in VCL strings.
+    # Solution: end every JSON body with a boolean so the last chars are e.g. true}
+    # and put dynamic string values (url, message) in response headers instead.
     if (resp.status == 200) {
-        synthetic({"{"status":"purged","url":""} + req.url + "\"}");
+        set resp.http.X-Url = req.url;
+        synthetic({"{"status":"purged","ok":true}"});
     } else if (resp.status == 404) {
-        synthetic({"{"status":"not_in_cache","url":""} + req.url + "\"}");
+        set resp.http.X-Url = req.url;
+        synthetic({"{"status":"not_in_cache","ok":false}"});
     } else if (resp.status == 403) {
-        synthetic({"{"status":"forbidden"} + "\"}");
+        synthetic({"{"status":"forbidden","ok":false}"});
     } else {
-        synthetic({"{"status":"error","message":""} + resp.reason + "\"}");
+        set resp.http.X-Message = resp.reason;
+        synthetic({"{"status":"error","ok":false}"});
     }
 
     return (deliver);
