@@ -89,13 +89,13 @@ sub vcl_synth {
     set resp.http.Content-Type = "application/json";
 
     if (resp.status == 200) {
-        synthetic({"{"status":"purged","url":""} + req.url + {""}"});
+        synthetic({"{"status":"purged","url":""} + req.url + "\"}");
     } else if (resp.status == 404) {
-        synthetic({"{"status":"not_in_cache","url":""} + req.url + {""}"});
+        synthetic({"{"status":"not_in_cache","url":""} + req.url + "\"}");
     } else if (resp.status == 403) {
-        synthetic({"{"status":"forbidden"}"});
+        synthetic({"{"status":"forbidden"} + "\"}");
     } else {
-        synthetic({"{"status":"error","message":""} + resp.reason + {""}"});
+        synthetic({"{"status":"error","message":""} + resp.reason + "\"}");
     }
 
     return (deliver);
