@@ -88,3 +88,11 @@ The key difference: PURGE is synchronous and exact. BAN is pattern-based and eva
 | Host   | Container | Description          |
 |--------|-----------|----------------------|
 | 6081   | 80        | HTTP proxy (Varnish) |
+
+## Useful links
+
+- [jonnenauha/prometheus_varnish_exporter](https://github.com/jonnenauha/prometheus_varnish_exporter) — de-facto standard Prometheus exporter for Varnish
+- [Grafana dashboard #9903](https://grafana.com/grafana/dashboards/9903-varnish/) — ready-made Varnish dashboard for the exporter above
+- [Varnish monitoring tutorial](https://www.varnish-software.com/developers/tutorials/monitoring-varnish-prometheus-loki-grafana/) — official guide for Prometheus + Loki + Grafana
+- [Grafana Cloud Varnish integration](https://grafana.com/docs/grafana-cloud/monitor-infrastructure/integrations/integration-reference/integration-varnish-cache/) — managed monitoring via Grafana Cloud
+- [auduny/varnishprom](https://github.com/auduny/varnishprom) — alternative exporter with varnishlog support
