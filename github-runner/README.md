@@ -2,7 +2,7 @@
 
 Ephemeral GitHub Actions self-hosted runner for Raspberry Pi 5 (ARM64).
 
-Each job spawns a fresh `supabase-runner` container that registers with GitHub, runs the job, and exits. 
+Each job spawns a fresh `custom-runner-nodejs` container that registers with GitHub, runs the job, and exits. 
 **No runner software is installed on the Pi itself — only Docker is required**.
 
 ## What's inside the image
@@ -22,7 +22,7 @@ Each job spawns a fresh `supabase-runner` container that registers with GitHub, 
 
 ```bash
 cp .env.example .env
-# Edit .env and fill in REPO_URL and GITHUB_TOKEN
+# Edit .env and fill in REPO_URLs and GITHUB_TOKEN
 ```
 
 Generate a **classic PAT** for `GITHUB_TOKEN` ([docs](https://github.com/myoung34/docker-github-actions-runner/wiki/Usage)):
