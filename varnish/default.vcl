@@ -127,8 +127,19 @@ sub vcl_backend_response {
 }
 
 sub vcl_deliver {
+    # Strip headers that fingerprint the infrastructure. Attackers can use these
+    # to identify software versions and tailor exploits accordingly.
+    if ("${VARNISH_DEBUG}" != "true") {
+        # Added by Varnish — exposes internal cache object IDs and reveals Varnish is in use.
+        unset resp.http.X-Varnish;
+        # Added by Varnish — reveals the proxy chain (e.g. "1.1 varnish (Varnish/7.x)").
+        unset resp.http.Via;
+        # Set by nginx — reveals the backend software and version.
+        unset resp.http.Server;
+    }
+
     # X-Cache reveals caching behaviour to the client — useful for debugging but
-    # exposes information to attackers in production. Only set it on staging.
+    # exposes information to attackers in production.
     # Check it with: curl -I https://yoursite.com
     if ("${VARNISH_DEBUG}" == "true") {
         if (obj.hits > 0) {
