@@ -15,11 +15,19 @@ backend default {
     .host = "nginx";
     .port = "8080";
 
+    # Health check Varnish runs continuously in the background.
     .probe = {
+        # Send GET / to check if the backend is alive.
         .url = "/";
+        # Run the check every 5 seconds.
         .interval = 5s;
+        # If nginx doesn't respond within 2 seconds, count it as a failure.
         .timeout = 2s;
+        # Look at the last 5 health checks.
         .window = 5;
+        # Backend is healthy if at least 3 out of the last 5 checks passed.
+        # If it falls below this, Varnish marks it unhealthy and serves stale
+        # cached content (within grace period) instead of forwarding to a broken backend.
         .threshold = 3;
     }
 }
@@ -109,14 +117,23 @@ sub vcl_synth {
 }
 
 sub vcl_backend_response {
+    # Cache the response for 5 minutes. After that it is considered stale.
     set beresp.ttl = 5m;
+
+    # If the TTL has expired but a fresh copy hasn't been fetched yet (e.g. backend is slow
+    # or down), keep serving the stale cached response for up to 1 extra minute rather than
+    # making the user wait. Object is fully gone after 6 minutes total (ttl + grace).
     set beresp.grace = 1m;
 }
 
 sub vcl_deliver {
+    # Add X-Cache header to every response so you can see whether it was served
+    # from cache or fetched fresh from nginx. Check it with: curl -I https://yoursite.com
     if (obj.hits > 0) {
+        # Object was found in cache and served from there.
         set resp.http.X-Cache = "HIT";
     } else {
+        # Object wasn't cached, Varnish had to fetch it from nginx.
         set resp.http.X-Cache = "MISS";
     }
 }
