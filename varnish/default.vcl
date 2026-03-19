@@ -145,6 +145,18 @@ sub vcl_deliver {
         unset resp.http.Server;
         # Set by some backend frameworks (PHP, Node.js) — reveals runtime and version.
         unset resp.http.X-Powered-By;
+        # Next.js — reveals internal caching state (HIT, MISS, STALE, BYPASS).
+        unset resp.http.X-Nextjs-Cache;
+        # Next.js — exposes internal route patterns e.g. /[slug], /api/[...path].
+        unset resp.http.X-Nextjs-Matched-Path;
+        unset resp.http.X-Matched-Path;
+        # Next.js — leaks internal rewritten paths and middleware query parameters.
+        unset resp.http.X-Middleware-Rewrite;
+        # Next.js — reveals that Edge Middleware is in use.
+        unset resp.http.X-Middleware-Next;
+        unset resp.http.X-Middleware-Redirect;
+        # Next.js — leaks redirect targets from middleware or the router.
+        unset resp.http.X-Nextjs-Redirect;
     }
 
     # X-Cache reveals caching behaviour to the client — useful for debugging but
