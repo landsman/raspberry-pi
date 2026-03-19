@@ -1,5 +1,10 @@
 vcl 4.1;
 
+# NOTE: ${VARIABLE} placeholders in this file are not read by Varnish directly.
+# entrypoint.sh runs envsubst at container startup to substitute them with real values
+# before Varnish loads the config. Editing this file alone has no effect until the
+# container is restarted.
+
 # External IPs allowed to send PURGE and BAN (workflow, your public IPs)
 acl purge_allowed {
     "localhost";
@@ -134,8 +139,12 @@ sub vcl_deliver {
         unset resp.http.X-Varnish;
         # Added by Varnish — reveals the proxy chain (e.g. "1.1 varnish (Varnish/7.x)").
         unset resp.http.Via;
+        # Added by Varnish — leaks how long the object has been sitting in cache.
+        unset resp.http.Age;
         # Set by nginx — reveals the backend software and version.
         unset resp.http.Server;
+        # Set by some backend frameworks (PHP, Node.js) — reveals runtime and version.
+        unset resp.http.X-Powered-By;
     }
 
     # X-Cache reveals caching behaviour to the client — useful for debugging but
