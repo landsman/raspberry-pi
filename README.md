@@ -11,6 +11,7 @@ Playground for Pi.
 - [Readeck](readeck)
 - [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
+- [Varnish](varnish)
 - [Welcome Page](welcome-page)
 
 ## Useful links
