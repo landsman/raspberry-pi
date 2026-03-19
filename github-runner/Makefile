@@ -4,7 +4,7 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build the runner image
-	docker compose --profile build nodejs
+	docker compose --profile nodejs build
 
 up: ## Start the runner
 	docker compose up -d
