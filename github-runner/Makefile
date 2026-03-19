@@ -1,3 +1,5 @@
+LOG_DIR := $(HOME)/logs/docker
+
 .PHONY: help build up down restart logs prune cron-install
 
 help: ## Show this help
@@ -20,10 +22,10 @@ logs: ## Follow runner logs
 	docker compose logs -f
 
 prune: ## Remove images older than 48h
-	docker image prune -a --force --filter "until=48h"
+	@docker image prune -a --force --filter "until=48h" 2>&1 | tee -a $(LOG_DIR)/github-runner-prune.log
 
 cron-install: ## Install cron job to prune images daily at 6am
 	@crontab -l 2>/dev/null | grep -q "github-runner.*make prune" \
 		&& (echo "Cron job already exists. To view: crontab -l | grep github-runner" && exit 1) \
-		|| (crontab -l 2>/dev/null; echo "0 6 * * * cd $(PWD) && make prune >> /tmp/github-runner-prune.log 2>&1") | crontab -
+		|| (crontab -l 2>/dev/null; echo "0 6 * * * cd $(PWD) && make prune") | crontab -
 	@echo "Cron job installed."
