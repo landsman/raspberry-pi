@@ -14,7 +14,7 @@ export VARNISH_PURGE_IPS_ACL
 # envsubst expects the variable list as literal strings (e.g. '${FOO}'), not their expanded values.
 # Single quotes prevent the shell from expanding them before passing to envsubst.
 # shellcheck disable=SC2016
-envsubst '${VARNISH_PURGE_IPS_ACL} ${VARNISH_PURGE_TOKEN}' \
+envsubst '${VARNISH_PURGE_IPS_ACL} ${VARNISH_PURGE_TOKEN} ${VARNISH_PURGE_TOKEN_CMS}' \
   < /etc/varnish/default.vcl \
   > /tmp/default.vcl
 

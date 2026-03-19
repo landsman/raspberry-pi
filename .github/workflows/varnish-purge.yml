@@ -26,5 +26,5 @@ jobs:
       - name: "Purge URLs"
         env:
           VARNISH_HOST: ${{ vars.VARNISH_HOST }}
-          VARNISH_PURGE_TOKEN: ${{ secrets.VARNISH_PURGE_TOKEN }}
+          VARNISH_PURGE_TOKEN: ${{ secrets.VARNISH_PURGE_TOKEN_GITHUB }}
         run: echo "${{ inputs.urls }}" | sh varnish/purge.sh

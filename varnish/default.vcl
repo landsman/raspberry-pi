@@ -1,9 +1,15 @@
 vcl 4.1;
 
+# External IPs allowed to send PURGE and BAN (workflow, your public IPs)
 acl purge_allowed {
     "localhost";
     "127.0.0.1";
 ${VARNISH_PURGE_IPS_ACL}}
+
+# Internal Docker network — CMS and other backend services on the same compose network
+acl purge_allowed_internal {
+    "172.16.0.0"/12;
+}
 
 backend default {
     .host = "nginx";
@@ -20,6 +26,15 @@ backend default {
 
 sub vcl_recv {
     if (req.method == "PURGE") {
+        # Internal services (CMS etc.) use their own token and can only PURGE exact URLs
+        if (client.ip ~ purge_allowed_internal) {
+            if (req.http.X-Purge-Token != "${VARNISH_PURGE_TOKEN_CMS}") {
+                return (synth(403, "Forbidden"));
+            }
+            return (purge);
+        }
+
+        # External (workflow, public IPs) use the main token
         if (!client.ip ~ purge_allowed) {
             return (synth(403, "Forbidden"));
         }
@@ -29,6 +44,7 @@ sub vcl_recv {
         return (purge);
     }
 
+    # BAN is restricted to external purge_allowed only — internal services cannot wildcard ban
     if (req.method == "BAN") {
         if (!client.ip ~ purge_allowed) {
             return (synth(403, "Forbidden"));

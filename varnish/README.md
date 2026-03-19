@@ -26,34 +26,33 @@ proxy_pass http://your-app:80;
 cp .env.example .env
 ```
 
-| Variable | Description |
-|---|---|
-| `VARNISH_PURGE_TOKEN` | Secret token checked on every PURGE request |
-| `VARNISH_PURGE_IP4` | Your public IPv4 address |
-| `VARNISH_PURGE_IP6` | Your public IPv6 address |
+| Variable                  | Description                                                 |
+|---------------------------|-------------------------------------------------------------|
+| `VARNISH_PURGE_TOKEN`     | Main token for GitHub workflow PURGE and BAN requests       |
+| `VARNISH_PURGE_TOKEN_CMS` | Restricted token for internal services — PURGE only, no BAN |
+| `VARNISH_PURGE_IPS`       | Comma-separated public IPs allowed to purge (IPv4 and IPv6) |
 
-`entrypoint.sh` substitutes these into `default.vcl` at container startup via `envsubst`. PURGE requests must pass both the IP ACL (`localhost`, `127.0.0.1`, and your IPs) and the token check.
+`entrypoint.sh` substitutes these into `default.vcl` at container startup via `envsubst`. Requests must pass both the IP ACL and the token check.
 
-Set the matching values in Forgejo:
-- **Variable** `VARNISH_HOST` — e.g. `http://localhost:6081`
-- **Secret** `VARNISH_PURGE_TOKEN` — same token as in `.env`
-
-**Cache size** — copy `.env.example` to `.env` to override:
-
-```bash
-cp .env.example .env
-```
+**Cache size** — override `VARNISH_SIZE` in `.env` (default `512m`).
 
 ## Usage
 
 ```bash
-make up      # start
-make down    # stop
-make logs    # follow logs
-make reload  # restart to apply VCL or nginx config changes
+make up          # start
+make down        # stop
+make logs        # follow docker compose logs
+make reload      # restart to apply VCL or nginx config changes
+make stat        # live counters: hits, misses, RAM usage, cached objects
+make top         # top URLs by request rate
+make varnishlog  # raw request log
 ```
 
 ## Cache invalidation
+
+There are two ways to invalidate the cache, each with its own token and permission scope.
+
+### 1. GitHub workflow (PURGE + BAN)
 
 Trigger the [varnish-purge](.github/workflows/varnish-purge.yml) workflow manually from Forgejo,
 passing a newline-separated list of paths:
@@ -66,6 +65,30 @@ passing a newline-separated list of paths:
 ```
 
 The workflow runs on a self-hosted GitHub Actions runner or Forgejo runner so Varnish is reachable directly on the internal network.
+
+Set these in Forgejo:
+- **Variable** `VARNISH_HOST` — e.g. `http://localhost:6081`
+- **Secret** `VARNISH_PURGE_TOKEN_GITHUB` — same value as `VARNISH_PURGE_TOKEN` in `.env`
+
+### 2. CMS backend API (PURGE only)
+
+Internal services such as a CMS can invalidate specific URLs directly via HTTP. The CMS token only allows exact `PURGE` — wildcard `BAN` is blocked for internal callers.
+
+The CMS must be on the same Docker compose network so it reaches Varnish on the internal `172.16.0.0/12` range.
+
+```http
+PURGE /posts/my-article HTTP/1.1
+Host: varnish
+X-Purge-Token: <VARNISH_PURGE_TOKEN_CMS>
+```
+
+Example with curl:
+
+```bash
+curl -X PURGE \
+  -H "X-Purge-Token: your-cms-token" \
+  http://varnish/posts/my-article
+```
 
 ### PURGE vs BAN
 
