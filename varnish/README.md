@@ -90,6 +90,14 @@ curl -X PURGE \
   http://varnish/posts/my-article
 ```
 
+All responses are JSON:
+
+| Status | Body | Meaning |
+|---|---|---|
+| `200` | `{"status":"purged","url":"/posts/my-article"}` | Object was in cache and removed |
+| `404` | `{"status":"not_in_cache","url":"/posts/my-article"}` | Object wasn't cached |
+| `403` | `{"status":"forbidden"}` | Wrong token or IP not in ACL |
+
 ### PURGE vs BAN
 
 **PURGE** — removes a single exact URL from cache immediately.
