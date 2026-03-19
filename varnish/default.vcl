@@ -127,13 +127,14 @@ sub vcl_backend_response {
 }
 
 sub vcl_deliver {
-    # Add X-Cache header to every response so you can see whether it was served
-    # from cache or fetched fresh from nginx. Check it with: curl -I https://yoursite.com
-    if (obj.hits > 0) {
-        # Object was found in cache and served from there.
-        set resp.http.X-Cache = "HIT";
-    } else {
-        # Object wasn't cached, Varnish had to fetch it from nginx.
-        set resp.http.X-Cache = "MISS";
+    # X-Cache reveals caching behaviour to the client — useful for debugging but
+    # exposes information to attackers in production. Only set it on staging.
+    # Check it with: curl -I https://yoursite.com
+    if ("${VARNISH_DEBUG}" == "true") {
+        if (obj.hits > 0) {
+            set resp.http.X-Cache = "HIT";
+        } else {
+            set resp.http.X-Cache = "MISS";
+        }
     }
 }

@@ -31,6 +31,7 @@ vcl-validate: ## validate VCL syntax using the varnish docker image
 	VARNISH_PURGE_IPS_ACL='"10.0.0.1";' \
 	VARNISH_PURGE_TOKEN=dummy \
 	VARNISH_PURGE_TOKEN_CMS=dummy \
+	VARNISH_DEBUG=true \
 	envsubst < default.vcl > /tmp/default.vcl
 	docker run --rm \
 		--add-host nginx:127.0.0.1 \
