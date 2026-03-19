@@ -22,32 +22,33 @@ updates:
     open-pull-requests-limit: 5
 
   ## compose services
-  - package-ecosystem: docker
+  - package-ecosystem: docker-compose
     directory: /forgejo
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
 
-  - package-ecosystem: docker
+  - package-ecosystem: docker-compose
     directory: /readeck
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
 
-  - package-ecosystem: docker
+  - package-ecosystem: docker-compose
     directory: /database
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
 
-  - package-ecosystem: docker
-    directory: /github-runner
+  - package-ecosystem: docker-compose
+    directory: /gotenberg
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
 
+  ## dockerfile services
   - package-ecosystem: docker
-    directory: /gotenberg
+    directory: /github-runner
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
