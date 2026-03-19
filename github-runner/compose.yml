@@ -1,11 +1,30 @@
 services:
-  supabase:
+  # build a custom runner image with the required tooling
+  custom-runner-nodejs:
     build: .
-    image: supabase-runner:latest
+    image: custom-runner-nodejs:${NODEJS_VERSION:-latest}
+    profiles: [nodejs]
+
+  # https://github.com/landsman/music
+  music:
+    image: custom-runner-nodejs:latest
     restart: always
     environment:
       RUNNER_SCOPE: repo
       REPO_URL: ${SUPABASE_REPO_URL}
+      ACCESS_TOKEN: ${ACCESS_TOKEN}
+      LABELS: self-hosted,pi5
+      EPHEMERAL: "true"
+    volumes:
+      - /run/user/1001/docker.sock:/var/run/docker.sock
+
+  # https://github.com/landsman/raspberry-pi
+  raspberry-pi:
+    image: custom-runner-nodejs:latest
+    restart: always
+    environment:
+      RUNNER_SCOPE: repo
+      REPO_URL: ${RASPBERRY_REPO_URL}
       ACCESS_TOKEN: ${ACCESS_TOKEN}
       LABELS: self-hosted,pi5
       EPHEMERAL: "true"
