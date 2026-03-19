@@ -10,7 +10,7 @@ Source: https://www.varnish.org/
 client → varnish:6081 → nginx:8080 → app:80
 ```
 
-Varnish caches GET/HEAD responses (5 min TTL, 1 min grace). Requests with `Authorization` or `Cookie` headers are passed through uncached. Responses include an `X-Cache: HIT/MISS` header.
+Varnish caches GET/HEAD responses (5 min TTL, 1 min grace). Requests with `Authorization` or `Cookie` headers are passed through uncached. With `VARNISH_DEBUG=true`, responses include an `X-Cache: HIT/MISS` header.
 
 ## Configuration
 
@@ -26,13 +26,14 @@ proxy_pass http://your-app:80;
 cp .env.example .env
 ```
 
-| Variable                  | Description                                                 |
-|---------------------------|-------------------------------------------------------------|
-| `VARNISH_PURGE_TOKEN`     | Main token for GitHub workflow PURGE and BAN requests       |
-| `VARNISH_PURGE_TOKEN_CMS` | Restricted token for internal services — PURGE only, no BAN |
-| `VARNISH_PURGE_IPS`       | Comma-separated public IPs allowed to purge (IPv4 and IPv6) |
+| Variable                  | Description                                                                                                 |
+|---------------------------|-------------------------------------------------------------------------------------------------------------|
+| `VARNISH_PURGE_TOKEN`     | Main token for GitHub workflow PURGE and BAN requests                                                       |
+| `VARNISH_PURGE_TOKEN_CMS` | Restricted token for internal services — PURGE only, no BAN                                                 |
+| `VARNISH_PURGE_IPS`       | Comma-separated public IPs allowed to purge (IPv4 and IPv6)                                                 |
+| `VARNISH_DEBUG`           | Set to `true` to expose `X-Cache`, `Via`, `Server` and other headers. Leave unset or `false` in production. |
 
-`entrypoint.sh` substitutes these into `default.vcl` at container startup via `envsubst`. Requests must pass both the IP ACL and the token check.
+`entrypoint.sh` substitutes these into `default.vcl` at container startup via `envsubst`. The `${VARIABLE}` placeholders in `default.vcl` are not read at runtime by Varnish — they are replaced with their values before Varnish starts. Without running `entrypoint.sh`, the VCL is not valid. Requests must pass both the IP ACL and the token check.
 
 **Cache size** — override `VARNISH_SIZE` in `.env` (default `512m`).
 
@@ -92,11 +93,11 @@ curl -X PURGE \
 
 All responses are JSON:
 
-| Status | Body | Meaning |
-|---|---|---|
-| `200` | `{"status":"purged","url":"/posts/my-article"}` | Object was in cache and removed |
-| `404` | `{"status":"not_in_cache","url":"/posts/my-article"}` | Object wasn't cached |
-| `403` | `{"status":"forbidden"}` | Wrong token or IP not in ACL |
+| Status | Body | Header | Meaning |
+|---|---|---|---|
+| `200` | `{"status":"purged","ok":true}` | `X-Url: /posts/my-article` | Object was in cache and removed |
+| `404` | `{"status":"not_in_cache","ok":false}` | `X-Url: /posts/my-article` | Object wasn't cached |
+| `403` | `{"status":"forbidden","ok":false}` | — | Wrong token or IP not in ACL |
 
 ### PURGE vs BAN
 
