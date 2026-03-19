@@ -32,9 +32,8 @@ vcl-validate: ## validate VCL syntax using the varnish docker image
 	VARNISH_PURGE_TOKEN=dummy \
 	VARNISH_PURGE_TOKEN_CMS=dummy \
 	VARNISH_DEBUG=true \
-	envsubst < default.vcl > /tmp/default.vcl
-	docker run --rm \
+	envsubst < default.vcl | \
+	docker run --rm -i \
 		--add-host nginx:127.0.0.1 \
-		-v /tmp/default.vcl:/etc/varnish/default.vcl \
 		varnish:7 \
-		varnishd -C -f /etc/varnish/default.vcl
+		bash -c 'cat > /tmp/default.vcl && varnishd -C -f /tmp/default.vcl'
