@@ -1,4 +1,4 @@
-.PHONY: help build up down restart logs
+.PHONY: help build up down restart logs prune cron-install
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
@@ -18,3 +18,12 @@ restart: ## Rebuild and restart the runner
 
 logs: ## Follow runner logs
 	docker compose logs -f
+
+prune: ## Remove images older than 48h
+	docker image prune -a --force --filter "until=48h"
+
+cron-install: ## Install cron job to prune images daily at 6am
+	@crontab -l 2>/dev/null | grep -q "github-runner.*make prune" \
+		&& (echo "Cron job already exists. To view: crontab -l | grep github-runner" && exit 1) \
+		|| (crontab -l 2>/dev/null; echo "0 6 * * * cd $(PWD) && make prune >> /tmp/github-runner-prune.log 2>&1") | crontab -
+	@echo "Cron job installed."
