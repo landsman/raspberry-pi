@@ -1,0 +1,25 @@
+name: "varnish vcl validate"
+
+on:
+  pull_request:
+    paths:
+      - 'varnish/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Validate VCL syntax"
+        run: |
+          envsubst < varnish/default.vcl > /tmp/default.vcl
+          docker run --rm \
+            -v /tmp/default.vcl:/etc/varnish/default.vcl \
+            varnish:7 \
+            varnishd -C -f /etc/varnish/default.vcl
+        env:
+          VARNISH_PURGE_IPS_ACL: '"10.0.0.1";'
+          VARNISH_PURGE_TOKEN: dummy
+          VARNISH_PURGE_TOKEN_CMS: dummy
