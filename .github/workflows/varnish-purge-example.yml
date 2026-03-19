@@ -12,6 +12,7 @@ on:
 
 jobs:
   deploy:
+    # Self-hosted runner on Raspberry Pi 5 — see: ./github-runner/README.md
     runs-on: [self-hosted, pi5]
     outputs:
       post_slug: ${{ inputs.post_slug }}
