@@ -8,7 +8,8 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Self-hosted runner on Raspberry Pi 5 — see ./github-runner/README.md
+    runs-on: [self-hosted, pi5]
     defaults:
       run:
         working-directory: welcome-page
