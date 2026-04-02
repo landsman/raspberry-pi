@@ -63,6 +63,8 @@ services:
 
 volumes:
   forgejo:
+    external: true
+    name: forgejo_forgejo
   dind-certs:
   runner:
 
