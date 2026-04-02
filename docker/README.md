@@ -30,6 +30,9 @@ sudo passwd containers
 
 # Enable lingering so the daemon starts at boot without an active session
 sudo loginctl enable-linger containers
+
+# This gives Docker a "fallback" for permanent storage that is persistent
+sudo apt-get install -y fuse-overlayfs
 ```
 
 Add your SSH public key so you can log in without a password:
