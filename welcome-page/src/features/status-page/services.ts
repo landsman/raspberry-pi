@@ -7,6 +7,7 @@ export const SERVICE_TYPE = {
   SLACK: 'slack',
   REDIRECT: 'redirect',
   SIMPLE_CHECK: 'simple-check',
+  UPTIME_KUMA: 'uptime-kuma',
 } as const
 
 export type ServiceType = (typeof SERVICE_TYPE)[keyof typeof SERVICE_TYPE]
@@ -28,9 +29,17 @@ export interface Service {
   versionPath?: string
   hiddenComponents?: string[]
   keywords?: string[]
+  uptimeKumaSlug?: string
 }
 
 export const SERVICES: Service[] = [
+  {
+    name: 'Codeberg',
+    url: 'https://status.codeberg.org',
+    type: SERVICE_TYPE.UPTIME_KUMA,
+    uptimeKumaSlug: 'codeberg',
+    keywords: ['git', 'codeberg', 'forgejo'],
+  },
   {
     name: 'GitHub',
     url: 'https://www.githubstatus.com',
