@@ -1,8 +1,8 @@
 IMAGE          := welcome-page
-TAG            := latest
+REGISTRY_IMAGE ?= ghcr.io/landsman/homelab-status
+TAG            ?= latest
 PLATFORM       := linux/arm64
 GIT_SHA        ?= $(shell git rev-parse --short HEAD)
-REGISTRY_IMAGE ?= $(IMAGE)
 
 ### DEV
 .PHONY: help dev install build preview lint format qa
@@ -66,7 +66,7 @@ stop: ## Stop the running container
 	docker compose stop
 
 up: ## Run the container locally on PORT (default: 8080)
-	docker compose up -d
+	REGISTRY_IMAGE=$(REGISTRY_IMAGE) TAG=$(TAG) docker compose up -d
 
 down: ## Stop and remove Compose containers
 	docker compose down

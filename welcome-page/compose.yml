@@ -1,5 +1,6 @@
 services:
   web:
+    image: ${REGISTRY_IMAGE:-welcome-page}:${TAG:-latest}
     build:
       context: .
       dockerfile: docker/Dockerfile
