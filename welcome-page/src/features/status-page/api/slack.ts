@@ -1,3 +1,4 @@
+import { PROXY_PATHS } from '../../../proxy.config'
 import type { StatusPageData, Incident, StatusComponent } from './types'
 
 // Slack's status API only returns services affected by active incidents — it has no endpoint
@@ -42,7 +43,9 @@ interface SlackCurrentResponse {
 }
 
 export async function fetchSlack(): Promise<StatusPageData> {
-  const res = await fetch('/proxy/slack-status-com/api/v2.0.0/current', { cache: 'no-store' })
+  const res = await fetch(PROXY_PATHS.SLACK_STATUS_COM + '/api/v2.0.0/current', {
+    cache: 'no-store',
+  })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const data = (await res.json()) as SlackCurrentResponse
 
@@ -56,6 +59,12 @@ export async function fetchSlack(): Promise<StatusPageData> {
     })),
   }))
 
+  const STATUS_PRIORITY: Record<string, number> = {
+    major_outage: 3,
+    degraded_performance: 2,
+    under_maintenance: 1,
+  }
+
   const serviceStatusMap = new Map<string, string>()
   for (const incident of data.active_incidents) {
     const status =
@@ -66,11 +75,7 @@ export async function fetchSlack(): Promise<StatusPageData> {
           : 'under_maintenance'
     for (const service of incident.services) {
       const current = serviceStatusMap.get(service)
-      if (
-        !current ||
-        status === 'major_outage' ||
-        (status === 'degraded_performance' && current === 'under_maintenance')
-      ) {
+      if (!current || STATUS_PRIORITY[status] > (STATUS_PRIORITY[current] ?? 0)) {
         serviceStatusMap.set(service, status)
       }
     }
