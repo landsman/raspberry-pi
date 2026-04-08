@@ -1,4 +1,18 @@
-import type { StatusPageData, Incident } from './types'
+import type { StatusPageData, Incident, StatusComponent } from './types'
+
+const SLACK_FEATURES = [
+  'Login/SSO',
+  'Connectivity',
+  'Messaging',
+  'Files',
+  'Notifications',
+  'Huddles',
+  'Search',
+  'Apps/Integrations/APIs',
+  'Workspace/Org Administration',
+  'Workflows',
+  'Canvases',
+]
 
 interface SlackNote {
   date_created: string
@@ -25,7 +39,7 @@ interface SlackCurrentResponse {
 }
 
 export async function fetchSlack(): Promise<StatusPageData> {
-  const res = await fetch('https://slack-status.com/api/v2.0.0/current', { cache: 'no-store' })
+  const res = await fetch('/proxy/slack-status-com/api/v2.0.0/current', { cache: 'no-store' })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const data = (await res.json()) as SlackCurrentResponse
 
@@ -37,6 +51,16 @@ export async function fetchSlack(): Promise<StatusPageData> {
       body: n.body.replace(/<[^>]+>/g, '').trim(),
       created_at: n.date_created,
     })),
+  }))
+
+  const affectedServices = new Set(data.active_incidents.flatMap(i => i.services))
+
+  const components: StatusComponent[] = SLACK_FEATURES.map(feature => ({
+    id: feature,
+    name: feature,
+    status: affectedServices.has(feature) ? 'degraded_performance' : 'operational',
+    group: false,
+    group_id: null,
   }))
 
   const indicator =
@@ -53,7 +77,7 @@ export async function fetchSlack(): Promise<StatusPageData> {
       indicator,
       description: data.status === 'ok' ? 'ok' : data.status,
     },
-    components: [],
+    components,
     incidents,
   }
 }
