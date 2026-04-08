@@ -67,15 +67,14 @@ export async function fetchSlack(): Promise<StatusPageData> {
 
   const serviceStatusMap = new Map<string, string>()
   for (const incident of data.active_incidents) {
-    const status =
-      incident.type === 'outage'
-        ? 'major_outage'
-        : incident.type === 'incident'
-          ? 'degraded_performance'
-          : 'under_maintenance'
+    const status = {
+      outage: 'major_outage',
+      incident: 'degraded_performance',
+      notice: 'under_maintenance',
+    }[incident.type]
     for (const service of incident.services) {
       const current = serviceStatusMap.get(service)
-      if (!current || STATUS_PRIORITY[status] > (STATUS_PRIORITY[current] ?? 0)) {
+      if (!current || STATUS_PRIORITY[status] > STATUS_PRIORITY[current]) {
         serviceStatusMap.set(service, status)
       }
     }
