@@ -65,13 +65,19 @@ export async function fetchSlack(): Promise<StatusPageData> {
           ? 'degraded_performance'
           : 'under_maintenance'
     for (const service of incident.services) {
-      if (!serviceStatusMap.has(service) || status === 'major_outage') {
+      const current = serviceStatusMap.get(service)
+      if (
+        !current ||
+        status === 'major_outage' ||
+        (status === 'degraded_performance' && current === 'under_maintenance')
+      ) {
         serviceStatusMap.set(service, status)
       }
     }
   }
 
-  const components: StatusComponent[] = SLACK_FEATURES.map(feature => ({
+  const allFeatures = [...new Set([...SLACK_FEATURES, ...serviceStatusMap.keys()])]
+  const components: StatusComponent[] = allFeatures.map(feature => ({
     id: feature,
     name: feature,
     status: serviceStatusMap.get(feature) ?? 'operational',
