@@ -1,5 +1,8 @@
 import type { StatusPageData, Incident, StatusComponent } from './types'
 
+// Slack's status API only returns services affected by active incidents — it has no endpoint
+// that lists all possible services. This list is manually derived from slack-status.com so
+// we can show operational components alongside degraded ones.
 const SLACK_FEATURES = [
   'Login/SSO',
   'Connectivity',
@@ -53,12 +56,25 @@ export async function fetchSlack(): Promise<StatusPageData> {
     })),
   }))
 
-  const affectedServices = new Set(data.active_incidents.flatMap(i => i.services))
+  const serviceStatusMap = new Map<string, string>()
+  for (const incident of data.active_incidents) {
+    const status =
+      incident.type === 'outage'
+        ? 'major_outage'
+        : incident.type === 'incident'
+          ? 'degraded_performance'
+          : 'under_maintenance'
+    for (const service of incident.services) {
+      if (!serviceStatusMap.has(service) || status === 'major_outage') {
+        serviceStatusMap.set(service, status)
+      }
+    }
+  }
 
   const components: StatusComponent[] = SLACK_FEATURES.map(feature => ({
     id: feature,
     name: feature,
-    status: affectedServices.has(feature) ? 'degraded_performance' : 'operational',
+    status: serviceStatusMap.get(feature) ?? 'operational',
     group: false,
     group_id: null,
   }))
