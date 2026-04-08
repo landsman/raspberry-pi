@@ -43,7 +43,7 @@ interface SlackCurrentResponse {
 }
 
 export async function fetchSlack(): Promise<StatusPageData> {
-  const res = await fetch(PROXY_PATHS.SLACK_STATUS_COM + '/api/v2.0.0/current', {
+  const res = await fetch(`${PROXY_PATHS.SLACK_STATUS_COM}/api/v2.0.0/current`, {
     cache: 'no-store',
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
