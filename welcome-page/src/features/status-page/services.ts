@@ -138,10 +138,12 @@ export const SERVICES: Service[] = [
     icon: 'google-workspace',
     keywords: ['google', 'workspace', 'calendar', 'docs', 'drive', 'gmail', 'meet', 'chat'],
   },
+  // Tailscale uses incident.io for their status page, which exposes a Statuspage-compatible
+  // API at /api/v2/summary.json — same schema as Atlassian Statuspage, so ATLASSIAN type works.
   {
     name: 'Tailscale',
     url: 'https://status.tailscale.com',
-    type: SERVICE_TYPE.REDIRECT,
+    type: SERVICE_TYPE.ATLASSIAN,
     icon: 'tailscale',
     keywords: ['vpn', 'network', 'mesh'],
   },
