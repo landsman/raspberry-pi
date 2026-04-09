@@ -1,12 +1,10 @@
+import { Link, useRouterState } from '@tanstack/react-router'
 import { useConfig } from '../config/config-provider'
 import { formatDate, formatDateShort } from '../config/format-date'
 import { Tooltip } from './tooltip'
-import { SearchBar } from '../../features/status-page/components/search-bar'
 
 interface HeaderProps {
   onSettingsClick: () => void
-  query: string
-  onQueryChange: (value: string) => void
 }
 
 const DEFAULT_NAME = 'Michal'
@@ -16,11 +14,12 @@ function getDisplayName(): string {
   return n ? n.trim() : DEFAULT_NAME
 }
 
-export function Header({ onSettingsClick, query, onQueryChange }: HeaderProps) {
+export function Header({ onSettingsClick }: HeaderProps) {
   const config = useConfig()
   const displayName = getDisplayName()
   const dateStr = formatDate(new Date(), config)
   const dateStrShort = formatDateShort(new Date(), config)
+  const pathname = useRouterState({ select: s => s.location.pathname })
 
   return (
     <header className="flex items-center justify-between pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-[var(--border)] gap-6">
@@ -30,7 +29,7 @@ export function Header({ onSettingsClick, query, onQueryChange }: HeaderProps) {
             className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 status-pulse"
             style={{ color: '#22c55e' }}
           />
-          homelab · status monitor
+          homelab · dashboard
         </div>
         <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
           <span
@@ -41,9 +40,26 @@ export function Header({ onSettingsClick, query, onQueryChange }: HeaderProps) {
         </h1>
       </div>
 
-      <div className="hidden md:flex flex-1 max-w-xl">
-        <SearchBar query={query} onChange={onQueryChange} />
-      </div>
+      <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+        <Link
+          to="/"
+          className="px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
+          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300' }}
+          aria-current={pathname === '/' ? 'page' : undefined}
+        >
+          Home
+        </Link>
+        <Link
+          to="/status"
+          className="px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
+          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300' }}
+          aria-current={pathname === '/status' ? 'page' : undefined}
+        >
+          Status
+        </Link>
+      </nav>
 
       <div className="flex items-center shrink-0">
         <Tooltip

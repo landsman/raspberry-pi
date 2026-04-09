@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 import { proxies } from './src/proxy.config'
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+    react(),
+    tailwindcss(),
+  ],
   server: {
     host: true, // allow access from external hosts
     port: 5173,
