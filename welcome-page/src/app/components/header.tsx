@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { useConfig } from '../config/config-provider'
 import { formatDate, formatDateShort } from '../config/format-date'
+import { HotKey } from '../../features/common/hotkey/hot-key'
 import { Tooltip } from './tooltip'
 import { ROUTES } from '../routes'
 import { useSearch } from '../../features/search/search-context'
@@ -79,9 +80,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
               aria-current={pathname === ROUTES.home ? 'page' : undefined}
             >
               Home
-              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">
-                1
-              </kbd>
+              <HotKey className="absolute top-1 right-1.5 text-[10px]">1</HotKey>
             </Link>
             <Link
               to={ROUTES.status}
@@ -94,9 +93,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
               aria-current={pathname === ROUTES.status ? 'page' : undefined}
             >
               Status
-              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">
-                2
-              </kbd>
+              <HotKey className="absolute top-1 right-1.5 text-[10px]">2</HotKey>
             </Link>
           </nav>
 
