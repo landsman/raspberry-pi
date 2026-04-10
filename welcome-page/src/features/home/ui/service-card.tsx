@@ -26,7 +26,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       </div>
 
       {service.shortcut && (
-        <kbd className="absolute top-2 right-2 text-[11px] uppercase text-(--text-muted) font-mono leading-none">
+        <kbd className="hidden md:block absolute top-2 right-2 text-[11px] uppercase text-(--text-muted) font-mono leading-none">
           {service.shortcut}
         </kbd>
       )}
