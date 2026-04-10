@@ -4,8 +4,28 @@
 - **welcome-page**: Vite + React + TypeScript + Tailwind CSS
 - Always use **TypeScript** — never plain JS for new code
 - Use `make` targets, never raw `npm` commands — see `welcome-page/Makefile` for all targets
-- Run `npx tsc -b` to verify types, `npx prettier --write` to format after edits (these are low-level checks, not user-facing commands)
-- Common targets: `make dev`, `make build`, `make qa`, `make docker-build`
+- Run `make typecheck` to verify types, `make format` to format after edits
+- Common targets: `make dev`, `make build`, `make qa`, `make docker-build`, `make typecheck`
+
+## Routing (TanStack Router — file-based)
+- Routes live in `src/routes/` — the Vite plugin auto-generates `src/routeTree.gen.ts` at build/dev time; never edit that file manually
+- `src/routes/__root.tsx` — root layout (Header, Footer, ConfigModal); shared across all pages
+- `src/routes/index.tsx` — home page (`/`), service shortcut grid
+- `src/routes/status.tsx` — status monitor (`/status`), existing status cards
+- Router is registered in `main.tsx` via `createRouter` + `RouterProvider`; type registration via `declare module '@tanstack/react-router'`
+- Use `<Link to="/">` for navigation — paths are type-checked at compile time
+- Use `useRouterState({ select: s => s.location.pathname })` to read current path
+
+## Hotkeys (`@tanstack/hotkeys`)
+- `@tanstack/hotkeys` is framework-agnostic — use the `useHotkey` wrapper at `src/app/hooks/use-hotkey.ts`
+- `useHotkey(key, handler)` registers via `HotkeyManager` singleton and cleans up on unmount
+- Home page services define a `shortcut` field in `src/features/home/services.ts`; rendered as `<kbd>` hints on cards
+- Cast user-supplied strings to `Hotkey` type when calling `manager.register(key as Hotkey, ...)`
+
+## Home page (`src/features/home/`)
+- `services.ts` — `HOME_CATEGORIES` array of `{ label, services[] }` where each service has `name`, `url`, optional `icon` (resolves to `/icons/services/<icon>.svg`), optional `shortcut`
+- `home-page.tsx` — renders category sections with a responsive `grid` (auto-fill, 100–120 px columns); falls back to initial letter if no icon SVG exists
+- To add a service: add an entry to `HOME_CATEGORIES` in `services.ts`; add its SVG to `public/icons/services/` if needed
 
 ## Code style
 - Keep solutions minimal — don't add features, refactors, or comments beyond what was asked

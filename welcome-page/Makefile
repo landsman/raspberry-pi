@@ -5,7 +5,7 @@ PLATFORM       := linux/arm64
 GIT_SHA        ?= $(shell git rev-parse --short HEAD)
 
 ### DEV
-.PHONY: help dev install build preview lint format qa
+.PHONY: help dev install build preview typecheck lint lint-fix format format-check test qa
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -19,18 +19,26 @@ dev: ## Start local dev server (hot reload)
 build: ## Build static assets into dist/
 	npm run build
 
+typecheck: ## Run TypeScript type checker
+	npm run typecheck
+
 lint: ## Run ESLint (includes filename-case check)
 	npm run lint
 
-test:
+lint-fix: ## Auto-fix ESLint issues
+	npm run lint:fix
+
+test: ## Run unit tests
 	npm test
 
 format: ## Format all files with Prettier
 	npm run format:fix
-	npm run lint:fix
 
-qa: ## Check requirement format
-	npx tsc -b --noEmit
+format-check: ## Check formatting without writing
+	npm run format
+
+qa: ## Run all quality checks (typecheck, format, lint, test)
+	npm run typecheck
 	npm run format
 	npm run lint
 	npm test
