@@ -1,4 +1,6 @@
-export enum Key {
+export enum Hotkey {
+  ONE = '1',
+  TWO = '2',
   A = 'a',
   B = 'b',
   C = 'c',

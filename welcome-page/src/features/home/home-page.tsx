@@ -1,5 +1,5 @@
 import { ServiceCard } from './ui/service-card.tsx'
-import { ServiceHotkey } from './shortcut/service-hot-key.tsx'
+import { ServiceHotkey } from './ui/service-hot-key.tsx'
 import { HOME_CATEGORIES } from './data/services.ts'
 
 export function HomePage() {

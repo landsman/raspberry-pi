@@ -6,17 +6,18 @@ import { ConfigModal } from '../app/config/components/config-modal'
 import { SearchProvider } from '../app/search-context'
 import { useHotkey } from '../app/hooks/use-hotkey'
 import { ROUTES } from '../app/routes'
+import { Hotkey } from '../features/common/hotkey/hotkey.ts'
 
 function RootLayout() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const navigate = useNavigate()
 
   useHotkey(
-    '1',
+    Hotkey.ONE,
     useCallback(() => navigate({ to: ROUTES.home }), [navigate])
   )
   useHotkey(
-    '2',
+    Hotkey.TWO,
     useCallback(() => navigate({ to: ROUTES.status }), [navigate])
   )
 
