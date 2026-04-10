@@ -16,7 +16,7 @@ export function HomePage() {
           <h2 className="text-[10px] text-(--text-muted) tracking-[0.2em] uppercase mb-4">
             {category.label}
           </h2>
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-3 sm:grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(106px,1fr))] gap-3 sm:grid-cols-[repeat(auto-fill,minmax(126px,1fr))]">
             {category.services.map(service => (
               <ServiceCard key={service.name} service={service} />
             ))}
