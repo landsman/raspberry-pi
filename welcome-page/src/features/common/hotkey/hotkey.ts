@@ -1,4 +1,8 @@
+/**
+ * Unique hotkeys.
+ */
 export enum Hotkey {
+  SPACE = 'Space',
   ONE = '1',
   TWO = '2',
   A = 'a',
