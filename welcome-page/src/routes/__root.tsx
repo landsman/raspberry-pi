@@ -1,11 +1,23 @@
-import { useState } from 'react'
-import { createRootRoute, Outlet } from '@tanstack/react-router'
+import { useState, useCallback } from 'react'
+import { createRootRoute, Outlet, useNavigate } from '@tanstack/react-router'
 import { Header } from '../app/components/header'
 import { Footer } from '../app/components/footer'
 import { ConfigModal } from '../app/config/components/config-modal'
+import { useHotkey } from '../app/hooks/use-hotkey'
+import { ROUTES } from '../app/routes'
 
 function RootLayout() {
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const navigate = useNavigate()
+
+  useHotkey(
+    '1',
+    useCallback(() => navigate({ to: ROUTES.home }), [navigate])
+  )
+  useHotkey(
+    '2',
+    useCallback(() => navigate({ to: ROUTES.status }), [navigate])
+  )
 
   return (
     <div className="min-h-screen flex flex-col">
