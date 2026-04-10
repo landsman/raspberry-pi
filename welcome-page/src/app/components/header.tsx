@@ -1,12 +1,12 @@
-import { useRef, useCallback } from 'react'
+import { useRef } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { useConfig } from '../config/config-provider'
 import { formatDate, formatDateShort } from '../config/format-date'
 import { Tooltip } from './tooltip'
 import { ROUTES } from '../routes'
-import { useSearch } from '../search-context'
-import { SearchBar } from '../../features/status-page/components/search-bar'
-import { useHotkey } from '../hooks/use-hotkey'
+import { useSearch } from '../../features/search/search-context'
+import { SearchBar } from '../../features/search/search-bar'
+import { useSearchFocus } from '../../features/search/use-search-focus'
 
 interface HeaderProps {
   onSettingsClick: () => void
@@ -28,7 +28,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
   const { query, setQuery } = useSearch()
   const isStatus = pathname === ROUTES.status
   const searchRef = useRef<HTMLInputElement>(null)
-  useHotkey(' ', useCallback(() => { if (isStatus) searchRef.current?.focus() }, [isStatus]))
+  useSearchFocus(searchRef, isStatus)
 
   return (
     <header className="flex flex-col gap-3 pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-(--border)">
@@ -56,7 +56,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
         {/* Search — desktop center */}
         <div className="hidden md:flex flex-1 items-center justify-center">
           <div className={`w-80 lg:w-[32rem] ${isStatus ? '' : 'invisible'}`}>
-            <SearchBar ref={searchRef} query={query} onChange={setQuery} />
+            <SearchBar ref={searchRef} query={query} onChange={setQuery} placeholder="Search services…" />
           </div>
         </div>
 
