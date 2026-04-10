@@ -128,6 +128,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
       {
         name: 'Eat',
         url: 'https://eat.insuit.cz',
+        icon: ServiceIcon.MEALIE,
         shortcut: Hotkey.SHIFT_Q,
       },
       {
