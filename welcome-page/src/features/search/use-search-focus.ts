@@ -10,7 +10,8 @@ export function useSearchFocus(ref: RefObject<HTMLInputElement | null>, active: 
     if (!active) return
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement).tagName
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable) return
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable)
+        return
       if (e.code === Hotkey.SPACE) {
         e.preventDefault()
         ref.current?.focus()

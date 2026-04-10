@@ -56,7 +56,12 @@ export function Header({ onSettingsClick }: HeaderProps) {
         {/* Search — desktop center */}
         <div className="hidden md:flex flex-1 items-center justify-center">
           <div className={`w-80 lg:w-[32rem] ${isStatus ? '' : 'invisible'}`}>
-            <SearchBar ref={searchRef} query={query} onChange={setQuery} placeholder="Search services…" />
+            <SearchBar
+              ref={searchRef}
+              query={query}
+              onChange={setQuery}
+              placeholder="Search services…"
+            />
           </div>
         </div>
 
@@ -67,22 +72,31 @@ export function Header({ onSettingsClick }: HeaderProps) {
               to={ROUTES.home}
               className="relative flex items-center justify-center px-5 py-3 rounded-lg text-sm tracking-wide transition-colors"
               activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-              inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+              inactiveProps={{
+                className:
+                  'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent',
+              }}
               aria-current={pathname === ROUTES.home ? 'page' : undefined}
             >
               Home
-              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">1</kbd>
+              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">
+                1
+              </kbd>
             </Link>
             <Link
               to={ROUTES.status}
-
               className="relative flex items-center justify-center px-5 py-3 rounded-lg text-sm tracking-wide transition-colors"
               activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-              inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+              inactiveProps={{
+                className:
+                  'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent',
+              }}
               aria-current={pathname === ROUTES.status ? 'page' : undefined}
             >
               Status
-              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">2</kbd>
+              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">
+                2
+              </kbd>
             </Link>
           </nav>
 
@@ -131,7 +145,10 @@ export function Header({ onSettingsClick }: HeaderProps) {
           to={ROUTES.home}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
           activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+          inactiveProps={{
+            className:
+              'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent',
+          }}
           aria-current={pathname === ROUTES.home ? 'page' : undefined}
         >
           Home
@@ -140,7 +157,10 @@ export function Header({ onSettingsClick }: HeaderProps) {
           to={ROUTES.status}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
           activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+          inactiveProps={{
+            className:
+              'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent',
+          }}
           aria-current={pathname === ROUTES.status ? 'page' : undefined}
         >
           Status

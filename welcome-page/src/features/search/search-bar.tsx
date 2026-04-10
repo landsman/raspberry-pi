@@ -23,7 +23,9 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(function S
           type="search"
           value={query}
           onChange={e => onChange(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Escape') e.currentTarget.blur() }}
+          onKeyDown={e => {
+            if (e.key === 'Escape') e.currentTarget.blur()
+          }}
           placeholder={placeholder}
           className="w-full pl-10 pr-16 py-3 text-sm bg-[#060a0f] border border-[var(--dim)] rounded-lg text-slate-100 placeholder-[var(--text-muted)] focus:outline-none focus:border-slate-400 focus:bg-[#080d15] transition-colors shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)]"
         />
