@@ -3,6 +3,8 @@ import { useConfig } from '../config/config-provider'
 import { formatDate, formatDateShort } from '../config/format-date'
 import { Tooltip } from './tooltip'
 import { ROUTES } from '../routes'
+import { useSearch } from '../search-context'
+import { SearchBar } from '../../features/status-page/components/search-bar'
 
 interface HeaderProps {
   onSettingsClick: () => void
@@ -21,67 +23,125 @@ export function Header({ onSettingsClick }: HeaderProps) {
   const dateStr = formatDate(new Date(), config)
   const dateStrShort = formatDateShort(new Date(), config)
   const pathname = useRouterState({ select: s => s.location.pathname })
+  const { query, setQuery } = useSearch()
+  const isStatus = pathname === ROUTES.status
 
   return (
-    <header className="flex items-center justify-between pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-(--border) gap-6">
-      <div className="flex flex-col gap-1 shrink-0">
-        <div className="hidden sm:flex items-center gap-2 text-(--text-muted) text-[10px] tracking-[0.2em] uppercase mb-1">
-          <span
-            className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 status-pulse"
-            style={{ color: '#22c55e' }}
-          />
-          homelab · dashboard
+    <header className="flex flex-col gap-3 pt-8 pb-6 px-6 md:px-10 xl:px-16 border-b border-(--border)">
+      {/* Desktop: single row — title | search | nav + settings */}
+      {/* Mobile: row 1 title + settings, row 2 nav */}
+      <div className="flex items-end justify-between gap-4">
+        {/* Title */}
+        <div className="flex flex-col gap-1 shrink-0">
+          <div className="hidden sm:flex items-center gap-2 text-(--text-muted) text-[10px] tracking-[0.2em] uppercase mb-1">
+            <span
+              className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 status-pulse"
+              style={{ color: '#22c55e' }}
+            />
+            homelab · dashboard
+          </div>
+          <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
+            <span
+              className="sm:hidden inline-block w-2 h-2 rounded-full bg-green-500 status-pulse shrink-0"
+              aria-hidden="true"
+            />
+            Welcome, {displayName}
+          </h1>
         </div>
-        <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
-          <span
-            className="sm:hidden inline-block w-2 h-2 rounded-full bg-green-500 status-pulse shrink-0"
-            aria-hidden="true"
-          />
-          Welcome, {displayName}
-        </h1>
-      </div>
 
-      <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-        <Link
-          to={ROUTES.home}
-          className="px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
-          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300' }}
-          aria-current={pathname === ROUTES.home ? 'page' : undefined}
-        >
-          Home
-        </Link>
-        <Link
-          to={ROUTES.status}
-          className="px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
-          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
-          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300' }}
-          aria-current={pathname === ROUTES.status ? 'page' : undefined}
-        >
-          Status
-        </Link>
-      </nav>
+        {/* Search — desktop center */}
+        <div className="hidden md:flex flex-1 items-center justify-center">
+          <div className={`w-80 lg:w-[32rem] ${isStatus ? '' : 'invisible'}`}>
+            <SearchBar query={query} onChange={setQuery} />
+          </div>
+        </div>
 
-      <div className="flex items-center shrink-0">
+        {/* Nav + date — desktop right */}
+        <div className="hidden md:flex items-center gap-14 shrink-0">
+          <nav className="flex items-center gap-4" aria-label="Main navigation">
+            <Link
+              to={ROUTES.home}
+              className="relative flex items-center justify-center px-5 py-3 rounded-lg text-sm tracking-wide transition-colors"
+              activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+              inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+              aria-current={pathname === ROUTES.home ? 'page' : undefined}
+            >
+              Home
+              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">1</kbd>
+            </Link>
+            <Link
+              to={ROUTES.status}
+
+              className="relative flex items-center justify-center px-5 py-3 rounded-lg text-sm tracking-wide transition-colors"
+              activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+              inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+              aria-current={pathname === ROUTES.status ? 'page' : undefined}
+            >
+              Status
+              <kbd className="absolute top-1 right-1.5 text-[10px] text-(--text-muted) font-mono leading-none">2</kbd>
+            </Link>
+          </nav>
+
+          <Tooltip
+            content="Settings — change timezone, locale and other preferences"
+            placement="bottom"
+          >
+            <button
+              onClick={onSettingsClick}
+              className="flex flex-col items-end group"
+              aria-label="Open settings"
+            >
+              <div className="text-xs text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
+                {dateStr}
+              </div>
+              <div className="text-[11px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
+                {config.timezone}
+              </div>
+            </button>
+          </Tooltip>
+        </div>
+
+        {/* Mobile: settings only (nav is in row 2) */}
         <Tooltip
           content="Settings — change timezone, locale and other preferences"
           placement="bottom"
         >
           <button
             onClick={onSettingsClick}
-            className="flex flex-col items-end group"
+            className="md:hidden flex flex-col items-end group shrink-0"
             aria-label="Open settings"
           >
-            <div className="text-[10px] sm:text-xs text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
-              <span className="hidden sm:inline">{dateStr}</span>
-              <span className="sm:hidden">{dateStrShort}</span>
+            <div className="text-[9px] text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
+              {dateStrShort}
             </div>
-            <div className="text-[9px] sm:text-[11px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
+            <div className="text-[8px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
               {config.timezone}
             </div>
           </button>
         </Tooltip>
       </div>
+
+      {/* Row 2: nav — mobile only */}
+      <nav className="md:hidden flex items-center gap-1" aria-label="Main navigation">
+        <Link
+          to={ROUTES.home}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
+          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+          aria-current={pathname === ROUTES.home ? 'page' : undefined}
+        >
+          Home
+        </Link>
+        <Link
+          to={ROUTES.status}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
+          activeProps={{ className: 'text-slate-200 bg-[var(--dim)]' }}
+          inactiveProps={{ className: 'text-[var(--text-muted)] hover:text-slate-300 border border-(--border) bg-transparent' }}
+          aria-current={pathname === ROUTES.status ? 'page' : undefined}
+        >
+          Status
+        </Link>
+      </nav>
     </header>
   )
 }
