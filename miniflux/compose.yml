@@ -1,6 +1,6 @@
 services:
   miniflux:
-    image: ghcr.io/miniflux/miniflux:2.2.4
+    image: ghcr.io/miniflux/miniflux:2.2.19
     container_name: miniflux
     restart: unless-stopped
     ports:
