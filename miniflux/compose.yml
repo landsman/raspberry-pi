@@ -1,6 +1,6 @@
 services:
   miniflux:
-    image: ghcr.io/miniflux/miniflux:latest
+    image: ghcr.io/miniflux/miniflux:2.2.4
     container_name: miniflux
     restart: unless-stopped
     ports:
@@ -10,3 +10,8 @@ services:
     environment:
       - RUN_MIGRATIONS=1
       - CREATE_ADMIN=1
+    healthcheck:
+      test: ["CMD", "miniflux", "-healthcheck", "auto"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
