@@ -6,7 +6,9 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - readeck-data:/readeck
+      - data:/readeck
 
 volumes:
-  readeck-data:
+  data:
+    external: true
+    name: readeck_data
