@@ -1,15 +1,17 @@
 import { ServiceCard } from './ui/service-card.tsx'
 import { ServiceHotkey } from './ui/service-hot-key.tsx'
 import { HOME_CATEGORIES } from './data/services.ts'
+import { IpAddress } from '../common/network/ip-address/ip-address.tsx'
 
 export function HomePage() {
   const servicesWithShortcuts = HOME_CATEGORIES.flatMap(c => c.services).filter(s => s.shortcut)
-
   return (
     <div className="flex flex-col gap-10 fade-in">
       {servicesWithShortcuts.map(s => (
         <ServiceHotkey key={s.shortcut} service={s} />
       ))}
+
+      <IpAddress />
 
       {HOME_CATEGORIES.map(category => (
         <section key={category.label}>
