@@ -1,37 +1,17 @@
 # IP Address Feature
 
-Displays the current device's IPv4 and IPv6 addresses in the header — no external HTTP requests, detected locally via nginx.
+Displays the current device's IPv4 and IPv6 addresses in the header via external API calls.
 
 ## How it works
 
 ### Architecture
 
 ```
-Browser → nginx (port 80) → /api/my-ip    → returns $remote_addr (IPv4)
-Browser → nginx (port 81) → /api/my-ipv6 → returns $remote_addr (IPv6)
+Browser → api4.ipify.org → returns IPv4 address
+Browser → api6.ipify.org → returns IPv6 address
 ```
 
-### nginx
-
-Two server blocks are defined in `docker/nginx.conf`:
-
-- **Port 80** — main server, handles the SPA and static assets. Also exposes `/api/my-ip` which returns the client's IPv4 address using nginx's built-in `$remote_addr` variable.
-- **Port 81** — IPv6-only server (`ipv6only=on`), exposes `/api/my-ipv6` which returns the client's IPv6 address the same way.
-
-Both endpoints return a simple JSON response:
-
-```json
-{ "ip": "..." }
-```
-
-### Docker Compose
-
-Port `8081:81` is exposed alongside the main `8080:80` so the IPv6 endpoint is reachable from the host.
-
-### Proxy config (`src/proxy.config.ts`)
-
-- `PROXY_PATHS.MY_IP` → `/api/my-ip` (served by the main nginx on port 80)
-- `PROXY_PATHS.MY_IPV6` → `/api/my-ipv6` (proxied to `http://localhost:8081` in Vite dev mode)
+Both services support CORS, so the browser calls them directly — no nginx proxy needed.
 
 ### Hook (`use-ip-address.ts`)
 
@@ -67,15 +47,6 @@ A clickable button that copies all available IP addresses to the clipboard. Beha
 - `[touch-action:manipulation]` eliminates the 300 ms iOS tap delay
 - No page jump on iOS — the clipboard fallback textarea is anchored at `top:0 left:0`, `readonly`, and focused with `preventScroll: true`
 
-### Utility (`src/utils/copy-to-clipboard.ts`)
+## Future improvements
 
-Attempts `navigator.clipboard.writeText` first; falls back to a hidden `textarea` + `execCommand('copy')` for older or restricted browsers (e.g. iOS Safari in non-secure contexts).
-
-## Files
-
-| File                                     | Description                                                                   |
-| ---------------------------------------- | ----------------------------------------------------------------------------- |
-| `ip-address.tsx`                         | React component — clickable button with responsive IP display and copy action |
-| `use-ip-address.ts`                      | React Query hook — fetches and caches IPv4 and IPv6 addresses                 |
-| `../use-network-status.ts`               | Shared hook — detects online/offline network changes                          |
-| `../../../../utils/copy-to-clipboard.ts` | Utility — copies text to clipboard with `execCommand` fallback                |
+- **Self-hosted IP detection service** — instead of relying on the external `ipify.org` APIs, it would be better to run a small self-hosted service on the Raspberry Pi (e.g., a tiny HTTP server that simply returns `$remote_addr`). This removes the dependency on a third-party service, works fully offline/on the local network, and avoids any potential privacy or availability concerns.
