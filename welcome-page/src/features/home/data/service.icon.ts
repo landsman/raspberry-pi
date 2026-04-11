@@ -32,6 +32,7 @@ export enum ServiceIcon {
   SLACK = 'slack',
   TOGGL = 'toggl',
   FIZZY = 'fizzy',
+  MEALIE = 'mealie',
 }
 
 export type ServiceIconName = (typeof ServiceIcon)[keyof typeof ServiceIcon]
