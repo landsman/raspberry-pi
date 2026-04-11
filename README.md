@@ -1,10 +1,10 @@
-# Raspberry Pi
+# Homelab
 
-Playground for Pi.
+Playground for my local homelab.
 
 ## Content
 
-- [NAS](nas)
+- [NAS on Raspberry Pi](nas)
 - [Docker](docker)
 - [Self-hosted GitHub runner](github-runner)
 - [Database](database)
