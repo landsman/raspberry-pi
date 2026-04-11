@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useIpAddress } from './use-ip-address.ts'
 import { copyToClipboard } from '../../../../utils/copy-to-clipboard.ts'
+import { Tooltip } from '../../../../app/components/tooltip.tsx'
 
 export function IpAddress() {
   const { ipv4, ipv6, loading, isOnline } = useIpAddress()
@@ -23,6 +24,7 @@ export function IpAddress() {
   }
 
   return (
+    <Tooltip content={copied ? 'Copied!' : 'Click to copy your IP'} placement="bottom">
     <button
       type="button"
       onClick={handleCopy}
@@ -60,5 +62,6 @@ export function IpAddress() {
         </>
       )}
     </button>
+    </Tooltip>
   )
 }
