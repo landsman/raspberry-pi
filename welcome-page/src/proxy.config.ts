@@ -3,10 +3,13 @@
 // In production (Docker): nginx proxies these paths — see docker/nginx.conf.
 const STATUS_CODEBERG_ORG = '/proxy/status-codeberg-org'
 const SLACK_STATUS_COM = '/proxy/slack-status-com'
-
+const MY_IP = '/api/my-ip'
+const MY_IPV6 = '/api/my-ipv6'
 export const PROXY_PATHS = {
   STATUS_CODEBERG_ORG,
   SLACK_STATUS_COM,
+  MY_IP,
+  MY_IPV6,
 } as const
 
 // Vite dev server proxy config — imported by vite.config.ts.
@@ -20,5 +23,15 @@ export const proxies = {
     target: 'https://slack-status.com',
     changeOrigin: true,
     rewrite: (path: string) => path.replace(SLACK_STATUS_COM, ''),
+  },
+  [MY_IP]: {
+    target: 'http://localhost:8080',
+    changeOrigin: true,
+    xfwd: true, // forward real client IP in X-Forwarded-For
+  },
+  [MY_IPV6]: {
+    target: 'https://api6.ipify.org',
+    changeOrigin: true,
+    rewrite: () => '/?format=json',
   },
 }
