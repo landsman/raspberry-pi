@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useIpAddress } from './use-ip-address.ts'
 import { copyToClipboard } from '../../../../utils/copy-to-clipboard.ts'
 import { Tooltip } from '../../../../app/components/tooltip.tsx'
@@ -6,6 +6,13 @@ import { Tooltip } from '../../../../app/components/tooltip.tsx'
 export function IpAddress() {
   const { ipv4, ipv6, loading, isOnline } = useIpAddress()
   const [copied, setCopied] = useState(false)
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (copiedTimerRef.current != null) clearTimeout(copiedTimerRef.current)
+    }
+  }, [])
 
   if (!isOnline) {
     return <span className="text-[10px] text-red-400 tracking-wide">offline</span>
@@ -18,8 +25,9 @@ export function IpAddress() {
     if (!copyValue || loading) return
     const ok = await copyToClipboard(copyValue)
     if (ok) {
+      if (copiedTimerRef.current != null) clearTimeout(copiedTimerRef.current)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 1500)
     }
   }
 
