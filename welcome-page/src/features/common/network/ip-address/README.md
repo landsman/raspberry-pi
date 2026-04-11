@@ -46,16 +46,19 @@ Uses two React Query queries to fetch IPv4 and IPv6 in parallel:
 A clickable button that copies all available IP addresses to the clipboard. Behaviour varies by viewport:
 
 **Desktop (`sm+`)**
+
 - Shown inline in the `homelab · dashboard` status row in the header
 - Displays `IPv4 · IPv6` (IPv6 truncates at `10rem`, expands to `16rem` on `lg+`)
 
 **Mobile (< `sm`)**
+
 - Shown on the right side of the navigation row (Row 2 of the header)
 - Displays `IPv4` only to fit small screens (375 px / iPhone 13 mini)
 - When IPv6 is also available, shows a compact `(+ipv6)` badge
 - When only IPv4 is available (no IPv6), shows a red `(no ipv6)` badge
 
 **All viewports**
+
 - Shows `…` while loading
 - Shows a red `offline` label when the network is down
 - Shows `local` when neither address is available online
@@ -70,9 +73,9 @@ Attempts `navigator.clipboard.writeText` first; falls back to a hidden `textarea
 
 ## Files
 
-| File                            | Description                                                                   |
-| ------------------------------- | ----------------------------------------------------------------------------- |
-| `ip-address.tsx`                | React component — clickable button with responsive IP display and copy action |
-| `use-ip-address.ts`             | React Query hook — fetches and caches IPv4 and IPv6 addresses                 |
-| `../use-network-status.ts`      | Shared hook — detects online/offline network changes                          |
-| `../../../../utils/copy-to-clipboard.ts` | Utility — copies text to clipboard with `execCommand` fallback       |
+| File                                     | Description                                                                   |
+| ---------------------------------------- | ----------------------------------------------------------------------------- |
+| `ip-address.tsx`                         | React component — clickable button with responsive IP display and copy action |
+| `use-ip-address.ts`                      | React Query hook — fetches and caches IPv4 and IPv6 addresses                 |
+| `../use-network-status.ts`               | Shared hook — detects online/offline network changes                          |
+| `../../../../utils/copy-to-clipboard.ts` | Utility — copies text to clipboard with `execCommand` fallback                |
