@@ -27,9 +27,11 @@ export const proxies = {
   [MY_IP]: {
     target: 'http://localhost:8080',
     changeOrigin: true,
+    xfwd: true, // forward real client IP in X-Forwarded-For
   },
   [MY_IPV6]: {
     target: 'http://localhost:8081',
     changeOrigin: true,
+    xfwd: true, // forward real client IP in X-Forwarded-For
   },
 }

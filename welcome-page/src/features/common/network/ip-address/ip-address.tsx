@@ -7,12 +7,15 @@ export function IpAddress() {
     return <span className="text-[10px] text-red-400 tracking-wide">offline</span>
   }
 
+  const hasAny = loading || ipv4 != null || ipv6 != null
+
   return (
     <div className="flex items-center gap-1.5 text-[10px] text-(--text-muted) tracking-wide tabular-nums">
-      <span>{loading ? '…' : (ipv4 ?? '-')}</span>
+      {!hasAny && <span className="opacity-50">local</span>}
+      {(loading || ipv4 != null) && <span>{loading ? '…' : ipv4}</span>}
       {(loading || ipv6 != null) && (
         <>
-          <span className="opacity-30">·</span>
+          {(loading || ipv4 != null) && <span className="opacity-30">·</span>}
           <span>{loading ? '…' : ipv6}</span>
         </>
       )}
