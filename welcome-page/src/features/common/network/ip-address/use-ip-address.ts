@@ -19,6 +19,9 @@ const IPV6_URL = IS_DEV ? 'https://api6.ipify.org?format=json' : PROXY_PATHS.MY_
 
 async function fetchIp(url: string): Promise<string> {
   const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch IP: ${response.statusText}`)
+  }
   const data = (await response.json()) as { ip: string }
   return data.ip
 }
