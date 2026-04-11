@@ -8,6 +8,7 @@ import { ROUTES } from '../routes'
 import { useSearch } from '../../features/search/search-context'
 import { SearchBar } from '../../features/search/search-bar'
 import { useSearchFocus } from '../../features/search/use-search-focus'
+import { IpAddress } from '../../features/common/network/ip-address/ip-address.tsx'
 
 interface HeaderProps {
   onSettingsClick: () => void
@@ -44,6 +45,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
               style={{ color: '#22c55e' }}
             />
             homelab · dashboard
+            <span className="ml-2 normal-case tracking-normal"><IpAddress /></span>
           </div>
           <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
             <span
@@ -55,7 +57,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
         </div>
 
         {/* Search — desktop center */}
-        <div className="hidden md:flex flex-1 items-center justify-center">
+        <div className="hidden md:flex flex-1 justify-center">
           <div className={`w-80 lg:w-[32rem] ${isStatus ? '' : 'invisible'}`}>
             <SearchBar
               ref={searchRef}
@@ -97,6 +99,29 @@ export function Header({ onSettingsClick }: HeaderProps) {
             </Link>
           </nav>
 
+          <div className="flex flex-col items-end gap-1.5">
+            <Tooltip
+              content="Settings — change timezone, locale and other preferences"
+              placement="bottom"
+            >
+              <button
+                onClick={onSettingsClick}
+                className="flex flex-col items-end group"
+                aria-label="Open settings"
+              >
+                <div className="text-xs text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
+                  {dateStr}
+                </div>
+                <div className="text-[11px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
+                  {config.timezone}
+                </div>
+              </button>
+            </Tooltip>
+          </div>
+        </div>
+
+        {/* Mobile: settings only (nav is in row 2) */}
+        <div className="md:hidden flex flex-col items-end gap-1 shrink-0">
           <Tooltip
             content="Settings — change timezone, locale and other preferences"
             placement="bottom"
@@ -106,38 +131,19 @@ export function Header({ onSettingsClick }: HeaderProps) {
               className="flex flex-col items-end group"
               aria-label="Open settings"
             >
-              <div className="text-xs text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
-                {dateStr}
+              <div className="text-[9px] text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
+                {dateStrShort}
               </div>
-              <div className="text-[11px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
+              <div className="text-[8px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
                 {config.timezone}
               </div>
             </button>
           </Tooltip>
         </div>
-
-        {/* Mobile: settings only (nav is in row 2) */}
-        <Tooltip
-          content="Settings — change timezone, locale and other preferences"
-          placement="bottom"
-        >
-          <button
-            onClick={onSettingsClick}
-            className="md:hidden flex flex-col items-end group shrink-0"
-            aria-label="Open settings"
-          >
-            <div className="text-[9px] text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
-              {dateStrShort}
-            </div>
-            <div className="text-[8px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
-              {config.timezone}
-            </div>
-          </button>
-        </Tooltip>
       </div>
 
       {/* Row 2: nav — mobile only */}
-      <nav className="md:hidden flex items-center gap-1" aria-label="Main navigation">
+      <div className="md:hidden flex items-center gap-1">
         <Link
           to={ROUTES.home}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs tracking-wide transition-colors"
@@ -162,7 +168,8 @@ export function Header({ onSettingsClick }: HeaderProps) {
         >
           Status
         </Link>
-      </nav>
+        <span className="ml-auto"><IpAddress /></span>
+      </div>
     </header>
   )
 }
