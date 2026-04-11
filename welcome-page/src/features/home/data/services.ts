@@ -153,6 +153,12 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         url: 'https://login.tailscale.com/admin',
         icon: ServiceIcon.TAILSCALE,
       },
+      {
+        name: 'Miniflux',
+        url: 'https://rss.insuit.cz',
+        icon: ServiceIcon.MINIFLUX,
+        shortcut: Hotkey.SHIFT_T,
+      },
     ],
   },
   {

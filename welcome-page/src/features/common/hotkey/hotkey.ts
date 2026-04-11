@@ -28,6 +28,7 @@ export enum Hotkey {
   SHIFT_R = 'Shift+R',
   S = 's',
   T = 't',
+  SHIFT_T = 'Shift+T',
   U = 'u',
   V = 'v',
   W = 'w',
