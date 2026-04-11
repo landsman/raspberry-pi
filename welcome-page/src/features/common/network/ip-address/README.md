@@ -1,6 +1,6 @@
 # IP Address Feature
 
-Displays the current device's IPv4 and IPv6 addresses on the home page, detected locally via nginx — no external HTTP requests.
+Displays the current device's IPv4 and IPv6 addresses in the header — no external HTTP requests, detected locally via nginx.
 
 ## How it works
 
@@ -43,19 +43,36 @@ Uses two React Query queries to fetch IPv4 and IPv6 in parallel:
 
 ### Component (`ip-address.tsx`)
 
-Renders two rows:
+A clickable button that copies all available IP addresses to the clipboard. Behaviour varies by viewport:
 
-```
-IPv4: 192.168.1.10
-IPv6: fd00::1
-```
+**Desktop (`sm+`)**
+- Shown inline in the `homelab · dashboard` status row in the header
+- Displays `IPv4 · IPv6` (IPv6 truncates at `10rem`, expands to `16rem` on `lg+`)
 
-Shows `...` while loading and a red `offline` label when the network is down.
+**Mobile (< `sm`)**
+- Shown on the right side of the navigation row (Row 2 of the header)
+- Displays `IPv4` only to fit small screens (375 px / iPhone 13 mini)
+- When IPv6 is also available, shows a compact `(+ipv6)` badge
+- When only IPv4 is available (no IPv6), shows a red `(no ipv6)` badge
+
+**All viewports**
+- Shows `…` while loading
+- Shows a red `offline` label when the network is down
+- Shows `local` when neither address is available online
+- On click: copies all available addresses (`IPv4 · IPv6`) to clipboard via `copyToClipboard` util
+- Tooltip: `Click to copy your IP` → switches to `Copied!` for 1.5 s after a successful copy
+- `[touch-action:manipulation]` eliminates the 300 ms iOS tap delay
+- No page jump on iOS — the clipboard fallback textarea is anchored at `top:0 left:0`, `readonly`, and focused with `preventScroll: true`
+
+### Utility (`src/utils/copy-to-clipboard.ts`)
+
+Attempts `navigator.clipboard.writeText` first; falls back to a hidden `textarea` + `execCommand('copy')` for older or restricted browsers (e.g. iOS Safari in non-secure contexts).
 
 ## Files
 
-| File                       | Description                                                |
-| -------------------------- | ---------------------------------------------------------- |
-| `ip-address.tsx`           | React component — renders IPv4/IPv6 rows and offline state |
-| `use-ip-address.ts`        | React Query hook — fetches and caches both IP addresses    |
-| `../use-network-status.ts` | Shared hook — detects online/offline network changes       |
+| File                            | Description                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------------- |
+| `ip-address.tsx`                | React component — clickable button with responsive IP display and copy action |
+| `use-ip-address.ts`             | React Query hook — fetches and caches IPv4 and IPv6 addresses                 |
+| `../use-network-status.ts`      | Shared hook — detects online/offline network changes                          |
+| `../../../../utils/copy-to-clipboard.ts` | Utility — copies text to clipboard with `execCommand` fallback       |
