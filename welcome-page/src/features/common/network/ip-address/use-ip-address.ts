@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { PROXY_PATHS } from '../../../../proxy.config.ts'
 import { useNetworkStatus } from '../use-network-status.ts'
 
 const QUERY_KEYS = {
@@ -10,12 +9,10 @@ const QUERY_KEYS = {
 
 const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1'])
 
-// In dev (Vite), the browser is on localhost, so nginx always sees 127.0.0.1/::1.
-// Call ipify directly — api4 forces IPv4, api6 forces IPv6 — both support CORS.
-// In production (nginx on the Pi), two proxy locations handle the protocol split.
-const IS_DEV = import.meta.env.DEV
-const IPV4_URL = IS_DEV ? 'https://api4.ipify.org?format=json' : PROXY_PATHS.MY_IP
-const IPV6_URL = IS_DEV ? 'https://api6.ipify.org?format=json' : PROXY_PATHS.MY_IPV6
+// Use ipify's protocol-specific subdomains — api4 forces IPv4, api6 forces IPv6.
+// Both support CORS so the browser can call them directly without a proxy.
+const IPV4_URL = 'https://api4.ipify.org?format=json'
+const IPV6_URL = 'https://api6.ipify.org?format=json'
 
 async function fetchIp(url: string): Promise<string> {
   const response = await fetch(url)
