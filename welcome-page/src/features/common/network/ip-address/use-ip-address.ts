@@ -11,8 +11,8 @@ const QUERY_KEYS = {
 const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1'])
 
 // In dev (Vite), the browser is on localhost, so nginx always sees 127.0.0.1/::1.
-// Call the public ipify APIs directly — they support CORS.
-// In production (nginx on the Pi), use the local $remote_addr endpoints instead.
+// Call ipify directly — api4 forces IPv4, api6 forces IPv6 — both support CORS.
+// In production (nginx on the Pi), two proxy locations handle the protocol split.
 const IS_DEV = import.meta.env.DEV
 const IPV4_URL = IS_DEV ? 'https://api4.ipify.org?format=json' : PROXY_PATHS.MY_IP
 const IPV6_URL = IS_DEV ? 'https://api6.ipify.org?format=json' : PROXY_PATHS.MY_IPV6
@@ -50,9 +50,6 @@ export function useIpAddress() {
     retry: false,
   })
 
-  // Guard each value:
-  //  - ipv4 must not contain ':' (no IPv6 addresses) and not be a loopback (127.x or ::1)
-  //  - ipv6 must contain ':' (real IPv6) and not be the loopback ::1
   const isRealIpv4 = ipv4Raw != null && !ipv4Raw.includes(':') && !LOOPBACK.has(ipv4Raw)
   const isRealIpv6 = ipv6Raw != null && ipv6Raw.includes(':') && !LOOPBACK.has(ipv6Raw)
 

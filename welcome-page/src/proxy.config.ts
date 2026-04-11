@@ -30,8 +30,8 @@ export const proxies = {
     xfwd: true, // forward real client IP in X-Forwarded-For
   },
   [MY_IPV6]: {
-    target: 'http://localhost:8081',
+    target: 'https://api6.ipify.org',
     changeOrigin: true,
-    xfwd: true, // forward real client IP in X-Forwarded-For
+    rewrite: () => '/?format=json',
   },
 }
