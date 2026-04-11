@@ -45,7 +45,9 @@ export function Header({ onSettingsClick }: HeaderProps) {
               style={{ color: '#22c55e' }}
             />
             homelab · dashboard
-            <span className="normal-case tracking-normal"><IpAddress /></span>
+            <span className="normal-case tracking-normal">
+              <IpAddress />
+            </span>
           </div>
           <h1 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-slate-200">
             <span

@@ -19,6 +19,7 @@ Two server blocks are defined in `docker/nginx.conf`:
 - **Port 81** — IPv6-only server (`ipv6only=on`), exposes `/api/my-ipv6` which returns the client's IPv6 address the same way.
 
 Both endpoints return a simple JSON response:
+
 ```json
 { "ip": "..." }
 ```
@@ -43,6 +44,7 @@ Uses two React Query queries to fetch IPv4 and IPv6 in parallel:
 ### Component (`ip-address.tsx`)
 
 Renders two rows:
+
 ```
 IPv4: 192.168.1.10
 IPv6: fd00::1
@@ -52,8 +54,8 @@ Shows `...` while loading and a red `offline` label when the network is down.
 
 ## Files
 
-| File | Description |
-|------|-------------|
-| `ip-address.tsx` | React component — renders IPv4/IPv6 rows and offline state |
-| `use-ip-address.ts` | React Query hook — fetches and caches both IP addresses |
-| `../use-network-status.ts` | Shared hook — detects online/offline network changes |
+| File                       | Description                                                |
+| -------------------------- | ---------------------------------------------------------- |
+| `ip-address.tsx`           | React component — renders IPv4/IPv6 rows and offline state |
+| `use-ip-address.ts`        | React Query hook — fetches and caches both IP addresses    |
+| `../use-network-status.ts` | Shared hook — detects online/offline network changes       |
