@@ -9,6 +9,7 @@ Playground for Pi.
 - [Self-hosted GitHub runner](github-runner)
 - [Database](database)
 - [Readeck](readeck)
+- [Mealie](mealie)
 - [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
 - [Welcome Page](welcome-page)

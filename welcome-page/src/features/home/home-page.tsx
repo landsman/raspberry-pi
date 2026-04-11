@@ -4,7 +4,6 @@ import { HOME_CATEGORIES } from './data/services.ts'
 
 export function HomePage() {
   const servicesWithShortcuts = HOME_CATEGORIES.flatMap(c => c.services).filter(s => s.shortcut)
-
   return (
     <div className="flex flex-col gap-10 fade-in">
       {servicesWithShortcuts.map(s => (

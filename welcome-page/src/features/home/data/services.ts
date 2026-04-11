@@ -25,7 +25,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         name: 'Readeck',
         url: 'https://read.insuit.cz',
         icon: ServiceIcon.READECK,
-        shortcut: Hotkey.E,
+        shortcut: Hotkey.Q,
       },
       { name: 'Bluesky', url: 'https://bsky.app', icon: ServiceIcon.BLUESKY, shortcut: Hotkey.B },
       { name: 'X', url: 'https://x.com', icon: ServiceIcon.X },
@@ -90,7 +90,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         name: 'Raspberry Connect',
         url: 'https://connect.raspberrypi.com',
         icon: ServiceIcon.RASPBERRY_CONNECT,
-        shortcut: Hotkey.Q,
+        shortcut: Hotkey.O,
       },
     ],
   },
@@ -125,17 +125,28 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     label: 'Homelab',
     services: [
-      { name: 'Music', url: 'https://music.insuit.cz', shortcut: Hotkey.M },
+      {
+        name: 'Eat',
+        url: 'https://eat.insuit.cz',
+        icon: ServiceIcon.MEALIE,
+        shortcut: Hotkey.SHIFT_Q,
+      },
+      {
+        name: 'Music',
+        url: 'https://music.insuit.cz',
+        shortcut: Hotkey.SHIFT_W,
+      },
       {
         name: 'Forgejo',
         url: 'https://git.insuit.cz',
         icon: ServiceIcon.FORGEJO,
-        shortcut: Hotkey.O,
+        shortcut: Hotkey.SHIFT_E,
       },
       {
         name: 'Cloudflare',
         url: 'https://dash.cloudflare.com',
         icon: ServiceIcon.CLOUDFLARE,
+        shortcut: Hotkey.SHIFT_R,
       },
       {
         name: 'Tailscale',
