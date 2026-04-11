@@ -3,7 +3,6 @@
 // In production (Docker): nginx proxies these paths — see docker/nginx.conf.
 const STATUS_CODEBERG_ORG = '/proxy/status-codeberg-org'
 const SLACK_STATUS_COM = '/proxy/slack-status-com'
-
 export const PROXY_PATHS = {
   STATUS_CODEBERG_ORG,
   SLACK_STATUS_COM,

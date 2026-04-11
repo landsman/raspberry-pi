@@ -16,6 +16,10 @@ install: ## Install deps
 dev: ## Start local dev server (hot reload)
 	npm run dev
 
+dev-docker: ## Build + start Docker container (IP endpoints) then launch dev server
+	docker compose up -d --build
+	npm run dev
+
 build: ## Build static assets into dist/
 	npm run build
 
