@@ -27,7 +27,7 @@ export function IpAddress() {
       type="button"
       onClick={handleCopy}
       title={copied ? 'Copied!' : 'Click to copy IP'}
-      className="flex flex-row items-center gap-1 max-w-full overflow-hidden text-[10px] text-(--text-muted) tracking-wide tabular-nums cursor-pointer hover:text-slate-300 active:opacity-60 transition-colors select-none"
+      className="flex flex-row items-center gap-1 max-w-full overflow-hidden text-[10px] text-(--text-muted) tracking-wide tabular-nums cursor-pointer hover:text-slate-300 active:opacity-60 transition-colors select-none [touch-action:manipulation]"
     >
       {copied ? (
         <span className="text-green-400 shrink-0">copied!</span>
