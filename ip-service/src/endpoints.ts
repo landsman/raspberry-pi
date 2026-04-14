@@ -5,10 +5,7 @@ export enum ContentType {
   TEXT = "text/plain",
 }
 
-export const out = (
-  body: BodyInit | null,
-  contentType: ContentType,
-): Response =>
+export const out = (body: string, contentType: ContentType): Response =>
   new Response(body, {
     headers: { "Content-Type": contentType },
   });
