@@ -13,6 +13,7 @@ Playground for my local homelab.
 - [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
 - [Welcome Page](welcome-page)
+- [IP service](ip-service)
 
 ## Useful links
 
