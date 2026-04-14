@@ -14,10 +14,10 @@ install: ## Install deps
 	bun install --frozen-lockfile
 
 dev: ## Start Bun server locally
-	bun run src/server.ts
+	bun dev
 
 qa: ## Run TypeScript type checker
-	bun x tsc --noEmit
+	bun typecheck
 
 ### RELEASE
 .PHONY: docker-build ci-release
