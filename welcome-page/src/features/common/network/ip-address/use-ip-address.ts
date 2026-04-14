@@ -9,18 +9,32 @@ const QUERY_KEYS = {
 
 const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1'])
 
-// Use ipify's protocol-specific subdomains — api4 forces IPv4, api6 forces IPv6.
-// Both support CORS so the browser can call them directly without a proxy.
-const IPV4_URL = 'https://api4.ipify.org?format=json'
-const IPV6_URL = 'https://api6.ipify.org?format=json'
+// Multiple providers for better resilience against trackers/adblockers (Firefox ETP)
+const IPV4_PROVIDERS = ['https://api4.ipify.org?format=json', 'https://ipv4.icanhazip.com']
+const IPV6_PROVIDERS = ['https://api6.ipify.org?format=json', 'https://ipv6.icanhazip.com']
 
-async function fetchIp(url: string): Promise<string> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch IP: ${response.statusText}`)
+async function fetchIp(providers: string[]): Promise<string> {
+  let lastError: Error | null = null
+
+  for (const url of providers) {
+    try {
+      const response = await fetch(url)
+      if (!response.ok) continue
+
+      const text = await response.text()
+      try {
+        const data = JSON.parse(text) as { ip: string }
+        if (data.ip) return data.ip
+      } catch {
+        const trimmed = text.trim()
+        if (trimmed) return trimmed
+      }
+    } catch (err) {
+      lastError = err instanceof Error ? err : new Error(String(err))
+    }
   }
-  const data = (await response.json()) as { ip: string }
-  return data.ip
+
+  throw lastError || new Error('Failed to fetch IP from any provider')
 }
 
 export function useIpAddress() {
@@ -36,18 +50,18 @@ export function useIpAddress() {
 
   const { data: ipv4Raw, isLoading: loadingV4 } = useQuery({
     queryKey: QUERY_KEYS.MY_IP,
-    queryFn: () => fetchIp(IPV4_URL),
+    queryFn: () => fetchIp(IPV4_PROVIDERS),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: false,
+    retry: 1, // Allow one retry for transient network issues
   })
 
   const { data: ipv6Raw, isLoading: loadingV6 } = useQuery({
     queryKey: QUERY_KEYS.MY_IPV6,
-    queryFn: () => fetchIp(IPV6_URL),
+    queryFn: () => fetchIp(IPV6_PROVIDERS),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
-    retry: false,
+    retry: 1,
   })
 
   const isRealIpv4 = ipv4Raw != null && !ipv4Raw.includes(':') && !LOOPBACK.has(ipv4Raw)
@@ -56,7 +70,8 @@ export function useIpAddress() {
   return {
     ipv4: isRealIpv4 ? ipv4Raw : null,
     ipv6: isRealIpv6 ? ipv6Raw : null,
-    loading: loadingV4 || loadingV6,
+    loadingV4,
+    loadingV6,
     isOnline,
   }
 }
