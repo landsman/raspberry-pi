@@ -1,9 +1,7 @@
 import { useRef } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
-import { useConfig } from '../config/config-provider'
-import { formatDate, formatDateShort } from '../config/format-date'
 import { HotKey } from '../../features/common/hotkey/hot-key'
-import { Tooltip } from './tooltip'
+import { Clock } from './clock.tsx'
 import { ROUTES } from '../routes'
 import { useSearch } from '../../features/search/search-context'
 import { SearchBar } from '../../features/search/search-bar'
@@ -22,10 +20,6 @@ function getDisplayName(): string {
 }
 
 export function Header({ onSettingsClick }: HeaderProps) {
-  const config = useConfig()
-  const displayName = getDisplayName()
-  const dateStr = formatDate(new Date(), config)
-  const dateStrShort = formatDateShort(new Date(), config)
   const pathname = useRouterState({ select: s => s.location.pathname })
   const { query, setQuery } = useSearch()
   const isStatus = pathname === ROUTES.status
@@ -54,13 +48,13 @@ export function Header({ onSettingsClick }: HeaderProps) {
               className="sm:hidden inline-block w-2 h-2 rounded-full bg-green-500 status-pulse shrink-0"
               aria-hidden="true"
             />
-            Welcome, {displayName}
+            Welcome, {getDisplayName()}
           </h1>
         </div>
 
         {/* Search — desktop center */}
         <div className="hidden md:flex flex-1 justify-center">
-          <div className={`w-80 lg:w-[32rem] ${isStatus ? '' : 'invisible'}`}>
+          <div className={`w-80 lg:w-lg ${isStatus ? '' : 'invisible'}`}>
             <SearchBar
               ref={searchRef}
               query={query}
@@ -102,45 +96,13 @@ export function Header({ onSettingsClick }: HeaderProps) {
           </nav>
 
           <div className="flex flex-col items-end gap-1.5">
-            <Tooltip
-              content="Settings — change timezone, locale and other preferences"
-              placement="bottom"
-            >
-              <button
-                onClick={onSettingsClick}
-                className="flex flex-col items-end group"
-                aria-label="Open settings"
-              >
-                <div className="text-xs text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
-                  {dateStr}
-                </div>
-                <div className="text-[11px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
-                  {config.timezone}
-                </div>
-              </button>
-            </Tooltip>
+            <Clock onSettingsClick={onSettingsClick} />
           </div>
         </div>
 
         {/* Mobile: settings only (nav is in row 2) */}
         <div className="md:hidden flex flex-col items-end gap-1 shrink-0">
-          <Tooltip
-            content="Settings — change timezone, locale and other preferences"
-            placement="bottom"
-          >
-            <button
-              onClick={onSettingsClick}
-              className="flex flex-col items-end group"
-              aria-label="Open settings"
-            >
-              <div className="text-[9px] text-(--text-dim) tracking-wide group-hover:text-slate-300 transition-colors">
-                {dateStrShort}
-              </div>
-              <div className="text-[8px] text-(--text-muted) group-hover:text-(--text-dim) transition-colors mt-0.5">
-                {config.timezone}
-              </div>
-            </button>
-          </Tooltip>
+          <Clock onSettingsClick={onSettingsClick} variant="short" />
         </div>
       </div>
 
