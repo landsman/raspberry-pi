@@ -40,7 +40,7 @@ ci-release: ## Build linux/arm64 image and push to registry (set REGISTRY_IMAGE 
 run: ## Build and start via Docker Compose
 	docker compose up -d --build
 
-up: ## Run the container locally on PORT (default: 8080)
+up: ## Run the container locally
 	REGISTRY_IMAGE=$(REGISTRY_IMAGE) TAG=$(TAG) docker compose up -d
 
 stop: ## Stop containers
