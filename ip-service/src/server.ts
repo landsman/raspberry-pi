@@ -1,5 +1,5 @@
-import {handleRequest} from "./handler.ts";
-import {applyNoCacheHeaders, NO_CACHE_HEADERS} from "./cache.ts";
+import { handleRequest } from "./handler";
+import { applyNoCacheHeaders, NO_CACHE_HEADERS } from "./cache";
 
 /**
  * Bun server configuration
@@ -7,18 +7,18 @@ import {applyNoCacheHeaders, NO_CACHE_HEADERS} from "./cache.ts";
 // noinspection JSUnusedGlobalSymbols
 export default {
   port: 3000,
-  async fetch(request: Request) {
+  async fetch(request: Request, server: Bun.Server<unknown>) {
     try {
-      const response = await handleRequest(request)
-      return applyNoCacheHeaders(response)
+      const response = await handleRequest(request, server);
+      return applyNoCacheHeaders(response);
     } catch (err) {
-      console.error('Server error:', err)
-      return new Response('Internal Server Error', {
+      console.error("Server error:", err);
+      return new Response("Internal Server Error", {
         status: 500,
-        headers: NO_CACHE_HEADERS
-      })
+        headers: NO_CACHE_HEADERS,
+      });
     }
   },
-}
+};
 
-console.log('IP Service (Bun) listening on port 3000')
+console.log("IP Service (Bun) listening on port 3000");

@@ -5,7 +5,7 @@ PLATFORM                := linux/arm64
 GIT_SHA                 ?= $(shell git rev-parse --short HEAD)
 
 ### DEV
-.PHONY: help install dev qa
+.PHONY: help install dev qa format
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -18,6 +18,9 @@ dev: ## Start Bun server locally
 
 qa: ## Run TypeScript type checker
 	bun typecheck
+
+format: ## Format all TypeScript files
+	bun format
 
 ### RELEASE
 .PHONY: docker-build ci-release
