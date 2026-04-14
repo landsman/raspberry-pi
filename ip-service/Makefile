@@ -4,7 +4,7 @@ TAG                     ?= latest
 PLATFORM                := linux/arm64
 GIT_SHA                 ?= $(shell git rev-parse --short HEAD)
 
-.PHONY: help dev install typecheck build ci-release run stop logs
+.PHONY: help dev install qa build ci-release run stop logs
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -15,7 +15,7 @@ install: ## Install deps
 dev: ## Start Bun server locally
 	bun run src/server.ts
 
-typecheck: ## Run TypeScript type checker
+qa: ## Run TypeScript type checker
 	bun x tsc --noEmit
 
 build: ## Build Docker image for current platform
