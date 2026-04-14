@@ -21,12 +21,6 @@ export const HOME_CATEGORIES: HomeCategory[] = [
       },
       { name: 'Reddit', url: 'https://reddit.com', icon: ServiceIcon.REDDIT, shortcut: Hotkey.R },
       { name: 'Nyx', url: 'https://www.nyx.cz', icon: ServiceIcon.NYX, shortcut: Hotkey.X },
-      {
-        name: 'Readeck',
-        url: 'https://read.insuit.cz',
-        icon: ServiceIcon.READECK,
-        shortcut: Hotkey.Q,
-      },
       { name: 'Bluesky', url: 'https://bsky.app', icon: ServiceIcon.BLUESKY, shortcut: Hotkey.B },
       { name: 'X', url: 'https://x.com', icon: ServiceIcon.X },
       {
@@ -125,6 +119,12 @@ export const HOME_CATEGORIES: HomeCategory[] = [
   {
     label: 'Homelab',
     services: [
+      {
+        name: 'Readeck',
+        url: 'https://read.insuit.cz',
+        icon: ServiceIcon.READECK,
+        shortcut: Hotkey.Q,
+      },
       {
         name: 'Eat',
         url: 'https://eat.insuit.cz',
