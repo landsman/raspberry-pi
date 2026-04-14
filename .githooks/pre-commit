@@ -1,8 +1,9 @@
 #!/bin/sh
 # Run biome formatter for ip-service before committing
 
-if git diff --cached --name-only | grep -q '^ip-service/'; then
+STAGED_IP=$(git diff --cached --name-only | grep '^ip-service/')
+if [ -n "$STAGED_IP" ]; then
   echo "Running formatter in ip-service..."
   (cd ip-service && bun format)
-  git add ip-service/src
+  echo "$STAGED_IP" | xargs git add
 fi
