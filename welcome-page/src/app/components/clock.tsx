@@ -15,7 +15,7 @@ export function Clock({ onSettingsClick, variant = 'full' }: HeaderClockProps) {
   useEffect(() => {
     const interval = setInterval(() => {
       setNow(new Date())
-    }, 1000)
+    }, 10000)
     return () => clearInterval(interval)
   }, [])
 
