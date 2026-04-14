@@ -4,7 +4,8 @@ TAG                     ?= latest
 PLATFORM                := linux/arm64
 GIT_SHA                 ?= $(shell git rev-parse --short HEAD)
 
-.PHONY: help dev install qa build ci-release run stop logs
+### DEV
+.PHONY: help install dev qa
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -18,23 +19,35 @@ dev: ## Start Bun server locally
 qa: ## Run TypeScript type checker
 	bun x tsc --noEmit
 
-build: ## Build Docker image for current platform
-	docker build -t $(IMAGE):$(TAG) .
+### RELEASE
+.PHONY: docker-build ci-release
 
-ci-release: ## Build linux/arm64 image and push to registry
+docker-build: ## Build Docker image for Raspberry Pi (linux/arm64)
+	docker compose build
+
+ci-release: ## Build linux/arm64 image and push to registry (set REGISTRY_IMAGE and GIT_SHA)
 	docker buildx build \
 		--platform $(PLATFORM) \
+		--file docker/Dockerfile \
 		--tag $(REGISTRY_IMAGE):$(TAG) \
 		--tag $(REGISTRY_IMAGE):$(GIT_SHA) \
 		--push \
 		.
 
-run: ## Run the container locally
-	docker run -d --name $(IMAGE) -p 3000:3000 $(IMAGE):$(TAG)
+### DOCKER
+.PHONY: run up stop down logs
 
-stop: ## Stop the container
-	docker stop $(IMAGE) || true
-	docker rm $(IMAGE) || true
+run: ## Build and start via Docker Compose
+	docker compose up -d --build
+
+up: ## Run the container locally on PORT (default: 8080)
+	REGISTRY_IMAGE=$(REGISTRY_IMAGE) TAG=$(TAG) docker compose up -d
+
+stop: ## Stop containers
+	docker compose stop
+
+down: ## Stop and remove Compose containers
+	docker compose down
 
 logs: ## Follow logs
 	docker logs -f $(IMAGE)

@@ -26,4 +26,4 @@ jobs:
         run: make qa
 
       - name: "Build"
-        run: make build
+        run: make docker-build
