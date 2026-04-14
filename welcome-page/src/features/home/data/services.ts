@@ -132,15 +132,21 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         shortcut: Hotkey.SHIFT_Q,
       },
       {
-        name: 'Music',
-        url: 'https://music.insuit.cz',
-        shortcut: Hotkey.SHIFT_W,
+        name: 'Miniflux',
+        url: 'https://rss.insuit.cz',
+        icon: ServiceIcon.MINIFLUX,
+        shortcut: Hotkey.SHIFT_T,
       },
       {
         name: 'Forgejo',
         url: 'https://git.insuit.cz',
         icon: ServiceIcon.FORGEJO,
         shortcut: Hotkey.SHIFT_E,
+      },
+      {
+        name: 'Music',
+        url: 'https://music.insuit.cz',
+        shortcut: Hotkey.SHIFT_W,
       },
       {
         name: 'Cloudflare',
