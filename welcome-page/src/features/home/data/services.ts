@@ -103,7 +103,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         icon: ServiceIcon.LASTFM,
         shortcut: Hotkey.M,
       },
-    ]
+    ],
   },
   {
     label: 'Personal',
