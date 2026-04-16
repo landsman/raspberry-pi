@@ -8,6 +8,7 @@ export enum ServiceIcon {
   X = 'x',
   YOUTUBE = 'youtube',
   DISCORD = 'discord',
+  DISCOGS = 'discogs',
   GEMINI = 'gemini',
   GOOGLE_CALENDAR = 'google-calendar',
   GOOGLE_KEEP = 'google-keep',
@@ -33,6 +34,8 @@ export enum ServiceIcon {
   TOGGL = 'toggl',
   FIZZY = 'fizzy',
   MEALIE = 'mealie',
+  LASTFM = 'lastfm',
+  YOUTUBE_MUSIC = 'youtube-music',
 }
 
 export type ServiceIconName = (typeof ServiceIcon)[keyof typeof ServiceIcon]
