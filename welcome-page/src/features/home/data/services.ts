@@ -74,12 +74,6 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         url: 'https://supabase.com/dashboard/projects',
         icon: ServiceIcon.SUPABASE,
       },
-      {
-        name: 'Raspberry Connect',
-        url: 'https://connect.raspberrypi.com',
-        icon: ServiceIcon.RASPBERRY_CONNECT,
-        shortcut: Hotkey.O,
-      },
     ],
   },
   {
@@ -164,6 +158,12 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         url: 'https://git.insuit.cz',
         icon: ServiceIcon.FORGEJO,
         shortcut: Hotkey.SHIFT_E,
+      },
+      {
+        name: 'Raspberry Connect',
+        url: 'https://connect.raspberrypi.com',
+        icon: ServiceIcon.RASPBERRY_CONNECT,
+        shortcut: Hotkey.O,
       },
       {
         name: 'Cloudflare',
