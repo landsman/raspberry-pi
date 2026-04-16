@@ -89,6 +89,7 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         name: 'Discogs',
         url: 'https://www.discogs.com/mywantlist',
         icon: ServiceIcon.DISCOGS,
+        iconWhiteBg: true,
         shortcut: Hotkey.V,
       },
       {

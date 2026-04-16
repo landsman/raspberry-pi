@@ -4,6 +4,7 @@ export interface HomeService {
   name: string
   url: string
   icon?: ServiceIconName
+  iconWhiteBg?: boolean
   shortcut?: string
 }
 
