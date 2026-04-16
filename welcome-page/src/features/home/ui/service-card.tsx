@@ -25,7 +25,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
 
       <span
         title={service.name}
-        className="text-xs font-medium text-slate-300 group-hover:text-white transition-colors truncate w-full text-center"
+        className="text-xs font-semibold text-slate-300 group-hover:text-white group-hover:-translate-y-0.5 transition-all duration-300 truncate w-full text-center"
       >
         {service.name}
       </span>
