@@ -17,17 +17,11 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         name: 'Substack',
         url: 'https://substack.com',
         icon: ServiceIcon.SUBSTACK,
-        shortcut: Hotkey.V,
       },
       { name: 'Reddit', url: 'https://reddit.com', icon: ServiceIcon.REDDIT, shortcut: Hotkey.R },
       { name: 'Nyx', url: 'https://www.nyx.cz', icon: ServiceIcon.NYX, shortcut: Hotkey.X },
       { name: 'Bluesky', url: 'https://bsky.app', icon: ServiceIcon.BLUESKY, shortcut: Hotkey.B },
       { name: 'X', url: 'https://x.com', icon: ServiceIcon.X },
-      {
-        name: 'YouTube',
-        url: 'https://www.youtube.com/playlist?list=WL',
-        icon: ServiceIcon.YOUTUBE,
-      },
       {
         name: 'Discord',
         url: 'https://discord.com/app',
@@ -87,6 +81,23 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         shortcut: Hotkey.O,
       },
     ],
+  },
+  {
+    label: 'Audio / Video',
+    services: [
+      {
+        name: 'Discogs',
+        url: 'https://www.discogs.com/mywantlist',
+        icon: ServiceIcon.DISCOGS,
+        shortcut: Hotkey.V,
+      },
+      {
+        name: 'YouTube',
+        url: 'https://www.youtube.com/playlist?list=WL',
+        icon: ServiceIcon.YOUTUBE,
+        shortcut: Hotkey.SHIFT_Y,
+      },
+    ]
   },
   {
     label: 'Personal',

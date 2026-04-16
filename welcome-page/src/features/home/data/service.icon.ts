@@ -8,6 +8,7 @@ export enum ServiceIcon {
   X = 'x',
   YOUTUBE = 'youtube',
   DISCORD = 'discord',
+  DISCOGS = 'discogs',
   GEMINI = 'gemini',
   GOOGLE_CALENDAR = 'google-calendar',
   GOOGLE_KEEP = 'google-keep',

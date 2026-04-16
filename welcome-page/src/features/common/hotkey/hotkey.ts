@@ -34,5 +34,6 @@ export enum Hotkey {
   SHIFT_W = 'Shift+W',
   X = 'x',
   Y = 'y',
+  SHIFT_Y = 'Shift+Y',
   Z = 'z',
 }
