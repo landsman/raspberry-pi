@@ -93,10 +93,21 @@ export const HOME_CATEGORIES: HomeCategory[] = [
         shortcut: Hotkey.V,
       },
       {
+        name: 'YouTube Music',
+        url: 'https://music.youtube.com',
+        icon: ServiceIcon.YOUTUBE_MUSIC,
+      },
+      {
         name: 'YouTube',
         url: 'https://www.youtube.com/playlist?list=WL',
         icon: ServiceIcon.YOUTUBE,
         shortcut: Hotkey.SHIFT_Y,
+      },
+      {
+        name: 'Last.fm',
+        url: 'https://www.last.fm/user/insuit',
+        icon: ServiceIcon.LASTFM,
+        shortcut: Hotkey.M,
       },
     ]
   },
