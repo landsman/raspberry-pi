@@ -60,6 +60,11 @@
 - Modal closable with ESC key via `useEffect` keydown listener
 - Tooltips on truncated text and interactive controls
 
+## New services
+- Every new service must claim a **unique host port** — check `.docs/PORTS.md` before choosing, pick the next free one
+- Add the new port to `.docs/PORTS.md` and to the service's own README under `## Ports`
+- Suggest exposing the service via a new Cloudflare Zero Trust Tunnel subdomain pointing at `http://<pi-host>:<port>` — remind the user to add it under **Published application routes** on the tunnel in the Cloudflare dashboard (Zero Trust → Networks → Tunnels)
+
 ## Deployment
 - Docker: multi-stage build (`node:20-alpine` → `nginx:alpine`)
 - Target: `linux/arm64` (Raspberry Pi)

@@ -2,17 +2,22 @@
 
 Playground for my local homelab.
 
-## Content
+## Docs
 
 - [NAS on Raspberry Pi](nas)
-- [Docker](docker)
+- [Ports overview](.docs/PORTS.md)
+
+## Apps
+
+- [Welcome Page](welcome-page)
+- [Rootless Docker](docker)
 - [Self-hosted GitHub runner](github-runner)
+- [Forgejo - GitHub alternative](forgejo)
 - [Database](database)
 - [Readeck](readeck)
 - [Mealie](mealie)
-- [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
-- [Welcome Page](welcome-page)
+- [ArchiveBox](archivebox)
 - [IP service](ip-service)
 
 ## Useful links
