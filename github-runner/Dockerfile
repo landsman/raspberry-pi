@@ -1,9 +1,9 @@
 ARG BASE_IMAGE=myoung34/github-runner:2.332.0
 FROM ${BASE_IMAGE}
 
-# Add Node.js 22 (for npx / sentry-cli)
+# Add Node.js 22 (for npx / sentry-cli) + postgresql-client (for psql vault upsert)
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y nodejs && \
+    apt-get install -y --no-install-recommends nodejs postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Add Deno

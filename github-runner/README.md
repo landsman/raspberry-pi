@@ -11,6 +11,7 @@ Each job spawns a fresh `custom-runner-nodejs` container that registers with Git
 - [Node.js](https://nodejs.org) 22 — for `npx` / Sentry CLI
 - [Deno](https://deno.land) for Deno tasks
 - [Supabase CLI](https://github.com/supabase/cli) — latest ARM64 binary
+- `postgresql-client` — `psql` for Supabase Vault secret upserts in CI
 
 ## Prerequisites
 
