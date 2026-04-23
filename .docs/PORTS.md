@@ -1,0 +1,20 @@
+# Ports
+
+Host ports exposed by containers on the Pi. Source of truth: each service's `compose.yml`.
+
+| Port | Service                               | Notes              |
+|------|---------------------------------------|--------------------|
+| 222  | [forgejo](../forgejo) SSH             | git over SSH       |
+| 3000 | [forgejo](../forgejo)                 | web UI             |
+| 3001 | [ip-service](../ip-service)           |                    |
+| 3031 | [gotenberg](../gotenberg)             | PDF conversion API |
+| 5432 | [database](../database) (postgres 17) |                    |
+| 8000 | [database](../database) (adminer)     | DB admin UI        |
+| 8001 | [readeck](../readeck)                 |                    |
+| 8002 | [archivebox](../archivebox)           |                    |
+| 8080 | [welcome-page](../welcome-page)       |                    |
+| 9925 | [mealie](../mealie)                   |                    |
+
+## Adding a service
+
+Pick the next free port, add it here, and mirror it in the service README under a `## Ports` heading.
