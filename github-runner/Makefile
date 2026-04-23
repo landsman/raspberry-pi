@@ -11,6 +11,9 @@ build: ## Build the runner image
 up: ## Start the runner
 	docker compose up -d
 
+stop: ## STop containers
+	docker compose stop
+
 down: ## Stop and remove the runner
 	docker compose down --remove-orphans
 
