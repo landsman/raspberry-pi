@@ -7,3 +7,9 @@ lazydocker:
 	tar xzf lazydocker.tar.gz lazydocker
 	mkdir -p ~/bin && mv lazydocker ~/bin/
 	rm lazydocker.tar.gz
+
+cron-install:
+	@crontab -l 2>/dev/null | grep -q "docker system prune" \
+		&& (echo "Cron job already exists. To view: crontab -l | grep docker" && exit 1) \
+		|| (crontab -l 2>/dev/null; echo "30 3 * * * docker system prune -f") | crontab -
+	@echo "Cron job installed."

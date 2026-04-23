@@ -211,6 +211,15 @@ Docker will now refuse to start if `/mnt/raid0` is not mounted.
 
 ---
 
+## Maintenance
+
+Create cleanup cron. It will remove old containers and images at 3:30 AM every day:
+
+```bash
+make install-cron
+```
+
+
 ## Troubleshooting
 
 ### Volumes missing after reboot (old data in `~/.local/share/docker`)
