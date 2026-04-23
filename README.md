@@ -12,6 +12,7 @@ Playground for my local homelab.
 - [Mealie](mealie)
 - [Forgejo](forgejo)
 - [Gotenberg](gotenberg)
+- [Varnish](varnish)
 - [Welcome Page](welcome-page)
 - [IP service](ip-service)
 

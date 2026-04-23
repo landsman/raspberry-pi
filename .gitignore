@@ -1,3 +1,4 @@
 .idea/*
 !.idea/prettier.xml
+!.idea/externalDependencies.xml
 .playwright-mcp

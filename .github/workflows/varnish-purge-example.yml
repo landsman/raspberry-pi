@@ -1,0 +1,32 @@
+name: "varnish purge example"
+
+# This workflow shows how to invalidate dynamic paths after a deploy.
+# Replace the build/deploy steps with your actual deployment logic.
+
+on:
+  workflow_dispatch:
+    inputs:
+      post_slug:
+        description: "Post slug to invalidate (e.g. hello-world)"
+        required: true
+
+jobs:
+  deploy:
+    # Self-hosted runner on Raspberry Pi 5 — see: ./github-runner/README.md
+    runs-on: [self-hosted, pi5]
+    outputs:
+      post_slug: ${{ inputs.post_slug }}
+    steps:
+      - uses: actions/checkout@v6
+
+  purge:
+    needs: deploy
+    uses: ./.github/workflows/varnish-purge.yml
+    with:
+      urls: |
+        /
+        /posts/${{ needs.deploy.outputs.post_slug }}
+        /api/posts/${{ needs.deploy.outputs.post_slug }}
+        /tags/*
+        /category/*
+    secrets: inherit
