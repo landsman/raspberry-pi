@@ -155,6 +155,42 @@ not work from this mirror."* Use the patched fork Forgejo itself uses —
 `https://data.forgejo.org/forgejo/upload-artifact@v5`. Getting this wrong loses
 artefacts precisely on the runs that failed, which is the only time they matter.
 
+### `GITHUB_TOKEN` is a Forgejo token, and tools believe it
+
+Forgejo publishes `GITHUB_TOKEN` as an alias of `FORGEJO_TOKEN`, so workflows
+written against GitHub keep working. Any tool that reads `GITHUB_TOKEN` and
+assumes it means github.com therefore authenticates a Forgejo token against the
+GitHub API and gets `401 Bad credentials`.
+
+mise is the one that caught us — it queries the GitHub releases API to resolve a
+tool version:
+
+```
+mise WARN [evilmartians/lefthook] failed to fetch version tags:
+  401 Unauthorized for url (https://api.github.com/repos/evilmartians/lefthook/releases)
+  github auth: yes (token from GITHUB_TOKEN)
+```
+
+It half fails, which is what makes it look like a broken tool rather than a
+broken token: tools served from somewhere other than GitHub install perfectly
+(a JetBrains JDK off JetBrains' own CDN), while everything whose releases live on
+GitHub dies. Expect the same from any release-fetching helper — `gh`, aqua, ubi,
+installer scripts that read `GITHUB_TOKEN`.
+
+Empty the variable for those steps, which restores the unauthenticated path:
+
+```yaml
+- run: |
+    GITHUB_TOKEN="" ; export GITHUB_TOKEN
+    echo "GITHUB_TOKEN=" >> "$GITHUB_ENV"   # for the steps after this one
+```
+
+`FORGEJO_TOKEN` is untouched and stays the one that talks to the instance.
+Unauthenticated github.com is 60 requests an hour per IP, shared by every job on
+this runner — if that starts biting, supply a real PAT under the tool's own
+variable (`MISE_GITHUB_TOKEN` and friends) rather than putting the Forgejo token
+back.
+
 ### `gh` does not talk to Forgejo
 
 The GitHub CLI speaks the GitHub API, and `github.token` here is `FORGEJO_TOKEN`
