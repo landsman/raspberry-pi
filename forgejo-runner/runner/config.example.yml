@@ -14,28 +14,16 @@ cache:
   dir: /data/cache
 
 container:
-  # Persist toolchains and dependency caches between jobs.
+  # Caches kept between jobs, because a job container is fresh every run.
+  # Uncomment and fill in the real path — `make cache` prints this line with it
+  # already filled in. Why these two and not actions/cache: see ../README.md.
   #
-  # A job container is fresh every run, so without this every JVM job downloads
-  # the JDK again (173 MB), every lint job fetches shellcheck, and Gradle
-  # re-resolves the whole dependency graph — the largest of the three.
+  #   mise    the JDK (173 MB), shellcheck, oxipng
+  #   gradle  the dependency cache and the build cache
   #
-  # These are bind mounts and the *host* docker daemon resolves them, so the
-  # left-hand side must be an absolute path on this box, not a path inside the
-  # runner container. `make prepare` creates the directories and prints the exact
-  # line to paste here.
-  #
-  # Not `actions/cache`: the Actions cache server is not reachable from job
-  # containers on this layout (see CAVEATS), so every cache round trip stalls
-  # until it times out — and it would be one more action to fetch over a network
-  # path that is already the thing that fails.
-  #
-  # Shared by every job on this runner, including concurrent ones. Gradle and
-  # mise both lock their own caches, so that is safe; it does mean a job can slow
-  # another down, and that anything able to run here can read what the others
-  # cached.
-  #
-  # options: '--volume /home/<user>/forgejo-runner/cache/mise:/root/.local/share/mise --volume /home/<user>/forgejo-runner/cache/gradle:/root/.gradle'
+  # options: >-
+  #   --volume /home/USER/forgejo-runner/cache/mise:/root/.local/share/mise
+  #   --volume /home/USER/forgejo-runner/cache/gradle:/root/.gradle
   options:
 
   docker_host: 'automount'
