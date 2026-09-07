@@ -12,6 +12,10 @@ RUN bun install --frozen-lockfile --production
 
 COPY src ./src/
 
+# The base image ships this user; the process only ever reads what the build
+# put in /app, and 3000 is above the port a non-root process cannot bind.
+USER bun
+
 EXPOSE 3000
 
 CMD ["bun", "run", "src/server.ts"]
