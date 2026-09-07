@@ -115,8 +115,12 @@ gid never land in the public `homelab` repo.
 
 ## Operations
 
+`runner/config.yml` is read once at startup, so a change to it needs `make
+restart` — `make up` will say `Running` and do nothing.
+
 ```sh
 make rsync        # push changes to the box (after editing config, eg. capacity)
+ssh jesse.pollos 'cd forgejo-runner && make restart'   # apply a config change
 ssh jesse.pollos 'cd forgejo-runner && make logs'    # follow runner logs
 ssh jesse.pollos 'cd forgejo-runner && make status'
 ```
