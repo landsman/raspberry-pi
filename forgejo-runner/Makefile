@@ -1,6 +1,6 @@
 HOST = jesse.pollos
 
-.PHONY: help rsync prepare config up down logs status register qemu
+.PHONY: help rsync prepare cache config up down logs status register qemu
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
@@ -19,6 +19,19 @@ prepare: ## chown data + write .env with the docker group gid (run on the box)
 	chmod g+s data/.cache
 	@printf 'DOCKER_GID=%s\n' "$$(getent group docker | cut -d: -f3)" > .env
 	@echo "Wrote .env with DOCKER_GID=$$(grep DOCKER_GID .env | cut -d= -f2)"
+	@$(MAKE) --no-print-directory cache
+
+# Deliberately outside data/, which is chowned to the runner's uid. Job
+# containers run as root and write here, so keeping the two apart avoids a
+# directory owned by two users for two reasons.
+cache: ## Create the job caches and print the config line that mounts them
+	@mkdir -p cache/mise cache/gradle
+	@echo
+	@echo "Job caches ready. Put this in runner/config.yml under container:"
+	@echo
+	@echo "  options: '--volume $(CURDIR)/cache/mise:/root/.local/share/mise --volume $(CURDIR)/cache/gradle:/root/.gradle'"
+	@echo
+	@echo "Then: make up   (docker compose recreates the runner)"
 
 up: ## Start the runner
 	docker compose up -d
