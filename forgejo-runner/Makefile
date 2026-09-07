@@ -24,14 +24,20 @@ prepare: ## chown data + write .env with the docker group gid (run on the box)
 # Deliberately outside data/, which is chowned to the runner's uid. Job
 # containers run as root and write here, so keeping the two apart avoids a
 # directory owned by two users for two reasons.
-cache: ## Create the job caches and print the config line that mounts them
+CACHE_DIR = /home/ansible/forgejo-runner
+
+cache: ## Create the job caches (mise toolchains, Gradle) and check the path
 	@mkdir -p cache/mise cache/gradle
-	@echo
-	@echo "Job caches ready. Put this in runner/config.yml under container:"
-	@echo
-	@echo "  options: '--volume $(CURDIR)/cache/mise:/root/.local/share/mise --volume $(CURDIR)/cache/gradle:/root/.gradle'"
-	@echo
-	@echo "Then: make up   (docker compose recreates the runner)"
+	@if [ "$(CURDIR)" != "$(CACHE_DIR)" ]; then \
+		echo; \
+		echo "WARNING: runner/config.example.yml mounts caches from $(CACHE_DIR),"; \
+		echo "         but this checkout is at $(CURDIR)."; \
+		echo "         Fix container.options in runner/config.yml, or the caches"; \
+		echo "         will be written somewhere nothing reads them."; \
+		echo; \
+	else \
+		echo "Job caches ready under $(CURDIR)/cache — matches the config."; \
+	fi
 
 up: ## Start the runner
 	docker compose up -d

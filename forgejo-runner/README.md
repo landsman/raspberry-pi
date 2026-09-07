@@ -60,10 +60,11 @@ container to stop that:
 | `cache/mise` → `/root/.local/share/mise` | the JDK (173 MB), shellcheck, oxipng |
 | `cache/gradle` → `/root/.gradle` | Gradle's dependency cache and build cache |
 
-Set up with `make cache`, which creates them and prints the `container.options`
-line to paste into `runner/config.yml` with the absolute path already filled in.
-That path matters: the **host** daemon resolves these, so the left-hand side is a
-path on this box, not one inside the runner container.
+`runner/config.example.yml` carries the real paths, so a fresh `make config`
+already has them; `make prepare` creates the directories. The path matters
+because the **host** daemon resolves these — the left-hand side is a path on this
+box, not one inside the runner container — so `make cache` warns if this checkout
+is not where the config expects it.
 
 Measured on two fresh containers sharing one cache: installing the toolchain and
 running shellcheck went from 12s to 4s, with 515 MB left in the mise mount. That
