@@ -19,6 +19,8 @@ services:
       ACCESS_TOKEN: ${ACCESS_TOKEN}
       LABELS: self-hosted,pi5
       DISABLE_AUTO_UPDATE: "true"
+      # jobs run as the runner user, not uid 0 — see .trivyignore
+      RUN_AS_ROOT: "false"
     volumes:
       - /run/user/1001/docker.sock:/var/run/docker.sock
 
@@ -36,5 +38,7 @@ services:
       ACCESS_TOKEN: ${ACCESS_TOKEN}
       LABELS: self-hosted,pi5
       DISABLE_AUTO_UPDATE: "true"
+      # jobs run as the runner user, not uid 0 — see .trivyignore
+      RUN_AS_ROOT: "false"
     volumes:
       - /run/user/1001/docker.sock:/var/run/docker.sock

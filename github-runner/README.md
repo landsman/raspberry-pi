@@ -87,6 +87,18 @@ more: the runner version is pinned in the `Dockerfile` (`BASE_IMAGE`), so updati
 bumping that pin and running `make restart`. GitHub eventually refuses connections from runners
 that are too far behind, so do not let the pin drift.
 
+### Why the container starts as root
+
+`RUN_AS_ROOT=false` in `compose.yml` means jobs run as the `runner` user. The container still
+*starts* as root, because the entrypoint has to: it reads the GID of the mounted docker socket,
+`groupmod`s the docker group onto it, then drops privileges. A `USER` line in the Dockerfile
+skips that and the runner loses the docker socket.
+
+Trivy flags the missing `USER` as DS-0002 and cannot see any of the above, so the check is
+excepted in [`.trivyignore`](.trivyignore) — scoped to this Dockerfile, with the reasoning in the
+file. Note also that the daemon is rootless, so uid 0 inside the container is host uid 1001, not
+root; see [../docker/README.md](../docker/README.md).
+
 ## Surviving `docker system prune`
 
 A runner is briefly stopped whenever it is restarted or its image is rebuilt, so a raw `docker system prune` can sweep it mid-cycle. Both runner services carry the `preserve=true` label in `compose.yml`, which is honored by:
